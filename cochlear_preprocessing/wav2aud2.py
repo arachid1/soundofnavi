@@ -93,37 +93,6 @@ Returns:
  
 """
 
-# def get_acoustic_input(root):
-#     sr = 8000
-#     window_length = Decimal('2')
-#     step_size = Decimal('1')
-#     threshold = Decimal('{}'.format(0.15))
-#     filenames = [s.split('.')[0]
-#                  for s in os.listdir(path=root) if '.wav' in s]
-    
-#     rec_annotations = []
-
-#     rec_annotations_dict = {}
-#     for s in filenames:
-#         a = Extract_Annotation_Data(s, root)
-#         rec_annotations.append(a)
-#         rec_annotations_dict[s] = a
-        
-#     cycle_list = []
- 
-#     file_id = 0
-    
-#     for file_name in filenames:
-#         data = get_icbhi_samples(
-#             rec_annotations_dict[file_name], file_name, root, sr, file_id, threshold, window_length, step_size)
-#         cycles_with_labels = []
-#         for d in data[2:]:
-#             cycles_with_labels.append((d[0], d[1], d[2], file_id))
-#         cycle_list.extend(cycles_with_labels)
-#         file_id += 1
-#         # break 
-#     return cycle_list
-
 def write_data(array, name):
     with open(name,'w') as f:
             for val in array:
@@ -235,7 +204,7 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
     
 def main():
 
-    coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing'
+    # coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing'
     file_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/cochlear_processing_validation_data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
     file_name = file_path.split('/')
     file_name = file_name[len(file_name) -1]
@@ -248,9 +217,12 @@ def main():
     fs = 4000
     bp = 1
     cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
-    coch_a = np.loadtxt(str(coch_path + '/COCH_A.txt'), delimiter=',')
-    coch_b = np.loadtxt(str(coch_path + '/COCH_B.txt'), delimiter=',')
-    p = np.loadtxt(str(coch_path + '/p.txt'), delimiter=',')
+    # coch_a = np.loadtxt(str(coch_path + '/COCH_A.txt'), delimiter=',')
+    # coch_b = np.loadtxt(str(coch_path + '/COCH_B.txt'), delimiter=',')
+    # p = np.loadtxt(str(coch_path + '/p.txt'), delimiter=',')
+    coch_a = np.loadtxt('COCH_A.txt', delimiter=',')
+    coch_b = np.loadtxt('COCH_B.txt', delimiter=',')
+    p = np.loadtxt('p.txt', delimiter=',')
     
     sr = 4000
     wav = read_wav_file(file_path, sr)
@@ -298,6 +270,37 @@ def main():
     #     # TODO: **(1/3)
     #     break
     # TODO: save the spectrograms somwhere 
+    
+    # def get_acoustic_input(root):
+#     sr = 8000
+#     window_length = Decimal('2')
+#     step_size = Decimal('1')
+#     threshold = Decimal('{}'.format(0.15))
+#     filenames = [s.split('.')[0]
+#                  for s in os.listdir(path=root) if '.wav' in s]
+    
+#     rec_annotations = []
+
+#     rec_annotations_dict = {}
+#     for s in filenames:
+#         a = Extract_Annotation_Data(s, root)
+#         rec_annotations.append(a)
+#         rec_annotations_dict[s] = a
+        
+#     cycle_list = []
+ 
+#     file_id = 0
+    
+#     for file_name in filenames:
+#         data = get_icbhi_samples(
+#             rec_annotations_dict[file_name], file_name, root, sr, file_id, threshold, window_length, step_size)
+#         cycles_with_labels = []
+#         for d in data[2:]:
+#             cycles_with_labels.append((d[0], d[1], d[2], file_id))
+#         cycle_list.extend(cycles_with_labels)
+#         file_id += 1
+#         # break 
+#     return cycle_list
 
 
 if __name__ == "__main__":
