@@ -144,18 +144,14 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
     y2 = y1
     y2_h = y2
     
-    column_index = 129
-    
-    column_folder = write_folder + '/' + 'column' + str(column_index) + '/'
+    column_folder = write_folder + '/' + 'column' + str(M) + '/'
     os.makedirs(column_folder, exist_ok=True)
     
     write_data(y1, column_folder + "arma_filter.txt")
-    
-    column_index -= 1
-    
+        
     # All other channels
     for ch in range(M-2, -1, -1):
-        column_folder = write_folder + '/' + 'column' + str(column_index) + '/'
+        column_folder = write_folder + '/' + 'column' + str(ch+1) + '/'
         os.makedirs(column_folder, exist_ok=True)
         # ANALYSIS: cochlear filterbank
         # IIR: filter bank convolution ---> y1  
@@ -195,7 +191,6 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
             v5_row.append(y5[int(L_frm*i) - 1])
         v5[:, ch] = v5_row
         # v5[:, ch] = y5[int(L_frm):int(L_frm*N)] # N elements, each space with L_frm
-        column_index -= 1
     print("...End")
     
     return v5
