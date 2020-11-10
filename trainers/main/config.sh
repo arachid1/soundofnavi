@@ -6,34 +6,14 @@ SR=8000
 #JOB
 
 export MODEL=conv #LSTM OR CONV
-export TRAIN_NUMBER=301
-export DESCRIPTION=testing_inceptionv3
-
-# MASTER_TYPE=n1-standard-32
-# MACHINE=NVIDIA_TESLA_P4
-# COUNT=2
-
-# export YAML_CONFIG='{
-#     "trainingInput": {
-#       "scaleTier": "CUSTOM",
-#       "masterType": "'$MASTER_TYPE'",
-#       "masterConfig": {
-#           "acceleratorConfig": {
-#               "count": "'$COUNT'",
-#               "type": "'$MACHINE'"
-#           }
-#       },
-#       "runtimeVersion": "2.1",
-#       "pythonVersion": "3.7",
-#     }
-#   }'
-
+export TRAIN_NUMBER=305
+export DESCRIPTION=diffparams_save_oversample
 
 # JOB PARAMS
 
-SAVE=0
+SAVE=1
 ADD_TUNED=0
-OVERSAMPLE=0
+OVERSAMPLE=1
 CLASS_WEIGHTS=1
 
 [ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
@@ -41,23 +21,36 @@ CLASS_WEIGHTS=1
 # WIDTH=63
 
 # HYPERPARAMETERS
-
 N_CLASSES=2
-N_EPOCHS=55
-WEIGHT_DECAY=1e-4 # default: 1e-4
-LL2_REG=0
-
-BATCH_SIZE=64
-LR=1e-3 # default: 1e-3
-MIN_LR=1e-5 # default: 1e-4
-FACTOR=0.5 # default: 0.5
-PATIENCE=8 # default: 5
-
-ES_PATIENCE=8
-MIN_DELTA=0.01
-
 INITIAL_CHANNELS=3
 EPSILON=1e-7
+
+DEFAULT=true
+
+if [ "$DEFAULT" = true ];
+then
+    N_EPOCHS=55
+    WEIGHT_DECAY=1e-4 # default: 1e-4
+    LL2_REG=0
+    BATCH_SIZE=64
+    LR=1e-3 # default: 1e-3
+    MIN_LR=1e-4 # default: 1e-4
+    FACTOR=0.5 # default: 0.5
+    PATIENCE=8 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=15
+    MIN_DELTA=0.01
+else
+    N_EPOCHS=55
+    WEIGHT_DECAY=1e-5 # default: 1e-4
+    LL2_REG=0
+    BATCH_SIZE=64
+    LR=5e-4 # default: 1e-3
+    MIN_LR=1e-4 # default: 1e-4
+    FACTOR=0.75 # default: 0.5
+    PATIENCE=8 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=16
+    MIN_DELTA=0.01
+fi
 
 # DATASET
 
@@ -127,3 +120,22 @@ echo "Machine : $MACHINE "
 echo "Machine Count: $COUNT "
 
 read confirmation
+
+# MASTER_TYPE=n1-standard-32
+# MACHINE=NVIDIA_TESLA_P4
+# COUNT=2
+
+# export YAML_CONFIG='{
+#     "trainingInput": {
+#       "scaleTier": "CUSTOM",
+#       "masterType": "'$MASTER_TYPE'",
+#       "masterConfig": {
+#           "acceleratorConfig": {
+#               "count": "'$COUNT'",
+#               "type": "'$MACHINE'"
+#           }
+#       },
+#       "runtimeVersion": "2.1",
+#       "pythonVersion": "3.7",
+#     }
+#   }'

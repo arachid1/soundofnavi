@@ -6,37 +6,45 @@ JOB_CAT=log #LOG OR MEL
 MODEL=conv
 LOCAL=false
 
-FILE_NUMBER=3005
-
 SR=8000
 PREPROCESSED=v2
 PARAM=v3
 AUGM=v0
 FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
 
-N_EPOCHS=100
-N_CLASSES=2
-SR=8000
-EPSILON=1e-7 # default: 1e-7
-
 [ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
 [ "$SR" = 8000 ] && WIDTH=251 || WIDTH=126 
 
-BATCH_SIZE=64
-WEIGHT_DECAY=1e-4 
-LL2_REG=0 # default: wd=1e-4
-LR=1e-3 # default: 1e-3
-MIN_LR=1e-5 # default: 1e-4
-FACTOR=0.5 # default: 0.5
-PATIENCE=5 # default: 5
-ES_PATIENCE=8
-MIN_DELTA=0.01
+N_CLASSES=2
 INITIAL_CHANNELS=3
+EPSILON=1e-7
 
-CLASS_WEIGHTS=1
-SAVE=0
-ADD_TUNED=0
-OVERSAMPLE=0
+DEFAULT=false
+
+if [ "$DEFAULT" = true ];
+then
+    N_EPOCHS=55
+    WEIGHT_DECAY=1e-4 # default: 1e-4
+    LL2_REG=0
+    BATCH_SIZE=64
+    LR=1e-3 # default: 1e-3
+    MIN_LR=1e-4 # default: 1e-4
+    FACTOR=0.5 # default: 0.5
+    PATIENCE=8 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=15
+    MIN_DELTA=0.01
+else
+    N_EPOCHS=55
+    WEIGHT_DECAY=1e-5 # default: 1e-4
+    LL2_REG=0
+    BATCH_SIZE=64
+    LR=5e-4 # default: 1e-3
+    MIN_LR=1e-4 # default: 1e-4
+    FACTOR=0.75 # default: 0.5
+    PATIENCE=8 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=16
+    MIN_DELTA=0.01
+fi
 
 TRAIN_FILE=gs://$BUCKET_NAME/datasets/$FILE_NAME
 
@@ -47,21 +55,31 @@ LOCAL_JOB_DIR=../../../cache/datasets/$JOB_NAME
 
 REGION=us-central1
 
-##### 
-# NB_BLOCKS
-# BLOCK_TYPE
-# CHANNELS -> pass start number and multiply x2 for each block
-# if len of array = 1:
-## just take that value
+FILE_NUMBER=3005
 
-#3001
-NB_BLOCKS=(8 7 6)
+id=4
+
+NB_BLOCKS=(4 5 4)
 KERNEL_SIZES=(3 4 5)
 POOL_SIZES=(2 2 3)
 CHANNELS=(16 16 32)
-DROPOUTS=(0.1 0.1 0.1)
-PADDINGS=(0 0 0) #same
+DROPOUTS=(0.1)
+PADDINGS=(0) #same
 DENSE_LAYERS=(64 128 64)
+
+CLASS_WEIGHTS=1
+SAVE=0
+ADD_TUNED=0
+OVERSAMPLE=1
+
+#3001
+# NB_BLOCKS=(8 7 6)
+# KERNEL_SIZES=(3 4 5)
+# POOL_SIZES=(2 2 3)
+# CHANNELS=(16 16 32)
+# DROPOUTS=(0.1)
+# PADDINGS=(0) #same
+# DENSE_LAYERS=(64 128 64)
 
 #3003 & 4
 # NB_BLOCKS=(7 6 7)
@@ -74,13 +92,12 @@ DENSE_LAYERS=(64 128 64)
 
 HYPER_PARAMS='{"N_CLASSES": '$N_CLASSES', "SR": '$SR', "BATCH_SIZE": '$BATCH_SIZE', "LR": '$LR', "SHAPE": ['$HEIGHT', '$WIDTH'], "LL2_REG": '$LL2_REG', "WEIGHT_DECAY": '$WEIGHT_DECAY', "N_EPOCHS": '$N_EPOCHS', "FACTOR": '$FACTOR', "PATIENCE":'$PATIENCE', "MIN_LR":'$MIN_LR', "EPSILON": '$EPSILON', "ES_PATIENCE": '$ES_PATIENCE', "SAVE": '$SAVE', "ADD_TUNED": '$ADD_TUNED', "OVERSAMPLE": '$OVERSAMPLE', "MIN_DELTA": '$MIN_DELTA', "INITIAL_CHANNELS": '$INITIAL_CHANNELS', "CLASS_WEIGHTS": '$CLASS_WEIGHTS'}'
 
-id=0
 for ((i = 0; i < ${#NB_BLOCKS[@]}; ++i));
 do
     # defining the architecture parameters
-    ARCH_PARAMS='{"NB_BLOCKS": '${NB_BLOCKS[$i]}', "KERNEL_SIZE": '${KERNEL_SIZES[$i]}', "POOL_SIZE": '${POOL_SIZES[$i]}', "DROPOUT": '${DROPOUTS[$i]}', "PADDING": '${PADDINGS[$i]}', "DENSE_LAYER": '${DENSE_LAYERS[$i]}', "CHANNELS": '${CHANNELS[$i]}'}'
+    ARCH_PARAMS='{"NB_BLOCKS": '${NB_BLOCKS[$i]}', "KERNEL_SIZE": '${KERNEL_SIZES[$i]}', "POOL_SIZE": '${POOL_SIZES[$i]}', "DROPOUT": '${DROPOUTS[0]}', "PADDING": '${PADDINGS[0]}', "DENSE_LAYER": '${DENSE_LAYERS[$i]}', "CHANNELS": '${CHANNELS[$i]}'}'
     FILE=($(echo $FILE_NAME| cut -d'.' -f 1))
-    DESCRIPTION="nb_blocks_${NB_BLOCKS[$i]}_channel_${CHANNELS[$i]}_dense_${DENSE_LAYERS[$i]}__$id"
+    DESCRIPTION="oversampled_diffparams_${NB_BLOCKS[$i]}_channel_${CHANNELS[$i]}_dense_${DENSE_LAYERS[$i]}__$id"
     DETAILS=('___'${DESCRIPTION}'___'${FILE_NUMBER})
     NAME="$MODEL"___$(date +%m_%H%M)___"$FILE$DETAILS"
     JOB_DIR=gs://$BUCKET_NAME/$JOB_CAT/$MODEL/$NAME
