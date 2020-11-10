@@ -219,7 +219,7 @@ def main():
     
     file_name = file_path.split('/')
     file_name = file_name[len(file_name) -1]
-    validation_folder = "validation/"
+    validation_folder = coch_path + "validation/"
     os.makedirs(validation_folder, exist_ok=True)
     
     write_folder = str(validation_folder + file_name)
