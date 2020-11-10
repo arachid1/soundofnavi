@@ -7,14 +7,17 @@ import librosa
 from librosa import display
 from decimal import *
 import wave
+import resampy as rs
 import scipy.io.wavfile as wf
+from math import pi
 
-def resample(current_rate, data, target_rate):
-    x_original = np.linspace(0, 100, len(data))
-    new_length = int(len(data) * (target_rate / current_rate))
-    x_resampled = np.linspace(0, 100, new_length)
-    resampled = np.interp(x_resampled, x_original, data)
-    return (target_rate, resampled.astype(np.float32))
+## ian commenting out this function since it already exists in resampy
+## def resample(current_rate, data, target_rate):
+##    x_original = np.linspace(0, 100, len(data))
+##    new_length = int(len(data) * (target_rate / current_rate))
+##    x_resampled = np.linspace(0, 100, new_length)
+##    resampled = np.interp(x_resampled, x_original, data)
+##    return (target_rate, resampled.astype(np.float32))
 
 def read_wav_file(str_filename, target_rate):
     wav = wave.open(str_filename, mode='r')
@@ -23,14 +26,16 @@ def read_wav_file(str_filename, target_rate):
 
     if (sample_rate != target_rate):
         # print("is resampling...")
-        (_, data) = resample(sample_rate, data, target_rate)
+        ## ian commenting out below because of resampy syntax
+        #(_, data) = resample(sample_rate, data, target_rate)
+        data = rs.resample(data,sample_rate, target_rate)
     return (target_rate, data.astype(np.float32))
 
 
 def extract2FloatArr(lp_wave, str_filename):
     (bps, channels) = bitrate_channels(lp_wave)
 
-    if bps in [1, 2, 4]:  # d epth
+    if bps in [1, 2, 4]:  # depth
         (rate, data) = wf.read(str_filename)
         divisor_dict = {1: 255, 2: 32768}
         if bps in [1, 2]:
@@ -103,11 +108,14 @@ def write_data(array, name):
 def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
     print("Start...")
     # get filter bank
-    verb = 0 # verbose mode
-    filt = 'p'
+    ## both of the following lines are not used so I removed them
+    # verb = 0 # verbose mode
+    # filt = 'p' 
     L, M = coch_b.shape
     print("Shape: [{}, {}]".format(L, M))
     L_x = len(x)
+
+    Fs = 8000
     
     # octave shift, nonlinear factor, frame length, leaky integration
     shft = cochlear_parameters["shft"] #octave shift (Matlab index: 4)
@@ -137,9 +145,12 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
 
     # get filters from stored matrix
     print("Number of filters: {}".format(M))
-    p = int(order[0])
-    B =  coch_b[2:(p+2), M - 1] # M-1 before
-    A =  coch_a[2:(p+2), M - 1]
+    #p = int(order[0]) # this order is wrong
+    p = int(order[M-1]) # ian's change 11/6
+
+    # ian changed to 0 because of the way p, coch_a, and coch_b are seperated
+    B =  coch_b[0:p+1, M - 1] # M-1 before
+    A =  coch_a[0:p+1, M - 1]
     y1 = lfilter(B, A, x)
     y2 = y1
     y2_h = y2
@@ -156,15 +167,15 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
         # ANALYSIS: cochlear filterbank
         # IIR: filter bank convolution ---> y1  
         p = int(order[ch])
-        B =  coch_b[2:(p+2), ch]
-        A =  coch_a[2:(p+2), ch]
+        B =  coch_b[0:p+1, ch]
+        A =  coch_a[0:p+1, ch]
 
         y1 = lfilter(B, A, x)
-        
-        write_data(y1, column_folder + "arma_filter.txt")
-        
+
         # TRANSDUCTION: hair cells
-        y2 = y1    
+        y2 = y1   
+        
+        write_data(y2, column_folder + "arma_filter.txt")
         
         # REDUCTION: lateral inhibitory network 
         # masked by higher (frequency) spatial response
@@ -196,30 +207,35 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
     return v5
     
     
-    
 def main():
 
-    # coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing'
-    file_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/cochlear_processing_validation_data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    #path_common = 'C:/Sonavi Labs/classification_algorithm/'
+    path_common = os.getcwd() + '/'
+    # coch_path = path_common + 'cochlear_preprocessing/'
+    # file_path = path_common + '/data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    # Ali 
+    coch_path = path_common + 'cochlear_preprocessing/'
+    file_path = path_common + 'data/cochlear_processing_validation_data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    
     file_name = file_path.split('/')
     file_name = file_name[len(file_name) -1]
-    validation_folder = "validation/"
+    validation_folder = coch_path + "validation/"
     os.makedirs(validation_folder, exist_ok=True)
     
     write_folder = str(validation_folder + file_name)
     # os.makedirs(column_folder, exist_ok=True)
 
-    fs = 4000
+    fs = 8000 #changed by ian 11/6 from a mistake in runme.txt
     bp = 1
     cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
     # coch_a = np.loadtxt(str(coch_path + '/COCH_A.txt'), delimiter=',')
     # coch_b = np.loadtxt(str(coch_path + '/COCH_B.txt'), delimiter=',')
     # p = np.loadtxt(str(coch_path + '/p.txt'), delimiter=',')
-    coch_a = np.loadtxt('COCH_A.txt', delimiter=',')
-    coch_b = np.loadtxt('COCH_B.txt', delimiter=',')
-    p = np.loadtxt('p.txt', delimiter=',')
+    coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
+    coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
+    p = np.loadtxt(coch_path + 'p.txt', delimiter=',')
     
-    sr = 4000
+    sr = 8000
     wav = read_wav_file(file_path, sr)
     wav = wav[1]
     
