@@ -211,8 +211,12 @@ def main():
 
     #path_common = 'C:/Sonavi Labs/classification_algorithm/'
     path_common = os.getcwd() + '/'
+    # coch_path = path_common + 'cochlear_preprocessing/'
+    # file_path = path_common + '/data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    # Ali 
     coch_path = path_common + 'cochlear_preprocessing/'
-    file_path = path_common + '/data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    file_path = path_common + 'data/cochlear_processing_validation_data/Normal/K06111-07_F_6.72214725_1_0sec.wav' 
+    
     file_name = file_path.split('/')
     file_name = file_name[len(file_name) -1]
     validation_folder = "validation/"
