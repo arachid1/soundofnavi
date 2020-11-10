@@ -167,8 +167,8 @@ def wav2aud2(x, cochlear_parameters, coch_b, coch_a, order, write_folder):
         # ANALYSIS: cochlear filterbank
         # IIR: filter bank convolution ---> y1  
         p = int(order[ch])
-        B =  coch_b[0:p, ch]
-        A =  coch_a[0:p, ch]
+        B =  coch_b[0:p+1, ch]
+        A =  coch_a[0:p+1, ch]
 
         y1 = lfilter(B, A, x)
 
