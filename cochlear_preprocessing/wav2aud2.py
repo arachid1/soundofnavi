@@ -243,6 +243,8 @@ def main():
     
     spect = spect**(1/3)
     
+    print(spect[0][0])
+    
     os.makedirs(write_folder, exist_ok=True)
 
     with open(write_folder + "/" + "full_aud_spect.txt",'w') as f:
@@ -250,7 +252,8 @@ def main():
             for y in range(len(spect[i])):
                 f.write(str(spect[i][y]) + ", ")
             f.write('\n')
-            
+    
+    
     fig = plt.figure(figsize=(20, 10))
     display.specshow(
         spect,
@@ -260,6 +263,22 @@ def main():
     )
     plt.colorbar()
     plt.show()
+    
+    spect = spect**3
+    
+    print(spect[0][0])
+    
+    
+    fig = plt.figure(figsize=(20, 10))
+    display.specshow(
+        spect,
+        # y_axis="log",
+        sr=sr,
+        cmap="coolwarm"
+    )
+    plt.colorbar()
+    plt.show()
+    
     fig.savefig(write_folder + "/" + 'coch_spectrogram.png')
     
     

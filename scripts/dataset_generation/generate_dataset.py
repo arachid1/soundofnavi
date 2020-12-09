@@ -7,7 +7,8 @@ import wave
 import math
 import scipy.io.wavfile as wf
 import sys
-from specAugment import spec_augment_tensorflow
+from scipy.signal import lfilter
+from audiomentations import *
 import subprocess
 import pickle
 import unittest
@@ -19,18 +20,31 @@ import importlib
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import datetime
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 K.clear_session()
-importlib.reload(spec_augment_tensorflow)
-
 
 def seed_everything():
     os.environ['PYTHONHASHSEED'] = '0'
     np.random.seed(0)
     random.seed(0)
 
+def write_record(params, file_path):
+
+    file_name = file_path.split('/')[-1]
+    date = datetime.datetime.now()
+    day = datetime.datetime.today().weekday()
+    time = date.time()
+    year = date.isocalendar()[0]
+    week = date.isocalendar()[1]
+    record_path = str('records/' + str(week) + '_' + str(year) + '_record.txt')
+    with open(record_path , 'a') as f:
+        f.write(str(day) + "  " + str(time) + '\n')
+        f.write(file_name + '\n')
+        f.write(str(params) + '\n')
+        f.write('\n')
 
 def print_sample_count(src_dict):
 
@@ -130,6 +144,24 @@ def process_overlaps(overlaps):
     wheezes = 1.0 if (not(wheezes == 0)) else 0.0
     return crackles, wheezes
 
+def evaluate_imbalance(column):
+    neg, pos = np.bincount(column)
+    total = neg + pos
+    print('Examples:\n    Total: {}\n    Positive: {} ({:.2f}% of total)\n'.format(
+        total, pos, 100 * pos / total))
+
+def visualize_spec(data, sr):
+    
+    fig = plt.figure(figsize=(20, 10))
+    display.specshow(
+        data,
+        # y_axis="log",
+        sr=sr,
+        cmap="coolwarm"
+    )
+    plt.colorbar()
+    plt.show()
+
 
 def find_labels(times, start, end, overlap_threshold, audio_length, sample_rate):
     overlaps = []
@@ -228,21 +260,110 @@ def split(no_labels, c_only, w_only, c_w, train_test_ratio):
 
     return train_dict, test_dict
 
+def generate_cochlear_spec(x, cochlear_parameters, coch_b, coch_a, order):
+
+    # get filter bank
+    L, M = coch_b.shape
+    # print("Shape: [{}, {}]".format(L, M))
+    L_x = len(x)
+
+    # octave shift, nonlinear factor, frame length, leaky integration
+    shft = cochlear_parameters["shft"] #octave shift (Matlab index: 4)
+    fac = cochlear_parameters["fac"] # nonlinear factor (Matlab index: 3)
+    frmlen = cochlear_parameters["frmlen"] # (Matlab index: 1)
+    L_frm = np.round(frmlen * (2**(4+shft)))   #frame length (points)
+    tc = cochlear_parameters["tc"] # time constant (Matlab index: 2)
+    tc = np.float64(tc)
+    alph_exponent = -(1/(tc*(2**(4+shft))))
+    alph = np.exp(alph_exponent) # decaying factor
+    
+    # get data, allocate memory for output
+    N = np.ceil(L_x/L_frm) # number of frames
+    # print("Number of frames: {}".format(N))
+    # x = generate_padded_samples(x, ) # TODO: come back to padding
+    
+    v5 = np.zeros([int(N), M - 1])
+    
+    ##############################
+    # last channel (highest frequency)
+    ############################## 
+
+    # get filters from stored matrix
+    # print("Number of filters: {}".format(M))
+    p = int(order[M-1]) # ian's change 11/6
+
+    # ian changed to 0 because of the way p, coch_a, and coch_b are seperated
+    B =  coch_b[0:p+1, M - 1] # M-1 before
+    A =  coch_a[0:p+1, M - 1]
+    y1 = lfilter(B, A, x)
+    y2 = y1
+    y2_h = y2
+    
+    # All other channels
+    for ch in range(M-2, -1, -1):
+
+        # ANALYSIS: cochlear filterbank
+        # IIR: filter bank convolution ---> y1  
+        p = int(order[ch])
+        B =  coch_b[0:p+1, ch]
+        A =  coch_a[0:p+1, ch]
+
+        y1 = lfilter(B, A, x)
+
+        # TRANSDUCTION: hair cells
+        y2 = y1   
+        
+        # REDUCTION: lateral inhibitory network 
+        # masked by higher (frequency) spatial response
+        y3 = y2 - y2_h
+        y2_h = y2
+        
+        # half-wave rectifier 
+        y4 = y3.copy()
+        y4[y4 < 0] = 0
+            
+        # temporal integration window #
+        # leaky integration. alternative could be simpler short term average
+        y5 = lfilter([1], [1-alph], y4)
+        
+        v5_row = []
+        for i in range(1, int(N) + 1):
+            v5_row.append(y5[int(L_frm*i) - 1])
+        v5[:, ch] = v5_row
+        # v5[:, ch] = y5[int(L_frm):int(L_frm*N)] # N elements, each space with L_frm
+    # print("...End")
+    
+    return v5
+    
 
 def convert_to_spec(data, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels):
 
     n_fft = n_fft
     hop_length = hop_length
+    spec_list = []
     if spec_type == "log":
         spec_win_length = spec_win_length
-        spec_list = []
         for d in data:
             log_spectrogram = librosa.power_to_db(
                 np.abs(librosa.stft(d[0], n_fft=n_fft, hop_length=hop_length, win_length=spec_win_length,
                                     center=True, window='hann')) ** 2, ref=1.0)
             spec_list.append((log_spectrogram, d[1], d[2], d[0]))
+    elif spec_type == "coch":
+        for d in data:
+            fs = 8000 #changed by ian 11/6 from a mistake in runme.txt
+            bp = 1
+            cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
+            coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing/'
+            coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
+            coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
+            order = np.loadtxt(coch_path + 'p.txt', delimiter=',')
+            coch_spectrogram = generate_cochlear_spec(d[0], cochlear_parameters, coch_b, coch_a, order)
+            coch_spectrogram = np.transpose(coch_spectrogram)
+            # print(coch_spectrogram.shape)å
+            spec_list.append((coch_spectrogram, d[1], d[2], d[0]))
+            if len(spec_list) % 2000 == 0:
+                print("Completed {} elements...".format(len(spec_list)))
     else:  # TODO: change it to regular if statement
-        spec_list = []
         for d in data:
             n_mels = n_mels
             mel_spectrogram = librosa.power_to_db(librosa.feature.melspectrogram(
@@ -251,26 +372,11 @@ def convert_to_spec(data, spec_type, sr, n_fft, hop_length, spec_win_length, n_m
     return spec_list
 
 
-def convert_dataset(no_labels, c_only, w_only, c_w, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels):
-
-    no_labels = convert_to_spec(
-        no_labels, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    c_only = convert_to_spec(
-        c_only, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    w_only = convert_to_spec(
-        w_only, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    c_w = convert_to_spec(c_w, spec_type, sr, n_fft,
-                          hop_length, spec_win_length, n_mels)
-    return no_labels, c_only, w_only, c_w
-
-
 def gen_time_stretch(original, sample_rate, max_percent_change):
     stretch_amount = 1 + np.random.uniform(-1, 1) * (max_percent_change / 100)
     (_, stretched) = resample(sample_rate,
                               original, int(sample_rate * stretch_amount))
     return stretched
-
-# a limitation is our datasets are so small that we need to augmentate the same samples multiple times
 
 
 def time_stretch(data, target, sr, max_percent_change):
@@ -286,47 +392,6 @@ def time_stretch(data, target, sr, max_percent_change):
     augmented.extend(cycles_with_labels)
     print("len(augmented):" + str(len(augmented)))
     return augmented
-
-
-def time_warp(spectrograms):
-    warped_spectrograms = []
-    for spectrogram in spectrograms:
-        param = np.floor(spectrogram[0].shape[1]/2) - 1
-        warped_masked_spectrogram = spec_augment_tensorflow.spec_augment(
-            mel_spectrogram=spectrogram[0], time_warping_para=param
-        )
-        warped_spectrograms.append(
-            (warped_masked_spectrogram, spectrogram[1], spectrogram[2]))
-    return warped_spectrograms
-
-
-def apply_augmentation(
-        data, sr, time_stretching, time_warping, pitch_shifting):
-    if time_stretching:
-        return data
-    if time_warping:
-        return data
-    if pitch_shifting:
-        print("Applying pitch shifting...")
-        for i in range(len(data)):
-            temp = list(data[i])
-            # data[i] = list(data[i])
-            temp[0] = librosa.effects.pitch_shift(
-                temp[0], sr, n_steps=4, bins_per_octave=24)  # shifted by 4 half steps
-            data[i] = tuple(temp)
-    return data
-
-
-def augment_dataset(no_labels, c_only, w_only, c_w, sr, time_stretching, time_warping, pitch_shifting):
-    no_labels = apply_augmentation(
-        no_labels, sr, time_stretching, time_warping, pitch_shifting)
-    c_only = apply_augmentation(
-        c_only, sr, time_stretching, time_warping, pitch_shifting)
-    w_only = apply_augmentation(
-        w_only, sr, time_stretching, time_warping, pitch_shifting)
-    c_w = apply_augmentation(
-        c_w, sr, time_stretching, time_warping, pitch_shifting)
-    return no_labels, c_only, w_only, c_w
 
 
 def get_icbhi_samples(recording_annotations, file_name, root, sample_rate, file_id, overlap_threshold=0.15, audio_length=2, step_size=1):
@@ -372,7 +437,7 @@ def get_perch_sample(recording_annotations, file_name, root, sample_rate, file_i
     return sample_data
 
 
-def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augmentation, time_stretching, pitch_shifting, time_warping, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
+def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augmentation, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
     print("Generating ICBHI...")
     # print("Directory: {}.".format(os.listdir(root)))
     filenames = [s.split('.')[0]
@@ -440,14 +505,13 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
         # ASSERT
     print("Number of 2-sec raw audio (ICBHI): {}".format(len(cycle_list)))
 
-    # TESTING #1
-    print("Running the first set of tests...")
-
-    write_to_file(cycle_list, None, test_files_destination + "/" + "icbhi_cycle_list.pkl")
-    write_to_file(rec_annotations_dict, None, test_files_destination + "/" + 
-                  "icbhi_rec_annotations_dict.pkl")
 
     if test:
+         # TESTING #1
+        print("Running the first set of tests...")
+        write_to_file(cycle_list, None, test_files_destination + "/" + "icbhi_cycle_list.pkl")
+        write_to_file(rec_annotations_dict, None, test_files_destination + "/" + 
+                  "icbhi_rec_annotations_dict.pkl")
         try:
             proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", str(tests_destination + "/" + "icbhi_tests.py"),
                                 "{}".format(audio_length), "{}".format(overlap_threshold), "{}".format(sr), "{}".format(root)], check=True,)  # stdout=PIPE, stderr=PIPE,)
@@ -461,22 +525,25 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
     c_only = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 0))]
     w_only = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 1))]
     c_w = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 1))]
-
-    # AUGMENTATION AND SPLIT
-
-    if augmentation:
-        print("Augmenting raw audios...")
-        no_labels, c_only, w_only, c_w = augment_dataset(
-            no_labels, c_only, w_only, c_w, sr, time_stretching, time_warping, pitch_shifting)
-
-    print("Generating spectograms...")
-
-    no_labels, c_only, w_only, c_w = convert_dataset(
-        no_labels, c_only, w_only, c_w, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-
+    
+    # split first -> train_dict, test_dict
     train_dict, test_dict = split(
         no_labels, c_only, w_only, c_w, train_test_ratio)
-    print("Done.")
+    
+    # do augmentation
+    if augmentation:
+        print("Augmenting...")
+        for key in train_dict:
+            # train_dict[key] = new_augm_wo_adding(train_dict[key], sr)
+            train_dict[key] = new_augm(train_dict[key], sr)
+    
+    print("Generating spectograms...")
+    # convert
+    for key in train_dict:
+        train_dict[key] = convert_to_spec(train_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+    for key in test_dict:
+        test_dict[key] = convert_to_spec(test_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+    
     print("Splitting the data...")
 
     [none_train, c_train, w_train, c_w_train] = [train_dict['none'],
@@ -490,15 +557,15 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
     np.random.shuffle(c_w_train)
     print("Done.")
 
-    # TESTING #2
-    print("Running the second set of tests...")
-
-    write_to_file([none_train, c_train, w_train, c_w_train], None,
-                  test_files_destination + "/" + "icbhi_train_data.pkl")
-    write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
-                  "icbhi_val_data.pkl")
 
     if test:
+        # TESTING #2
+        print("Running the second set of tests...")
+
+        write_to_file([none_train, c_train, w_train, c_w_train], None,
+                    test_files_destination + "/" + "icbhi_train_data.pkl")
+        write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
+                    "icbhi_val_data.pkl")
         try:
             proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "/" + "icbhi_tests_2.py",
                                 "{}".format(height), "{}".format(width)], check=True)  # stdout=PIPE, stderr=PIPE,)
@@ -516,12 +583,9 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
     return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
 
 
-def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augmentation, time_stretching, pitch_shifting, time_warping, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
+def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augmentation, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
     
     print("Generating PERCH...")
-    # print("Directory: {}.".format(os.listdir(root)))
-    # filenames = [s.split('.')[0]
-    #              for s in os.listdir(path=root) if '.txt' in s]
     filenames = [s.split('.')[0] + '.' + s.split('.')[1]
                  for s in os.listdir(path=root) if '.txt' in s]
     # ASSERT
@@ -562,9 +626,7 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
 
     print('Evaluating Imbalance...')
     evaluate_imbalance(file_label_df['no label'])
-
-# conv___08_1319___perch_sw_log_param_v2_8000___lessfilters1_bsize128_lr1e7_minlr1e9_factor075_wd0___173
-
+ 
     w_labels = file_label_df[(file_label_df['crackles only'] != 0) | (
         file_label_df['wheezes only'] != 0) | (file_label_df['crackles and wheezees'] != 0)]
     # ASSERT LENGTHS?
@@ -586,14 +648,13 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
         file_id += 1
     print("Number of 2 sec chunks (PERCH): {}".format(len(cycle_list)))
 
-    # TESTING #1
-    print("Running the first set of tests...")
-
-    write_to_file(cycle_list, None, test_files_destination + "/" + "perch_cycle_list.pkl")
-    write_to_file(rec_annotations_dict, None, test_files_destination + "/" +
-                  "perch_rec_annotations_dict.pkl")
-
     if test:
+        # TESTING #1
+        print("Running the first set of tests...")
+
+        write_to_file(cycle_list, None, test_files_destination + "/" + "perch_cycle_list.pkl")
+        write_to_file(rec_annotations_dict, None, test_files_destination + "/" +
+                    "perch_rec_annotations_dict.pkl")
         try:
             proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "/" + "perch_tests.py",
                                 "{}".format(audio_length), "{}".format(overlap_threshold), "{}".format(sr), "{}".format(root)], check=True,)  # stdout=PIPE, stderr=PIPE,)
@@ -601,52 +662,32 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
         except subprocess.CalledProcessError:
             print("The script failed to pass all the tests. ")
             sys.exit(1)
-
+            
     # Count of labels across all labels
     no_labels = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 0))]
     c_only = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 0))]
     w_only = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 1))]
     c_w = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 1))]
 
-    # AUGMENTATION AND SPLIT
 
-    # if augmentation:
-    #     print("Augmenting raw audio...")
-    #     max_percent_change = 25
-    #     target = 8395
-    #     no_labels = apply_augmentation(
-    #         no_labels, target, sr, max_percent_change, time_stretching, time_warping, pitch_shifting)
-    #     c_only = apply_augmentation(
-    #         c_only, target, sr, max_percent_change, time_stretching, time_warping, pitch_shifting)
-    #     c_only = apply_augmentation(
-    #         w_only, target, sr, max_percent_change, time_stretching, time_warping, pitch_shifting)
-    #     c_w = apply_augmentation(
-    #         c_w, target, sr, max_percent_change, time_stretching, time_warping, pitch_shifting)
-
-    # print("Generating spectograms...")
-
-    # no_labels = convert_to_spec(
-    #     no_labels, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    # c_only = convert_to_spec(
-    #     c_only, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    # w_only = convert_to_spec(
-    #     w_only, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    # c_w = convert_to_spec(c_w, spec_type, sr, n_fft,
-    #                       hop_length, spec_win_length, n_mels)
-    if augmentation:
-        print("Augmenting raw audios...")
-        no_labels, c_only, w_only, c_w = augment_dataset(
-            no_labels, c_only, w_only, c_w, sr, time_stretching, time_warping, pitch_shifting)
-
-    print("Generating spectograms...")
-
-    no_labels, c_only, w_only, c_w = convert_dataset(
-        no_labels, c_only, w_only, c_w, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-
+    # split first -> train_dict, test_dict
     train_dict, test_dict = split(
         no_labels, c_only, w_only, c_w, train_test_ratio)
-
-    print("Done.")
+    
+    # do augmentation
+    if augmentation:
+        print("Augmenting...")
+        for key in train_dict:
+            # train_dict[key] = new_augm_wo_adding(train_dict[key], sr)
+            train_dict[key] = new_augm(train_dict[key], sr)
+    
+    print("Generating spectograms...")
+    # convert
+    for key in train_dict:
+        train_dict[key] = convert_to_spec(train_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+    for key in test_dict:
+        test_dict[key] = convert_to_spec(test_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+    
     print("Splitting the data...")
 
     [none_train, c_train, w_train, c_w_train] = [train_dict['none'],
@@ -660,15 +701,15 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
     np.random.shuffle(c_w_train)
     print("Done.")
 
-    # TESTING #2
-    print("Running the second set of tests...")
-
-    write_to_file([none_train, c_train, w_train, c_w_train], None,
-                  test_files_destination + "/" + "perch_train_data.pkl")
-    write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
-                  "perch_val_data.pkl")
 
     if test:
+        # TESTING #2
+        print("Running the second set of tests...")
+
+        write_to_file([none_train, c_train, w_train, c_w_train], None,
+                    test_files_destination + "/" + "perch_train_data.pkl")
+        write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
+                    "perch_val_data.pkl")
         try:
             proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "perch_tests_2.py",
                                 "{}".format(height), "{}".format(width)], check=True)  # stdout=PIPE, stderr=PIPE,)
@@ -718,12 +759,83 @@ def merge_datasets(dataset_list):
     return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
 
 
-def evaluate_imbalance(column):
-    neg, pos = np.bincount(column)
-    total = neg + pos
-    print('Examples:\n    Total: {}\n    Positive: {} ({:.2f}% of total)\n'.format(
-        total, pos, 100 * pos / total))
+def new_augm_wo_adding(data, sr):
+    print("Inside augmentation w/o adding...")
+    min_SNR = 0.001
+    max_SNR = 0.5
+    ratio = 0.4
+    k = int(ratio * len(data)) # how many samples we're augmenting
+    
+    augment = Compose([
+        # AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.15, p=1),
+        AddGaussianSNR(min_SNR=min_SNR, max_SNR=max_SNR, p=1),
+        # FrequencyMask()
+    ])
+    
+    for i in range(0, k):
+        index = random.randint(0, len(data) - 1)
+        sample = data[index][0]
+        sample = augment(samples=sample, sample_rate=sr)
+        whole_tuple = list(data[index])
+        whole_tuple[0] = sample
+        data[index] = tuple(whole_tuple)
+        
+    return data
+        
+def new_augm(data, sr):
+    print("Inside new augmentation...")
+    # min_SNR=0.01, max_SNR=0.1
+    min_SNR = 0.001
+    max_SNR = 0.5
+    ratio = 0.4
+    k = int(ratio * len(data)) # how many samples we're augmenting
+    
+    portion_to_augment = random.sample(data, k)
+    
+    augment = Compose([
+        # AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.15, p=1),
+        AddGaussianSNR(min_SNR=min_SNR, max_SNR=max_SNR, p=1),
+        # FrequencyMask()
+    ])
+    
+    #####
+    for i in range(len(portion_to_augment)):
+        # print(portion_to_augment[i])
+        sample = portion_to_augment[i][0]
+        # visualize_spec(sample, sr)
+        # TODO: ASSIGN NEW ID TO NEW DATA POINT
+        sample = augment(samples=sample, sample_rate=sr)
+        # visualize_spec(sample, sr)
+        whole_tuple = list(portion_to_augment[i])
+        whole_tuple[0] = sample
+        portion_to_augment[i] = tuple(whole_tuple)
+    data += portion_to_augment
+    return data
 
+    # sample = portion_to_augment[0][0]
+    # # visualize_spec(sample, sr)
+    # # TODO: ASSIGN NEW ID TO NEW DATA POINT
+    # # print(sample)
+    # augmented_sample = augment(samples=sample, sample_rate=sr)
+    # # print(augmented_sample)
+    # # print(sample == augmented_sample)
+    # # print(np.unique(sample == augmented_sample))
+    # # visualize_spec(sample, sr)
+    # # whole_tuple = list(portion_to_augment[i])
+    # # whole_tuple[0] = sample
+    # # portion_to_augment[i] = tuple(whole_tuple)
+    
+    # fs = 8000 #changed by ian 11/6 from a mistake in runme.txt
+    # bp = 1
+    # cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
+    # coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing/'
+    # coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
+    # coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
+    # order = np.loadtxt(coch_path + 'p.txt', delimiter=',')
+    # coch_spectrogram = generate_cochlear_spec(augmented_sample, cochlear_parameters, coch_b, coch_a, order)
+    # coch_spectrogram = np.transpose(coch_spectrogram)
+    # visualize_spec(augmented_sample, sr)
+    # exit()
 
 def generate(params):
     print("-----------------------")
@@ -749,9 +861,6 @@ def generate(params):
     perch_file_dest = params["PERCH_FILE_DEST"]
 
     augmentation = bool(params["AUGMENTATION"])
-    time_stretching = bool(params["TIME_STRETCHING"])
-    pitch_shifting = bool(params["PITCH_SHIFTING"])
-    time_warping = bool(params["TIME_WARPING"])
     test = bool(params["TEST"])
     train_test_ratio = 0.2
 
@@ -773,9 +882,6 @@ def generate(params):
         "audio_length": audio_length,
         "step_size": step_size,
         "augmentation": augmentation,
-        "time_stretching": time_stretching,
-        "pitch_shifting": pitch_shifting,
-        "time_warping": time_warping,
         "train_test_ratio": train_test_ratio,
         "height": height,
         "width": width,
@@ -796,9 +902,6 @@ def generate(params):
         "audio_length": audio_length,
         "step_size": step_size,
         "augmentation": augmentation,
-        "time_stretching": time_stretching,
-        "pitch_shifting": pitch_shifting,
-        "time_warping": time_warping,
         "train_test_ratio": train_test_ratio,
         "height": height,
         "width": width,
@@ -812,7 +915,10 @@ def generate(params):
         "test": test
 
     }
-
+    
+    # write_record(params, icbhi_file_dest)
+    # exit()
+    
     if bool(params["ALL"]):
         print("List of ICBHI parameters: {}".format(icbhi_params_list))
         icbhi_data = generate_icbhi(**icbhi_params_list)
@@ -820,21 +926,26 @@ def generate(params):
         perch_data = generate_perch(**perch_params_list)
         if bool(params["SAVE_ANY"]) and bool(params["SAVE_IND"]):
             write_to_file(icbhi_data, "ICBHI", icbhi_file_dest)
+            write_record(params, icbhi_file_dest)
             write_to_file(perch_data, "PERCH", perch_file_dest)
+            write_record(params, perch_file_dest)
         all_data = merge_datasets([icbhi_data, perch_data])
         if bool(params["SAVE_ANY"]):
             write_to_file(all_data, "ALL", all_file_dest)
+        write_record(params, all_file_dest)
     else:
         if bool(params["ICBHI"]):
             print("List of ICBHI parameters: {}".format(icbhi_params_list))
             icbhi_data = generate_icbhi(**icbhi_params_list)
             if bool(params["SAVE_ANY"]):
                 write_to_file(icbhi_data, "ICBHI", icbhi_file_dest)
+                write_record(params, icbhi_file_dest)
         else:
             print("List of PERCH parameters: {}".format(perch_params_list))
             perch_data = generate_perch(**perch_params_list)
             if bool(params["SAVE_ANY"]):
                 write_to_file(perch_data, "PERCH", perch_file_dest)
+                write_record(params, perch_file_dest)
 
 
 if __name__ == "__main__":

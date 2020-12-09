@@ -1,25 +1,26 @@
 #!/usr/bin/env bash
 BUCKET_NAME=tf_learn_pattern_detection
 
+FILE_NUMBER=3005
+
+id=14
+
 FOLDER=models
-JOB_CAT=log #LOG OR MEL
+JOB_CAT=coch #LOG OR MEL
 MODEL=conv
 LOCAL=false
 
 SR=8000
 PREPROCESSED=v2
-PARAM=v3
+PARAM=v4
 AUGM=v0
-FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
-
-[ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
-[ "$SR" = 8000 ] && WIDTH=251 || WIDTH=126 
+FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
 N_CLASSES=2
 INITIAL_CHANNELS=3
 EPSILON=1e-7
 
-DEFAULT=false
+DEFAULT=true
 
 if [ "$DEFAULT" = true ];
 then
@@ -55,22 +56,22 @@ LOCAL_JOB_DIR=../../../cache/datasets/$JOB_NAME
 
 REGION=us-central1
 
-FILE_NUMBER=3005
+[ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
+[ "$SR" = 8000 ] && WIDTH=251 || WIDTH=126 
+[ "$JOB_CAT" = coch ] && HEIGHT=128 && WIDTH=250
 
-id=4
-
-NB_BLOCKS=(4 5 4)
-KERNEL_SIZES=(3 4 5)
-POOL_SIZES=(2 2 3)
-CHANNELS=(16 16 32)
-DROPOUTS=(0.1)
+NB_BLOCKS=(5 6 7)
+KERNEL_SIZES=(5 5 5)
+POOL_SIZES=(2 2 2)
+CHANNELS=(16 8 4)
+DROPOUTS=(0.5)
 PADDINGS=(0) #same
-DENSE_LAYERS=(64 128 64)
-
+DENSE_LAYERS=(64 64 64)
+ 
 CLASS_WEIGHTS=1
 SAVE=0
 ADD_TUNED=0
-OVERSAMPLE=1
+OVERSAMPLE=0
 
 #3001
 # NB_BLOCKS=(8 7 6)
@@ -97,7 +98,7 @@ do
     # defining the architecture parameters
     ARCH_PARAMS='{"NB_BLOCKS": '${NB_BLOCKS[$i]}', "KERNEL_SIZE": '${KERNEL_SIZES[$i]}', "POOL_SIZE": '${POOL_SIZES[$i]}', "DROPOUT": '${DROPOUTS[0]}', "PADDING": '${PADDINGS[0]}', "DENSE_LAYER": '${DENSE_LAYERS[$i]}', "CHANNELS": '${CHANNELS[$i]}'}'
     FILE=($(echo $FILE_NAME| cut -d'.' -f 1))
-    DESCRIPTION="oversampled_diffparams_${NB_BLOCKS[$i]}_channel_${CHANNELS[$i]}_dense_${DENSE_LAYERS[$i]}__$id"
+    DESCRIPTION="${NB_BLOCKS[$i]}_channel_${CHANNELS[$i]}_dense_${DENSE_LAYERS[$i]}__$id"
     DETAILS=('___'${DESCRIPTION}'___'${FILE_NUMBER})
     NAME="$MODEL"___$(date +%m_%H%M)___"$FILE$DETAILS"
     JOB_DIR=gs://$BUCKET_NAME/$JOB_CAT/$MODEL/$NAME

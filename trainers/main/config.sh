@@ -1,70 +1,68 @@
 #!/usr/bin/env bash
 
-export JOB_CAT=log #LOG OR MEL
+export JOB_CAT=coch #LOG OR MEL OR COCH
 SR=8000
 
 #JOB
 
 export MODEL=conv #LSTM OR CONV
-export TRAIN_NUMBER=305
-export DESCRIPTION=diffparams_save_oversample
+export TRAIN_NUMBER=448
+export DESCRIPTION=redo
 
-# JOB PARAMS
 
-SAVE=1
+SAVE=0
 ADD_TUNED=0
-OVERSAMPLE=1
-CLASS_WEIGHTS=1
+OVERSAMPLE=0
+CLASS_WEIGHTS=0
+
+# DATASET
+
+PREPROCESSED=v2
+PARAM=v4
+AUGM=v0
+export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
 [ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
 [ "$SR" = 8000 ] && WIDTH=251 || WIDTH=126
-# WIDTH=63
+HEIGHT=128
+WIDTH=250
+
+DEFAULT=true
+
+if [ "$DEFAULT" = true ];
+then
+    N_EPOCHS=80
+    WEIGHT_DECAY=1e-4 # default: 1e-4 
+    LL2_REG=0
+    BATCH_SIZE=64
+    LR=1e-3 # default: 1e-3
+    MIN_LR=1e-5 # default: 1e-4
+    FACTOR=0.5 # default: 0.5
+    PATIENCE=5 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=10
+    MIN_DELTA=0.01
+else
+    N_EPOCHS=80
+    WEIGHT_DECAY=0 # default: 1e-4 
+    LL2_REG=1e-4
+    BATCH_SIZE=64
+    LR=1e-3 # default: 1e-3
+    MIN_LR=1e-5 # default: 1e-4
+    FACTOR=0.5 # default: 0.5
+    PATIENCE=5 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=10
+    MIN_DELTA=0.01
+fi
+
 
 # HYPERPARAMETERS
 N_CLASSES=2
 INITIAL_CHANNELS=3
 EPSILON=1e-7
 
-DEFAULT=true
-
-if [ "$DEFAULT" = true ];
-then
-    N_EPOCHS=55
-    WEIGHT_DECAY=1e-4 # default: 1e-4
-    LL2_REG=0
-    BATCH_SIZE=64
-    LR=1e-3 # default: 1e-3
-    MIN_LR=1e-4 # default: 1e-4
-    FACTOR=0.5 # default: 0.5
-    PATIENCE=8 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=15
-    MIN_DELTA=0.01
-else
-    N_EPOCHS=55
-    WEIGHT_DECAY=1e-5 # default: 1e-4
-    LL2_REG=0
-    BATCH_SIZE=64
-    LR=5e-4 # default: 1e-3
-    MIN_LR=1e-4 # default: 1e-4
-    FACTOR=0.75 # default: 0.5
-    PATIENCE=8 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=16
-    MIN_DELTA=0.01
-fi
-
-# DATASET
-
-PREPROCESSED=v2
-PARAM=v3
-AUGM=v0
-
-# "perch_sw_${JOB_CAT}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
-export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
-
 export PARAMS='{"N_CLASSES": '$N_CLASSES', "SR": '$SR', "BATCH_SIZE": '$BATCH_SIZE', "LR": '$LR', "SHAPE": ['$HEIGHT', '$WIDTH'], 
-"LL2_REG": '$LL2_REG', "WEIGHT_DECAY": '$WEIGHT_DECAY', "N_EPOCHS": '$N_EPOCHS', "FACTOR": '$FACTOR', "PATIENCE":'$PATIENCE', "MIN_LR":'$MIN_LR', 
+"LL2_REG": '$LL2_REG', "WEIGHT_DECAY": '$WEIGHT_DECAY', "N_EPOCHS": '$N_EPOCHS', "FACTOR": '$FACTOR', "PATIENCE": '$PATIENCE', "MIN_LR": '$MIN_LR', 
 "EPSILON": '$EPSILON', "ES_PATIENCE": '$ES_PATIENCE', "SAVE": '$SAVE', "ADD_TUNED": '$ADD_TUNED', "OVERSAMPLE": '$OVERSAMPLE', "MIN_DELTA": '$MIN_DELTA', "INITIAL_CHANNELS": '$INITIAL_CHANNELS', "CLASS_WEIGHTS": '$CLASS_WEIGHTS'}'
-
 ######################
 
 export BUCKET_NAME=tf_learn_pattern_detection
@@ -96,11 +94,11 @@ echo "Dataset: " $FILE_NAME
 read confirmation
 
 # echo "Learning Rate = $LR  -  Minimum Lr = $MIN_LR  -  Weight Decay = $WEIGHT_DECAY "
-echo "Number of Epochs: " $N_EPOCHS
+echo "Default: $DEFAULT"
 echo "Batch Size: $BATCH_SIZE"
 echo "Learning Rate: $LR"
 echo "Minimum Lr: $MIN_LR"
-echo "Weight Decay & LL2 REG: $WEIGHT_DECAY $LLE_REG "
+echo "Weight Decay & LL2 REG: $WEIGHT_DECAY $LL2_REG "
 
 read confirmation
 

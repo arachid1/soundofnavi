@@ -11,6 +11,7 @@ else
     export NAME=$1
     SUB='mel'
     [[ "$NAME" == *"$SUB"* ]] && CAT=mel || CAT=log
+    CAT=coch
     export LOG_DIR=gs://$BUCKET_NAME/$CAT/$MODEL/$NAME/logs
     if [ -z ${2} ]; 
     then 
