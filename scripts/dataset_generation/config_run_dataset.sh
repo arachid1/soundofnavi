@@ -1,11 +1,11 @@
 echo "-----------------------"
 
-SAVE_ANY=1
-
 ALL=1
-SAVE_IND=0 # if All, then should i save ind?
 PERCH=0
 ICBHI=0
+
+GCP=1
+LOCAL=0
 
 TEST=0
 VISUALIZE=0
@@ -14,7 +14,11 @@ SR=8000
 echo "Sample Rate: $SR"
 
 ##mel or log + parameters
-SPEC_TYPE="log"
+
+COCH_PATH='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing/'
+
+SPEC_TYPE="coch"
+
 if [ "$SPEC_TYPE" = "log" ]
 then
     N_FFT=512
@@ -22,30 +26,29 @@ then
     SPEC_WIN_LENGTH=160
     N_MELS=-1
     HEIGHT=257
-    if [ "$SR" = "8000" ]
-    then
-        WIDTH=251
-    else
-        WIDTH=126
-    fi
-else #mel
+    WIDTH=251
+elif [ "$SPEC_TYPE" = "mel" ]
+then
     N_FFT=1024
     HOP_LENGTH=256
     N_MELS=128
-    SPEC_SPEC_WIN_LENGTH=-1
-    if [ "$SR" = "8000" ]
-    then
-        HEIGHT=128
-        WIDTH=63
-    fi
+    SPEC_WIN_LENGTH=-1
+    HEIGHT=128
+    WIDTH=63
+elif [ "$SPEC_TYPE" = "coch" ]
+then
+    N_FFT=-1
+    HOP_LENGTH=-1
+    N_MELS=-1
+    SPEC_WIN_LENGTH=-1
+    BP=1
+    FS=8000
+    HEIGHT=128 #CHANGE
+    WIDTH=63
 fi
-SPEC_TYPE="coch" # UPDAAAAAATTTTEEEEEEEEEE
-
 
 echo "Type of spectrogram: $SPEC_TYPE"
 echo "number of fft : $N_FFT, hop length : $HOP_LENGTH, window length : $SPEC_WIN_LENGTH, number of mels: $N_MELS"
-
-
 echo "Expected Dimensions: ($HEIGHT, $WIDTH)"
 
 # perch, icbhi or all
@@ -74,10 +77,13 @@ fi
 echo "Number of Elements: $NUM_ELEMENTS"
 
 PROC_VERSION=v2 
-PARAM_VERSION=v4
+# param v1 -> data as given by Ian at the very beginning
+# param v2 -> after Ian ran more preprocessing on the data (July/August)
+PARAM_VERSION=v5
 # param v2 -> generating specs with different values for n_fft, hop_length, etc 
 # param v3 -> using 1 seconds instead of 0.5 second as overlap + clean ICBHI
 # param v4 -> back to 0.5 sec overlap + clean ICBHI
+# param v5 -> 10sec chunks
 AUGM_VERSION=v6
 # param v1 -> AddGaussianSNR(min_SNR=0.0001, max_SNR=2, p=1) on existing train data (30% of train data)
 # param v2 -> AddGaussianSNR(min_SNR=0.0001, max_SNR=2, p=1) on new train data (30% of train data)
@@ -85,9 +91,6 @@ AUGM_VERSION=v6
 # param v4 -> AddGaussianSNR(min_SNR=0.001, max_SNR=0.5, p=1) on new train data (30% of train data)
 # param v5 -> AddGaussianSNR(min_SNR=0.001, max_SNR=0.5, p=1) on new train data (10% of train data)
 # param v6 -> AddGaussianSNR(min_SNR=0.001, max_SNR=0.5, p=1) on new train data (40% of train data)
-# param v7 -> 
-
-# TODODODODODODODODODODOODDOODODODODODODODO: make it that the values are conditional on the param_version or something
 # params
 if [ "$PARAM_VERSION" = "v3" ]
 then
@@ -98,6 +101,11 @@ elif [ "$PARAM_VERSION" = "v4" ]
 then
     AUDIO_LENGTH=2
     STEP_SIZE=1
+    OVERLAP_THRESHOLD=0.5
+elif [ "$PARAM_VERSION" = "v5" ]
+then
+    AUDIO_LENGTH=10
+    STEP_SIZE=5
     OVERLAP_THRESHOLD=0.5
 fi
 
@@ -115,14 +123,11 @@ ICBHI_FILE_DEST='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorith
 ICBHI_ROOT='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/raw_audios/icbhi_preprocessed_'$PROC_VERSION'_cleaned_'$SR'/'
 
 PERCH_FILE_DEST='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/datasets/perch_'$FORMAT'_'$SPEC_TYPE'_param_'$PARAM_VERSION'_augm_'$AUGM_VERSION'_'$SR'.pkl'
-PERCH_ROOT='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/raw_audios/perch_'$SR'/'
+PERCH_ROOT='/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/raw_audios/perch_'$SR'_10seconds/'
 
-# augmentation
-AUGMENTATION=1
-
-export DATASET_PARAMS='{"SR": '$SR', "SPEC_TYPE": "'$SPEC_TYPE'", "ALL": '$ALL', "SAVE_IND": '$SAVE_IND', "SAVE_ANY": '$SAVE_ANY', "PERCH": '$PERCH', "ICBHI": '$ICBHI', 
+export DATASET_PARAMS='{"SR": '$SR', "SPEC_TYPE": "'$SPEC_TYPE'", "GCP": '$GCP', "LOCAL": '$LOCAL', "ALL": '$ALL', "PERCH": '$PERCH', "ICBHI": '$ICBHI', 
 "HEIGHT": '$HEIGHT', "WIDTH": '$WIDTH', "N_FFT": '$N_FFT', "HOP_LENGTH": '$HOP_LENGTH', "SPEC_WIN_LENGTH": '$SPEC_WIN_LENGTH', "N_MELS": '$N_MELS', "AUDIO_LENGTH": '$AUDIO_LENGTH', 
-"STEP_SIZE": '$STEP_SIZE', "OVERLAP_THRESHOLD": '$OVERLAP_THRESHOLD', "AUGMENTATION": '$AUGMENTATION', "TEST": '$TEST', 
+"STEP_SIZE": '$STEP_SIZE', "OVERLAP_THRESHOLD": '$OVERLAP_THRESHOLD', "TEST": '$TEST', "BP": '$BP', "FS": '$FS', "COCH_PATH": "'$COCH_PATH'",
 "ICBHI_ROOT": "'$ICBHI_ROOT'", "PERCH_ROOT": "'$PERCH_ROOT'", "ALL_FILE_DEST": "'$ALL_FILE_DEST'", "ICBHI_FILE_DEST" : "'$ICBHI_FILE_DEST'","PERCH_FILE_DEST": "'$PERCH_FILE_DEST'"}'
 
 echo "PARAMS: $DATASET_PARAMS"
@@ -130,4 +135,19 @@ echo "-----------------------"
 
 sleep 10
 
-/opt/anaconda3/envs/ObjectDetection/bin/python generate_dataset.py --params "$DATASET_PARAMS"
+WAV_ADD=1
+WAV_RATIO=0.3
+GAUSSIAN_NOISE=1
+VTLP=1
+SHIFT=1
+MIN_SNR=0.001
+MAX_SNR=1
+WAV_PARAMS='{"add": '$WAV_ADD', "ratio": '$WAV_RATIO', "gaussian_noise": '$GAUSSIAN_NOISE', "vtlp": '$VTLP', "shift": '$SHIFT', "min_snr": '$MIN_SNR', "max_snr": '$MAX_SNR'}'
+
+SPEC_ADD=1
+SPEC_RATIO=1
+TIME_MASKING=1
+FREQUENCY_MASKING=1
+SPEC_PARAMS='{"add": '$SPEC_ADD', "ratio": '$SPEC_RATIO', "time_masking": '$TIME_MASKING', "frequency_masking": '$FREQUENCY_MASKING'}'
+
+/opt/anaconda3/envs/ObjectDetection/bin/python generate_dataset.py --params "$DATASET_PARAMS" --wav_params "$WAV_PARAMS" --spec_params "$SPEC_PARAMS"

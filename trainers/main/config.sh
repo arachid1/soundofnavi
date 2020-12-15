@@ -6,7 +6,7 @@ SR=8000
 #JOB
 
 export MODEL=conv #LSTM OR CONV
-export TRAIN_NUMBER=448
+export TRAIN_NUMBER=452
 export DESCRIPTION=redo
 
 
@@ -27,7 +27,7 @@ export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_
 HEIGHT=128
 WIDTH=250
 
-DEFAULT=true
+DEFAULT=false
 
 if [ "$DEFAULT" = true ];
 then
@@ -42,7 +42,7 @@ then
     ES_PATIENCE=10
     MIN_DELTA=0.01
 else
-    N_EPOCHS=80
+    N_EPOCHS=55
     WEIGHT_DECAY=0 # default: 1e-4 
     LL2_REG=1e-4
     BATCH_SIZE=64
@@ -50,7 +50,7 @@ else
     MIN_LR=1e-5 # default: 1e-4
     FACTOR=0.5 # default: 0.5
     PATIENCE=5 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=10
+    ES_PATIENCE=15
     MIN_DELTA=0.01
 fi
 

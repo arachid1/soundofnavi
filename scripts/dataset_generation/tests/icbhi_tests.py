@@ -1,11 +1,13 @@
 import unittest
 from decimal import *
-import sys
 import numpy as np
 import pickle
 from tensorflow.python.lib.io import file_io
-sys.path.append(
-    '/Users/alirachidi/Documents/Sonavi_Labs/ObjectDetection/trainers/main')
+import os, sys
+
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
 from generate_dataset import *
 
 def test_continuity(times):
@@ -29,10 +31,10 @@ def test_time_labels(times, slices=False):
 
 class generate_dataset_tests(unittest.TestCase):
 
-    cycle_list_path = 'tests_files/icbhi_cycle_list.pkl'
+    cycle_list_path = 'tests_files/icbhi_cycles.pkl'
     cycle_list_stream = file_io.FileIO(cycle_list_path, mode="rb")
     cycle_list = pickle.load(cycle_list_stream)
-    rec_annotations_dict_path = 'tests_files/icbhi_rec_annotations_dict.pkl'
+    rec_annotations_dict_path = 'tests_files/icbhi_annotated_dict.pkl'
     rec_annotations_dict_stream = file_io.FileIO(
         rec_annotations_dict_path, mode="rb")
     rec_annotations_dict = pickle.load(rec_annotations_dict_stream)

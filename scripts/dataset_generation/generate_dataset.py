@@ -21,6 +21,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+from google.cloud import storage
+
+import nlpaug.flow as naf
+import nlpaug.augmenter.audio as naa
+import nlpaug.augmenter.spectrogram as nas
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -33,6 +39,7 @@ def seed_everything():
 
 def write_record(params, file_path):
 
+    print("Writing record...")
     file_name = file_path.split('/')[-1]
     date = datetime.datetime.now()
     day = datetime.datetime.today().weekday()
@@ -45,6 +52,37 @@ def write_record(params, file_path):
         f.write(file_name + '\n')
         f.write(str(params) + '\n')
         f.write('\n')
+
+def merge_datasets(dataset_list):
+    print("\nMerging Dataset...")
+    none_train = []
+    c_train = []
+    w_train = []
+    c_w_train = []
+    none_test = []
+    c_test = []
+    w_test = []
+    c_w_test = []
+
+    for dataset in dataset_list:
+        none_train += dataset[0][0]
+        c_train += dataset[0][1]
+        w_train += dataset[0][2]
+        c_w_train += dataset[0][3]
+        none_test += dataset[1][0]
+        c_test += dataset[1][1]
+        w_test += dataset[1][2]
+        c_w_test += dataset[1][3]
+
+    print('Samples Available')
+    print('[Training set]')
+    print_sample_count({"none": none_train, "crackles": c_train,
+                        "wheezes": w_train, "both": c_w_train})
+    print('')
+    print('[Test set]')
+    print_sample_count({"none": none_test, "crackles": c_test,
+                        "wheezes": w_test, "both": c_w_test})
+    return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
 
 def print_sample_count(src_dict):
 
@@ -238,14 +276,25 @@ def find_times(recording_annotations, sample_rate, first):
 
 
 def write_to_file(data, name, path):
+    print("Writing {} locally...".format(name))
     output = open(path, 'wb')
     pickle.dump(data, output)
     if name is not None:
         print("Find {} dataset at {}".format(name, path))
     output.close()
+    
+def send_to_gcp(data, name, bucket_name):
+    print("Sending to GCP...")
+    destination_blob_name = str("datasets/" + name) 
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    string_data = pickle.dumps(data)
+    blob.upload_from_string(string_data)
+    print("Find dataset at {}".format(destination_blob_name))
 
-
-def split(no_labels, c_only, w_only, c_w, train_test_ratio):
+def split(no_labels, c_only, w_only, c_w, train_test_ratio=0.2):
+    
     none_train, none_test = train_test_split(
         no_labels, test_size=train_test_ratio)
     c_train, c_test = train_test_split(c_only, test_size=train_test_ratio)
@@ -260,7 +309,7 @@ def split(no_labels, c_only, w_only, c_w, train_test_ratio):
 
     return train_dict, test_dict
 
-def generate_cochlear_spec(x, cochlear_parameters, coch_b, coch_a, order):
+def generate_cochlear_spec(x, coch_params, coch_b, coch_a, order):
 
     # get filter bank
     L, M = coch_b.shape
@@ -268,11 +317,11 @@ def generate_cochlear_spec(x, cochlear_parameters, coch_b, coch_a, order):
     L_x = len(x)
 
     # octave shift, nonlinear factor, frame length, leaky integration
-    shft = cochlear_parameters["shft"] #octave shift (Matlab index: 4)
-    fac = cochlear_parameters["fac"] # nonlinear factor (Matlab index: 3)
-    frmlen = cochlear_parameters["frmlen"] # (Matlab index: 1)
+    shft = coch_params["shft"] #octave shift (Matlab index: 4)
+    fac = coch_params["fac"] # nonlinear factor (Matlab index: 3)
+    frmlen = coch_params["frmlen"] # (Matlab index: 1)
     L_frm = np.round(frmlen * (2**(4+shft)))   #frame length (points)
-    tc = cochlear_parameters["tc"] # time constant (Matlab index: 2)
+    tc = coch_params["tc"] # time constant (Matlab index: 2)
     tc = np.float64(tc)
     alph_exponent = -(1/(tc*(2**(4+shft))))
     alph = np.exp(alph_exponent) # decaying factor
@@ -335,40 +384,45 @@ def generate_cochlear_spec(x, cochlear_parameters, coch_b, coch_a, order):
     
     return v5
     
+def convert_to_log(data, n_fft, hop_length, spec_win_length):
+    spec_list = []
+    for d in data:
+        log_spectrogram = librosa.power_to_db(
+            np.abs(librosa.stft(d[0], n_fft=n_fft, hop_length=hop_length, win_length=spec_win_length,
+                                center=True, window='hann')) ** 2, ref=1.0)
+        spec_list.append((log_spectrogram, d[1], d[2]))
+    return spec_list
 
-def convert_to_spec(data, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels):
+def convert_to_coch(data, coch_path, coch_params):
+    spec_list = []
+    for d in data:
+        coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
+        coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
+        order = np.loadtxt(coch_path + 'p.txt', delimiter=',')
+        coch_spectrogram = generate_cochlear_spec(d[0], coch_params, coch_b, coch_a, order)
+        coch_spectrogram = np.transpose(coch_spectrogram)
+        spec_list.append((coch_spectrogram, d[1], d[2]))
+        if len(spec_list) % 2000 == 0:
+            print("Completed {} elements...".format(len(spec_list)))
+    return spec_list
 
+def convert_to_mel(data, sr, n_fft, hop_length, n_mels):
+    spec_list = []
+    for d in data:
+        mel_spectrogram = librosa.power_to_db(librosa.feature.melspectrogram(
+            d[0], sr=sr, n_fft=n_fft, hop_length=hop_length, n_mels=n_mels), ref=np.max)
+        spec_list.append((mel_spectrogram, d[1], d[2]))
+    return spec_list
+
+def convert_to_spec(data, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels, coch_path, coch_params):
     n_fft = n_fft
     hop_length = hop_length
-    spec_list = []
     if spec_type == "log":
-        spec_win_length = spec_win_length
-        for d in data:
-            log_spectrogram = librosa.power_to_db(
-                np.abs(librosa.stft(d[0], n_fft=n_fft, hop_length=hop_length, win_length=spec_win_length,
-                                    center=True, window='hann')) ** 2, ref=1.0)
-            spec_list.append((log_spectrogram, d[1], d[2], d[0]))
+        spec_list = convert_to_log(data, n_fft, hop_length, spec_win_length)
     elif spec_type == "coch":
-        for d in data:
-            fs = 8000 #changed by ian 11/6 from a mistake in runme.txt
-            bp = 1
-            cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
-            coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing/'
-            coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
-            coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
-            order = np.loadtxt(coch_path + 'p.txt', delimiter=',')
-            coch_spectrogram = generate_cochlear_spec(d[0], cochlear_parameters, coch_b, coch_a, order)
-            coch_spectrogram = np.transpose(coch_spectrogram)
-            # print(coch_spectrogram.shape)å
-            spec_list.append((coch_spectrogram, d[1], d[2], d[0]))
-            if len(spec_list) % 2000 == 0:
-                print("Completed {} elements...".format(len(spec_list)))
-    else:  # TODO: change it to regular if statement
-        for d in data:
-            n_mels = n_mels
-            mel_spectrogram = librosa.power_to_db(librosa.feature.melspectrogram(
-                d[0], sr=sr, n_fft=n_fft, hop_length=hop_length, n_mels=n_mels), ref=np.max)
-            spec_list.append((mel_spectrogram, d[1], d[2], d[0]))
+        spec_list = convert_to_coch(data, coch_path, coch_params)
+    else: 
+        spec_list = convert_to_mel(data, sr, n_fft, hop_length, n_mels)
     return spec_list
 
 
@@ -377,7 +431,6 @@ def gen_time_stretch(original, sample_rate, max_percent_change):
     (_, stretched) = resample(sample_rate,
                               original, int(sample_rate * stretch_amount))
     return stretched
-
 
 def time_stretch(data, target, sr, max_percent_change):
     nb_augmentations = target - len(data)
@@ -392,7 +445,6 @@ def time_stretch(data, target, sr, max_percent_change):
     augmented.extend(cycles_with_labels)
     print("len(augmented):" + str(len(augmented)))
     return augmented
-
 
 def get_icbhi_samples(recording_annotations, file_name, root, sample_rate, file_id, overlap_threshold=0.15, audio_length=2, step_size=1):
     sample_data = [file_name, file_id]
@@ -410,9 +462,9 @@ def get_icbhi_samples(recording_annotations, file_name, root, sample_rate, file_
             start, end, data, rate, max_ind)
         if (not (abs(end_ind - start_ind) == (audio_length * sample_rate))):  # ending the loop
             step = False
-            if (abs(start_ind - end_ind) < (sample_rate)):  # disregard if less than one second
+            if (abs(start_ind - end_ind) < (sample_rate * audio_length * Decimal(0.5))):  # disregard if less than half of the audio length (<1 for 2sec, <5 for 10sec) 
                 continue
-            else:  # 0 pad if more than one second
+            else:  # 0 pad if more than half of audio length
                 rw_audio_chunk = generate_padded_samples(
                     rw_audio_chunk, sample_rate * audio_length)
         crackles, wheezes = find_labels(
@@ -436,22 +488,25 @@ def get_perch_sample(recording_annotations, file_name, root, sample_rate, file_i
     sample_data.append((rw_audio_chunk, row['Crackles'], row['Wheezes']))
     return sample_data
 
-
-def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augmentation, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
-    print("Generating ICBHI...")
+# string
+def extract_wav(root, sr, overlap_threshold, audio_length, step_size):
     # print("Directory: {}.".format(os.listdir(root)))
-    filenames = [s.split('.')[0]
+    if "perch" in root:
+        filenames = [s.split('.')[0] + '.' + s.split('.')[1]
                  for s in os.listdir(path=root) if '.txt' in s]
+    else:
+        filenames = [s.split('.')[0]
+                    for s in os.listdir(path=root) if '.txt' in s]
     # ASSERT
     print("Number of Files: {}".format(len(filenames)))
 
     rec_annotations = []
 
-    rec_annotations_dict = {}
+    annotated_dict = {}
     for s in filenames:
         a = Extract_Annotation_Data(s, root)
         rec_annotations.append(a)
-        rec_annotations_dict[s] = a
+        annotated_dict[s] = a
 
     no_label_list = []
     crack_list = []
@@ -460,7 +515,7 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
     filename_list = []
 
     for f in filenames:
-        d = rec_annotations_dict[f]
+        d = annotated_dict[f]
         no_labels = len(
             d[(d['Crackles'] == 0) & (d['Wheezes'] == 0)].index)
         n_crackles = len(
@@ -478,10 +533,6 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
                                        'crackles only': crack_list, 'wheezes only': wheeze_list, 'crackles and wheezees': both_sym_list})
     print(file_label_df.head())
 
-    print('Evaluating Imbalance...')
-    # print(file_label_df['no label'])
-    # evaluate_imbalance(file_label_df['no label'])
-
     w_labels = file_label_df[(file_label_df['crackles only'] != 0) | (
         file_label_df['wheezes only'] != 0) | (file_label_df['crackles and wheezees'] != 0)]
     # ASSERT LENGTHS?
@@ -489,204 +540,82 @@ def generate_icbhi(root, sr, overlap_threshold, audio_length, step_size, augment
     initial_segments_nb = file_label_df.sum(
     )[1] + file_label_df.sum()[2] + file_label_df.sum()[3] + file_label_df.sum()[4]
     # ASSERT NUMBER
-    print("Number of raw audio extracts (ICBHI): {}".format(initial_segments_nb))
-
-    cycle_list = []
+    print("Number of raw audio extracts: {}".format(initial_segments_nb))
+    cycles = []
 
     file_id = 0
     for file_name in filenames:
-        data = get_icbhi_samples(
-            rec_annotations_dict[file_name], file_name, root, sr, file_id, overlap_threshold, audio_length, step_size)
+        if "perch" in root:
+            data = get_perch_sample(annotated_dict[file_name], file_name, root, sr, file_id, audio_length)
+        else:
+            data = get_icbhi_samples(annotated_dict[file_name], file_name, root, sr, file_id, overlap_threshold, audio_length, step_size) 
         cycles_with_labels = []
         for d in data[2:]:
             cycles_with_labels.append((d[0], d[1], d[2], file_id))
-        cycle_list.extend(cycles_with_labels)
+        cycles.extend(cycles_with_labels)
         file_id += 1
-        # ASSERT
-    print("Number of 2-sec raw audio (ICBHI): {}".format(len(cycle_list)))
+    print("Number of {}-sec raw audio: {}".format(audio_length, len(cycles))) 
+    return cycles, annotated_dict
 
-
-    if test:
-         # TESTING #1
-        print("Running the first set of tests...")
-        write_to_file(cycle_list, None, test_files_destination + "/" + "icbhi_cycle_list.pkl")
-        write_to_file(rec_annotations_dict, None, test_files_destination + "/" + 
-                  "icbhi_rec_annotations_dict.pkl")
-        try:
-            proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", str(tests_destination + "/" + "icbhi_tests.py"),
-                                "{}".format(audio_length), "{}".format(overlap_threshold), "{}".format(sr), "{}".format(root)], check=True,)  # stdout=PIPE, stderr=PIPE,)
-            print("The script passed all the tests.")
-        except subprocess.CalledProcessError:
-            print("The script failed to pass all the tests. ")
-            sys.exit(1)
-
-    # Count of labels across all labels
-    no_labels = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 0))]
-    c_only = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 0))]
-    w_only = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 1))]
-    c_w = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 1))]
+def test_wav(cycles, annotated_dict, root, sr, audio_length, overlap_threshold, dataset=None, tests_destination='tests/', test_files_destination ='tests/test_files/'): 
+    # TESTING #1
+    print("Running the first set of tests...")
     
-    # split first -> train_dict, test_dict
-    train_dict, test_dict = split(
-        no_labels, c_only, w_only, c_w, train_test_ratio)
+    path = test_files_destination + "/"
     
-    # do augmentation
-    if augmentation:
-        print("Augmenting...")
-        for key in train_dict:
-            # train_dict[key] = new_augm_wo_adding(train_dict[key], sr)
-            train_dict[key] = new_augm(train_dict[key], sr)
+    name = dataset + "_cycles.pkl"
+    write_to_file(cycles, name, path + name)
+    name = dataset + "_annotated_dict.pkl"
+    write_to_file(annotated_dict, name, path)
     
-    print("Generating spectograms...")
-    # convert
-    for key in train_dict:
-        train_dict[key] = convert_to_spec(train_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    for key in test_dict:
-        test_dict[key] = convert_to_spec(test_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
-    
-    print("Splitting the data...")
+    try:
+        test_path = tests_destination + "/" + dataset + "_tests.py"
+        proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", test_path, "{}".format(audio_length), "{}".format(overlap_threshold), 
+                               "{}".format(sr), "{}".format(root)], check=True,)  # stdout=PIPE, stderr=PIPE,)
+        print("The script passed all the tests.")
+    except subprocess.CalledProcessError:
+        print("The script failed to pass all the tests. ")
+        sys.exit(1)
 
-    [none_train, c_train, w_train, c_w_train] = [train_dict['none'],
-                                                 train_dict['crackles'], train_dict['wheezes'], train_dict['both']]
-    [none_test, c_test, w_test, c_w_test] = [test_dict['none'],
-                                             test_dict['crackles'], test_dict['wheezes'], test_dict['both']]
-
-    np.random.shuffle(none_train)
-    np.random.shuffle(c_train)
-    np.random.shuffle(w_train)
-    np.random.shuffle(c_w_train)
-    print("Done.")
-
-
-    if test:
+def test_spectrograms(spectrograms, height, width, dataset=None, tests_destination='tests/', test_files_destination='tests/test_files/'):
         # TESTING #2
         print("Running the second set of tests...")
 
-        write_to_file([none_train, c_train, w_train, c_w_train], None,
-                    test_files_destination + "/" + "icbhi_train_data.pkl")
-        write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
-                    "icbhi_val_data.pkl")
+        path = test_files_destination + "/"
+        name = dataset + "_train_data.pkl"
+        write_to_file(spectrograms[0], name, path + name)
+        name = dataset + "_val_data.pkl"
+        write_to_file(spectrograms[1], name, path + name)
+        
         try:
-            proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "/" + "icbhi_tests_2.py",
+            test_path = tests_destination + "/" + dataset + "_tests_2.py"
+            proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", test_path,
                                 "{}".format(height), "{}".format(width)], check=True)  # stdout=PIPE, stderr=PIPE,)
         except subprocess.CalledProcessError:
             print("The scripts failed to pass all the tests. ")
-            sys.exit(1)
-
-    print('Samples Available')
-    print('[Training set]')
-    print_sample_count(train_dict)
-    print('')
-    print('[Test set]')
-    print_sample_count(test_dict)
-
-    return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
-
-
-def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augmentation, train_test_ratio, height, width, spec_type, n_fft, hop_length, spec_win_length, n_mels, tests_destination, test_files_destination, test):
-    
-    print("Generating PERCH...")
-    filenames = [s.split('.')[0] + '.' + s.split('.')[1]
-                 for s in os.listdir(path=root) if '.txt' in s]
-    # ASSERT
-    print("Number of Files: {}".format(len(filenames)))
-
-    rec_annotations = []
-
-    rec_annotations_dict = {}
-    for s in filenames:
-        a = Extract_Annotation_Data(s, root)
-        rec_annotations.append(a)
-        rec_annotations_dict[s] = a
-
-    no_label_list = []
-    crack_list = []
-    wheeze_list = []
-    both_sym_list = []
-    filename_list = []
-
-    for f in filenames:
-        d = rec_annotations_dict[f]
-        no_labels = len(
-            d[(d['Crackles'] == 0) & (d['Wheezes'] == 0)].index)
-        n_crackles = len(
-            d[(d['Crackles'] == 1) & (d['Wheezes'] == 0)].index)
-        n_wheezes = len(
-            d[(d['Crackles'] == 0) & (d['Wheezes'] == 1)].index)
-        both_sym = len(d[(d['Crackles'] == 1) & (d['Wheezes'] == 1)].index)
-        no_label_list.append(no_labels)
-        crack_list.append(n_crackles)
-        wheeze_list.append(n_wheezes)
-        both_sym_list.append(both_sym)
-        filename_list.append(f)
-
-    file_label_df = pd.DataFrame(data={'filename': filename_list, 'no label': no_label_list,
-                                       'crackles only': crack_list, 'wheezes only': wheeze_list, 'crackles and wheezees': both_sym_list})
-    print(file_label_df.head())
-
-    print('Evaluating Imbalance...')
-    evaluate_imbalance(file_label_df['no label'])
- 
-    w_labels = file_label_df[(file_label_df['crackles only'] != 0) | (
-        file_label_df['wheezes only'] != 0) | (file_label_df['crackles and wheezees'] != 0)]
-    # ASSERT LENGTHS?
-    # print(file_label_df.sum())
-    initial_segments_nb = file_label_df.sum(
-    )[1] + file_label_df.sum()[2] + file_label_df.sum()[3] + file_label_df.sum()[4]
-    # ASSERT NUMBER
-    print("Number of raw audio extracts (PERCH): {}".format(initial_segments_nb))
-
-    file_id = 0
-    cycle_list = []
-    for file_name in filenames:
-        data = get_perch_sample(
-            rec_annotations_dict[file_name], file_name, root, sr, file_id, audio_length)
-        cycles_with_labels = []
-        for d in data[2:]:
-            cycles_with_labels.append((d[0], d[1], d[2], file_id))
-        cycle_list.extend(cycles_with_labels)
-        file_id += 1
-    print("Number of 2 sec chunks (PERCH): {}".format(len(cycle_list)))
-
-    if test:
-        # TESTING #1
-        print("Running the first set of tests...")
-
-        write_to_file(cycle_list, None, test_files_destination + "/" + "perch_cycle_list.pkl")
-        write_to_file(rec_annotations_dict, None, test_files_destination + "/" +
-                    "perch_rec_annotations_dict.pkl")
-        try:
-            proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "/" + "perch_tests.py",
-                                "{}".format(audio_length), "{}".format(overlap_threshold), "{}".format(sr), "{}".format(root)], check=True,)  # stdout=PIPE, stderr=PIPE,)
-            print("The script passed all the tests.")
-        except subprocess.CalledProcessError:
-            print("The script failed to pass all the tests. ")
             sys.exit(1)
             
+# string w name
+# destinations
+# function call
+def generate_spectrograms(cycles, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels, coch_path, coch_params, train_test_ratio=0.2):
+
     # Count of labels across all labels
-    no_labels = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 0))]
-    c_only = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 0))]
-    w_only = [c for c in cycle_list if ((c[1] == 0) & (c[2] == 1))]
-    c_w = [c for c in cycle_list if ((c[1] == 1) & (c[2] == 1))]
-
-
+    no_labels = [c for c in cycles if ((c[1] == 0) & (c[2] == 0))]
+    c_only = [c for c in cycles if ((c[1] == 1) & (c[2] == 0))]
+    w_only = [c for c in cycles if ((c[1] == 0) & (c[2] == 1))]
+    c_w = [c for c in cycles if ((c[1] == 1) & (c[2] == 1))]
+    
     # split first -> train_dict, test_dict
     train_dict, test_dict = split(
-        no_labels, c_only, w_only, c_w, train_test_ratio)
-    
-    # do augmentation
-    if augmentation:
-        print("Augmenting...")
-        for key in train_dict:
-            # train_dict[key] = new_augm_wo_adding(train_dict[key], sr)
-            train_dict[key] = new_augm(train_dict[key], sr)
+        no_labels, c_only, w_only, c_w)
     
     print("Generating spectograms...")
     # convert
     for key in train_dict:
-        train_dict[key] = convert_to_spec(train_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+        train_dict[key] = convert_to_spec(train_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels, coch_path, coch_params)
     for key in test_dict:
-        test_dict[key] = convert_to_spec(test_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels)
+        test_dict[key] = convert_to_spec(test_dict[key], spec_type, sr, n_fft, hop_length, spec_win_length, n_mels,  coch_path, coch_params)
     
     print("Splitting the data...")
 
@@ -699,23 +628,6 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
     np.random.shuffle(c_train)
     np.random.shuffle(w_train)
     np.random.shuffle(c_w_train)
-    print("Done.")
-
-
-    if test:
-        # TESTING #2
-        print("Running the second set of tests...")
-
-        write_to_file([none_train, c_train, w_train, c_w_train], None,
-                    test_files_destination + "/" + "perch_train_data.pkl")
-        write_to_file([none_test, c_test, w_test, c_w_test], None, test_files_destination + "/" +
-                    "perch_val_data.pkl")
-        try:
-            proc = subprocess.run(["/opt/anaconda3/envs/ObjectDetection/bin/python", tests_destination + "perch_tests_2.py",
-                                "{}".format(height), "{}".format(width)], check=True)  # stdout=PIPE, stderr=PIPE,)
-        except subprocess.CalledProcessError:
-            print("The scripts failed to pass all the tests. ")
-            sys.exit(1)
 
     print('Samples Available')
     print('[Training set]')
@@ -726,141 +638,113 @@ def generate_perch(root, sr, overlap_threshold, audio_length, step_size, augment
 
     return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
 
-
-def merge_datasets(dataset_list):
-    print("\nMerging Dataset...")
-    none_train = []
-    c_train = []
-    w_train = []
-    c_w_train = []
-    none_test = []
-    c_test = []
-    w_test = []
-    c_w_test = []
-
-    for dataset in dataset_list:
-        none_train += dataset[0][0]
-        c_train += dataset[0][1]
-        w_train += dataset[0][2]
-        c_w_train += dataset[0][3]
-        none_test += dataset[1][0]
-        c_test += dataset[1][1]
-        w_test += dataset[1][2]
-        c_w_test += dataset[1][3]
-
-    print('Samples Available')
-    print('[Training set]')
-    print_sample_count({"none": none_train, "crackles": c_train,
-                        "wheezes": w_train, "both": c_w_train})
-    print('')
-    print('[Test set]')
-    print_sample_count({"none": none_test, "crackles": c_test,
-                        "wheezes": w_test, "both": c_w_test})
-    return [[none_train, c_train, w_train, c_w_train], [none_test, c_test, w_test, c_w_test]]
-
-
-def new_augm_wo_adding(data, sr):
-    print("Inside augmentation w/o adding...")
-    min_SNR = 0.001
-    max_SNR = 0.5
-    ratio = 0.4
-    k = int(ratio * len(data)) # how many samples we're augmenting
+def augment_wav(data, sr, add, ratio, gaussian_noise, vtlp, shift, min_snr, max_snr):
     
-    augment = Compose([
-        # AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.15, p=1),
-        AddGaussianSNR(min_SNR=min_SNR, max_SNR=max_SNR, p=1),
-        # FrequencyMask()
-    ])
-    
+    k = int(ratio * len(data)) # how many samples we're adding
     for i in range(0, k):
-        index = random.randint(0, len(data) - 1)
-        sample = data[index][0]
-        sample = augment(samples=sample, sample_rate=sr)
-        whole_tuple = list(data[index])
-        whole_tuple[0] = sample
-        data[index] = tuple(whole_tuple)
-        
-    return data
-        
-def new_augm(data, sr):
-    print("Inside new augmentation...")
-    # min_SNR=0.01, max_SNR=0.1
-    min_SNR = 0.001
-    max_SNR = 0.5
-    ratio = 0.4
-    k = int(ratio * len(data)) # how many samples we're augmenting
-    
-    portion_to_augment = random.sample(data, k)
-    
-    augment = Compose([
-        # AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.15, p=1),
-        AddGaussianSNR(min_SNR=min_SNR, max_SNR=max_SNR, p=1),
-        # FrequencyMask()
-    ])
-    
-    #####
-    for i in range(len(portion_to_augment)):
-        # print(portion_to_augment[i])
-        sample = portion_to_augment[i][0]
-        # visualize_spec(sample, sr)
-        # TODO: ASSIGN NEW ID TO NEW DATA POINT
-        sample = augment(samples=sample, sample_rate=sr)
-        # visualize_spec(sample, sr)
-        whole_tuple = list(portion_to_augment[i])
-        whole_tuple[0] = sample
-        portion_to_augment[i] = tuple(whole_tuple)
-    data += portion_to_augment
+        index = random.randint(0, k-1)
+        sample_to_augment = data[index][0]
+        if gaussian_noise:
+            aug = Compose([AddGaussianSNR(min_SNR=min_snr, max_SNR=max_snr, p=1)])
+            sample_to_augment = aug(samples=sample_to_augment, sample_rate=sr)
+        if shift:
+            aug = naa.ShiftAug(sampling_rate=sr)
+            sample_to_augment = aug.augment(sample_to_augment)
+        if vtlp:
+            aug = naa.VtlpAug(sampling_rate=sr)
+            sample_to_augment = aug.augment(sample_to_augment)
+        if add:
+            data.append((sample_to_augment, data[index][1], data[index][2]))
+        else:
+            data[index][0] = sample_to_augment        
     return data
 
-    # sample = portion_to_augment[0][0]
-    # # visualize_spec(sample, sr)
-    # # TODO: ASSIGN NEW ID TO NEW DATA POINT
-    # # print(sample)
-    # augmented_sample = augment(samples=sample, sample_rate=sr)
-    # # print(augmented_sample)
-    # # print(sample == augmented_sample)
-    # # print(np.unique(sample == augmented_sample))
-    # # visualize_spec(sample, sr)
-    # # whole_tuple = list(portion_to_augment[i])
-    # # whole_tuple[0] = sample
-    # # portion_to_augment[i] = tuple(whole_tuple)
-    
-    # fs = 8000 #changed by ian 11/6 from a mistake in runme.txt
-    # bp = 1
-    # cochlear_parameters = {"frmlen": 8*(1/(fs/8000)), "tc": 8, "fac": -2, "shft": np.log2(fs/16000), "FULLT": 0, "FULLX": 0, "bp": bp}
-    # coch_path = '/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cochlear_preprocessing/'
-    # coch_a = np.loadtxt(coch_path + 'COCH_A.txt', delimiter=',')
-    # coch_b = np.loadtxt(coch_path + 'COCH_B.txt', delimiter=',')
-    # order = np.loadtxt(coch_path + 'p.txt', delimiter=',')
-    # coch_spectrogram = generate_cochlear_spec(augmented_sample, cochlear_parameters, coch_b, coch_a, order)
-    # coch_spectrogram = np.transpose(coch_spectrogram)
-    # visualize_spec(augmented_sample, sr)
+def augment_spectrogram(data, sr, add, ratio, time_masking, frequency_masking):
+    print(add)
+    print(time_masking)
+    print(frequency_masking)
+    k = int(ratio * len(data)) # how many samples we're adding
+    for i in range(0, k):
+        index = random.sample(k, 1)
+        sample_to_augment = data[index][0]
+        if time_masking:
+            aug = naf.Sequential([
+                nas.TimeMaskingAug(),
+            ])
+            sample_to_augment = aug.augment(sample_to_augment)
+            visualize_spec(sample_to_augment, sr)
+        if frequency_masking:
+            aug = naf.Sequential([
+                nas.FrequencyMaskingAug(), 
+            ])
+            sample_to_augment = aug.augment(sample_to_augment)
+            visualize_spec(sample_to_augment, sr)
+        if add:
+            data.append((sample_to_augment, data[index][1], data[index][2]))
+        else:
+            data[index][0] = sample_to_augment        
+    return data  
+
+    # sample_to_augment = convert_to_coch([icbhi_cycles[0]], coch_path, coch_params)[0]
+    # visualize_spec(sample_to_augment[0], sr)
+    # icbhi_cycles = augment_wav([icbhi_cycles[0]], sr, **wav_params)[0]
+    # sample_to_augment = convert_to_coch([icbhi_cycles], coch_path, coch_params)[0]
+    # print(sample_to_augment)
+    # visualize_spec(sample_to_augment[0], sr)
     # exit()
+    
+def generate_icbhi(icbhi_root, sr, overlap_threshold, audio_length, step_size, spec_type, n_fft, hop_length, spec_win_length, n_mels, height, width, coch_path, coch_params, wav_params, spec_params):
+    print("Generating ICBHI...")
+    icbhi_cycles, icbhi_dict = extract_wav(icbhi_root, sr, overlap_threshold, audio_length, step_size)
+    icbhi_cycles = augment_wav(icbhi_cycles, sr, **wav_params)
+    # test_wav(icbhi_cycles, icbhi_dict, icbhi_root, sr, audio_length, overlap_threshold, "icbhi")
 
-def generate(params):
-    print("-----------------------")
+    icbhi_data = generate_spectrograms(icbhi_cycles, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels, coch_path, coch_params)
+    icbhi_data = augment_spectrogram(icbhi_data, sr, **spec_params)
+    # test_spectrograms(icbhi_data, height, width, "icbhi")
+    
+    print("Done.")
+    return icbhi_data
+
+def generate_perch(perch_root, sr, overlap_threshold, audio_length, step_size, spec_type, n_fft, hop_length, spec_win_length, n_mels, height, width, coch_path, coch_params, wav_params, spec_params):
+    print("Generating PERCH...")
+    
+    perch_cycles, perch_dict = extract_wav(perch_root, sr, overlap_threshold, audio_length, step_size)
+    perch_cycles = augment_wav(perch_cycles, sr, **wav_params)
+    # test_wav(perch_cycles, perch_dict, perch_root, sr, audio_length, overlap_threshold, "perch")
+
+    perch_data = generate_spectrograms(perch_cycles, spec_type, sr, n_fft, hop_length, spec_win_length, n_mels, coch_path, coch_params)
+    perch_data = augment_spectrogram(perch_data, sr, **spec_params)
+    # test_spectrograms(perch_data, height, width, "perch")
+    
+    print("Done.")
+    return perch_data
+
+def generate(params, wav_params, spec_params):
     print("Collecting Variables...")
     # Variables
+    
+    _all = bool(params["ALL"])
+    icbhi = bool(params["ICBHI"])
+    perch = bool(params["PERCH"])
+    
+    local = bool(params["LOCAL"])
+    gcp = bool(params["GCP"])
+    
+    
     sr = int(params["SR"])
-    icbhi_root = params["ICBHI_ROOT"]
-    perch_root = params["PERCH_ROOT"]
-    spec_type = params["SPEC_TYPE"]
-
-    # audio_length = Decimal('2')
-    # step_size = Decimal('1')
-    # overlap_threshold = Decimal('{}'.format(0.15))
+    icbhi_root = str(params["ICBHI_ROOT"])
+    perch_root = str(params["PERCH_ROOT"])
+    spec_type = str(params["SPEC_TYPE"])
 
     audio_length = Decimal(params["AUDIO_LENGTH"])
     step_size = Decimal(params["STEP_SIZE"])
     overlap_threshold = Decimal(params["OVERLAP_THRESHOLD"])
-    # step_size = Decimal('1')
-    # overlap_threshold = Decimal('{}'.format(0.15))
 
-    all_file_dest = params["ALL_FILE_DEST"]
-    icbhi_file_dest = params["ICBHI_FILE_DEST"]
-    perch_file_dest = params["PERCH_FILE_DEST"]
+    all_file_dest = str(params["ALL_FILE_DEST"])
+    icbhi_file_dest = str(params["ICBHI_FILE_DEST"])
+    perch_file_dest = str(params["PERCH_FILE_DEST"])
 
-    augmentation = bool(params["AUGMENTATION"])
     test = bool(params["TEST"])
     train_test_ratio = 0.2
 
@@ -871,81 +755,85 @@ def generate(params):
     hop_length = int(params["HOP_LENGTH"])
     spec_win_length = int(params["SPEC_WIN_LENGTH"])
     n_mels = int(params["N_MELS"])
+    
+    fs = int(params["FS"])
+    bp = int(params["BP"])
+    coch_path = str(params["COCH_PATH"])
+    
+    bucket_name = "tf_learn_pattern_detection"
 
-    tests_destination = 'tests/'
-    test_files_destination = 'tests/test_files/'
+    coch_params = {
+        "frmlen": 8*(1/(fs/8000)), 
+        "tc": 8, 
+        "fac": -2, 
+        "shft": np.log2(fs/16000), 
+        "FULLT": 0, 
+        "FULLX": 0, 
+        "bp": bp
+    }
 
     icbhi_params_list = {
-        "root": icbhi_root,
-        "sr": sr,
-        "overlap_threshold": overlap_threshold,
-        "audio_length": audio_length,
-        "step_size": step_size,
-        "augmentation": augmentation,
-        "train_test_ratio": train_test_ratio,
-        "height": height,
-        "width": width,
-        "spec_type": spec_type,
-        "n_fft": n_fft,
-        "hop_length": hop_length,
-        "spec_win_length": spec_win_length,
-        "n_mels": n_mels,
-        "tests_destination": tests_destination,
-        "test_files_destination": test_files_destination,
-        "test": test
+        "icbhi_root" : icbhi_root, 
+        "sr": sr, 
+        "overlap_threshold" : overlap_threshold, 
+        "audio_length" : audio_length, 
+        "step_size" : step_size, 
+        "spec_type" : spec_type, 
+        "n_fft" : n_fft, 
+        "hop_length" : hop_length, 
+        "spec_win_length" : spec_win_length, 
+        "n_mels" : n_mels, 
+        "height" : height, 
+        "width" : width, 
+        "coch_path" : coch_path, 
+        "coch_params" : coch_params,
+        "wav_params" : wav_params, 
+        "spec_params" : spec_params
     }
-
+    
     perch_params_list = {
-        "root": perch_root,
-        "sr": sr,
-        "overlap_threshold": overlap_threshold,
-        "audio_length": audio_length,
-        "step_size": step_size,
-        "augmentation": augmentation,
-        "train_test_ratio": train_test_ratio,
-        "height": height,
-        "width": width,
-        "spec_type": spec_type,
-        "n_fft": n_fft,
-        "hop_length": hop_length,
-        "spec_win_length": spec_win_length,
-        "n_mels": n_mels,
-        "tests_destination":tests_destination,
-        "test_files_destination": test_files_destination,
-        "test": test
-
+        "perch_root" : perch_root, 
+        "sr": sr, 
+        "overlap_threshold" : overlap_threshold, 
+        "audio_length" : audio_length, 
+        "step_size" : step_size, 
+        "spec_type" : spec_type, 
+        "n_fft" : n_fft, 
+        "hop_length" : hop_length, 
+        "spec_win_length" : spec_win_length, 
+        "n_mels" : n_mels, 
+        "height" : height, 
+        "width" : width, 
+        "coch_path" : coch_path, 
+        "coch_params" : coch_params,
+        "wav_params" : wav_params, 
+        "spec_params" : spec_params
     }
     
-    # write_record(params, icbhi_file_dest)
-    # exit()
+    icbhi_data = generate_icbhi(**icbhi_params_list)
+    perch_data = generate_perch(**perch_params_list)
     
-    if bool(params["ALL"]):
-        print("List of ICBHI parameters: {}".format(icbhi_params_list))
-        icbhi_data = generate_icbhi(**icbhi_params_list)
-        print("List of PERCH parameters: {}".format(perch_params_list))
-        perch_data = generate_perch(**perch_params_list)
-        if bool(params["SAVE_ANY"]) and bool(params["SAVE_IND"]):
-            write_to_file(icbhi_data, "ICBHI", icbhi_file_dest)
-            write_record(params, icbhi_file_dest)
-            write_to_file(perch_data, "PERCH", perch_file_dest)
-            write_record(params, perch_file_dest)
+    if _all:
         all_data = merge_datasets([icbhi_data, perch_data])
-        if bool(params["SAVE_ANY"]):
+        if local:
             write_to_file(all_data, "ALL", all_file_dest)
+        if gcp:
+            send_to_gcp(all_data, all_file_dest.split('/')[-1], bucket_name)
         write_record(params, all_file_dest)
-    else:
-        if bool(params["ICBHI"]):
-            print("List of ICBHI parameters: {}".format(icbhi_params_list))
-            icbhi_data = generate_icbhi(**icbhi_params_list)
-            if bool(params["SAVE_ANY"]):
-                write_to_file(icbhi_data, "ICBHI", icbhi_file_dest)
-                write_record(params, icbhi_file_dest)
-        else:
-            print("List of PERCH parameters: {}".format(perch_params_list))
-            perch_data = generate_perch(**perch_params_list)
-            if bool(params["SAVE_ANY"]):
-                write_to_file(perch_data, "PERCH", perch_file_dest)
-                write_record(params, perch_file_dest)
+        
+    if icbhi:
+        if local:
+            write_to_file(icbhi_data, "ICBHI", icbhi_file_dest)
+        if gcp:
+            send_to_gcp(icbhi_data, all_file_dest.split('/')[-1], bucket_name)
+        write_record(params, icbhi_file_dest)
+        
+    if perch:
+        if local:
+            write_to_file(perch_data, "ICBHI", perch_file_dest)
+        if gcp:
+            send_to_gcp(perch_data, perch_params_list.split('/')[-1], bucket_name)
+        write_record(params, perch_file_dest)
 
 
 if __name__ == "__main__":
@@ -957,8 +845,19 @@ if __name__ == "__main__":
         help="parameters used in the model and training",
         required=True,
     )
+    parser.add_argument(
+        "--wav_params",
+        help="parameters used for augmenting raw audios",
+        required=True,
+    )
+    parser.add_argument(
+        "--spec_params",
+        help="parameters used for augmenting spectrograms",
+        required=True,
+    )
     args = parser.parse_args()
     arguments = args.__dict__
-    params = arguments.pop("params")
-    params = json.loads(params)
-    generate(params)
+    params = json.loads(arguments.pop("params"))
+    wav_params = json.loads(arguments.pop("wav_params"))
+    spec_params = json.loads(arguments.pop("spec_params"))
+    generate(params, wav_params, spec_params)
