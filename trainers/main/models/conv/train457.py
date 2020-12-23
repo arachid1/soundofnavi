@@ -27,59 +27,62 @@ def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON)
     CHANNELS = 32
     DROPOUT = 0.1
     DENSE_LAYER = 32
-    KERNEL_SIZE = (6, 6)
-    POOL_SIZE = (2, 2)
     i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
     x = layers.BatchNormalization()(i)
-    x = layers.Conv2D(
-        4, kernel_size=(1, 1), activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(
-        8, kernel_size=KERNEL_SIZE, activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(16, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
-    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same", )(x)
-    x = layers.Dropout(0.2)(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(
-        16, kernel_size=KERNEL_SIZE, activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(32, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
+    tower_1 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(32, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(32, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
     x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
-    x = layers.Dropout(0.2)(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(
-        32, kernel_size=KERNEL_SIZE, activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(64, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
-    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same",)(x)
-    x = layers.Dropout(0.2)(x)
+    tower_1 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(64, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(64, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(
-        64, kernel_size=KERNEL_SIZE, activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(128, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
-    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same", )(x)
-    x = layers.Dropout(0.2)(x)
+    tower_1 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(128, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(128, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(
-        128, kernel_size=KERNEL_SIZE, activation="relu", padding="same",
-    )(x)
-    x = layers.Conv2D(256, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
-    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same",)(x)
-    x = layers.Dropout(0.2)(x)
+    tower_1 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(256, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(256, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, kernel_size=(
-        1, 1), activation="relu", padding="same",)(x)
-    x = layers.Conv2D(512, kernel_size=(3, 3),
-                    activation="relu", padding="same",)(x)
-    x = layers.Conv2D(512, kernel_size=(3, 3),
-                    activation="relu", padding="same",)(x)
+    tower_1 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(256, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(256, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(256, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(256, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
     x = layers.GlobalAveragePooling2D()(x)
     o = layers.Dense(N_CLASSES, activity_regularizer=l2(
         LL2_REG), activation="sigmoid")(x)
@@ -164,7 +167,7 @@ def train_model(train_file, **args):
     print("Collecting data...")
     file_stream = file_io.FileIO(train_file, mode="rb")
     data = pickle.load(file_stream)
-
+    
     _train = [
         data[0][i] for i in range(0, len(data[0]))
     ]

@@ -342,7 +342,7 @@ class cm_callback(tf.keras.callbacks.LambdaCallback):
         X = np.zeros(final_shape, dtype=np.float32,)
         for i, wav in enumerate(data):
             wav = wav[0]
-            wav = np.expand_dims(wav, axis=-1)
+            wav = np.repeat(wav[..., np.newaxis], self.shape[2], -1)
             X[i, :, :] = wav
         return X
 

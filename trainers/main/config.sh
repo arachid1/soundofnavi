@@ -6,7 +6,7 @@ SR=8000
 #JOB
 
 export MODEL=conv #LSTM OR CONV
-export TRAIN_NUMBER=452
+export TRAIN_NUMBER=485
 export DESCRIPTION=redo
 
 
@@ -16,16 +16,21 @@ OVERSAMPLE=0
 CLASS_WEIGHTS=0
 
 # DATASET
-
 PREPROCESSED=v2
-PARAM=v4
+if [ "$JOB_CAT" = "mel" ]
+then
+    PARAM=v6
+    WIDTH=313
+elif [ "$JOB_CAT" = "coch" ]
+then
+    PARAM=v5
+    WIDTH=1250
+fi
 AUGM=v0
-export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
-[ "$JOB_CAT" = log ] && HEIGHT=257 || HEIGHT=128 
-[ "$SR" = 8000 ] && WIDTH=251 || WIDTH=126
 HEIGHT=128
-WIDTH=250
+
+export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
 DEFAULT=false
 
@@ -42,15 +47,15 @@ then
     ES_PATIENCE=10
     MIN_DELTA=0.01
 else
-    N_EPOCHS=55
-    WEIGHT_DECAY=0 # default: 1e-4 
-    LL2_REG=1e-4
-    BATCH_SIZE=64
+    N_EPOCHS=80
+    WEIGHT_DECAY=1e-4 # default: 1e-4 
+    LL2_REG=0
+    BATCH_SIZE=32
     LR=1e-3 # default: 1e-3
     MIN_LR=1e-5 # default: 1e-4
     FACTOR=0.5 # default: 0.5
     PATIENCE=5 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=15
+    ES_PATIENCE=10
     MIN_DELTA=0.01
 fi
 
@@ -118,22 +123,3 @@ echo "Machine : $MACHINE "
 echo "Machine Count: $COUNT "
 
 read confirmation
-
-# MASTER_TYPE=n1-standard-32
-# MACHINE=NVIDIA_TESLA_P4
-# COUNT=2
-
-# export YAML_CONFIG='{
-#     "trainingInput": {
-#       "scaleTier": "CUSTOM",
-#       "masterType": "'$MASTER_TYPE'",
-#       "masterConfig": {
-#           "acceleratorConfig": {
-#               "count": "'$COUNT'",
-#               "type": "'$MACHINE'"
-#           }
-#       },
-#       "runtimeVersion": "2.1",
-#       "pythonVersion": "3.7",
-#     }
-#   }'

@@ -8,6 +8,7 @@ import argparse
 import pickle
 import tensorflow as tf
 
+
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.regularizers import l2
@@ -16,9 +17,51 @@ from tensorflow.python.keras import backend as K
 from tensorflow.python.lib.io import file_io
 import json
 
+print("Tensorflow Version: {}".format(tf.__version__))
+tf.debugging.set_log_device_placement(True)
+
+
 def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
 
-
+    KERNEL_SIZE = 6
+    POOL_SIZE = (2, 2)
+    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    x = layers.BatchNormalization()(i)
+    tower_1 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(16, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(16, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(0.1)(x)
+    x = InvertedResidual(filters=32, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = InvertedResidual(filters=32, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(0.1)(x)
+    x = InvertedResidual(filters=64, strides=1, kernel_size=KERNEL_SIZE,)(x)
+    x = InvertedResidual(filters=64, strides=1, kernel_size=KERNEL_SIZE,)(x)
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(0.1)(x)
+    x = InvertedResidual(filters=128, strides=1, kernel_size=KERNEL_SIZE,)(x)
+    x = InvertedResidual(filters=128, strides=1, kernel_size=KERNEL_SIZE,)(x)
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(0.1)(x)
+    x = InvertedResidual(filters=256, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = InvertedResidual(filters=256, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(0.1)(x)
+    x = InvertedResidual(filters=512, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = InvertedResidual(filters=512, strides=1, kernel_size=KERNEL_SIZE)(x)
+    x = layers.GlobalAveragePooling2D()(x)
+    o = layers.Dense(N_CLASSES, activity_regularizer=l2(
+        LL2_REG), activation="sigmoid")(x)
     # delete above
 
     model = Model(inputs=i, outputs=o, name="conv2d")
@@ -99,7 +142,6 @@ def train_model(train_file, **args):
     strategy = tf.distribute.MirroredStrategy()
     
     with strategy.scope(): 
-        
         # data retrieval
         print("Collecting data...")
         file_stream = file_io.FileIO(train_file, mode="rb")
@@ -193,8 +235,6 @@ def train_model(train_file, **args):
 
 
 if __name__ == "__main__":
-    print("Tensorflow Version: {}".format(tf.__version__))
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
     seed_everything()
     parser = argparse.ArgumentParser()
     # Input Arguments

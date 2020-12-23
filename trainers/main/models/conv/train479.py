@@ -18,7 +18,12 @@ import json
 
 def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
 
-
+    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    x = tf.keras.applications.DenseNet201(include_top=False, weights="imagenet", input_tensor=i, input_shape=SHAPE, pooling="avg")(i)
+    # x = densenet.output
+    x = layers.BatchNormalization()(x)
+    x = layers.Flatten()(x)
+    o = layers.Dense(N_CLASSES, activation="sigmoid")(x)
     # delete above
 
     model = Model(inputs=i, outputs=o, name="conv2d")

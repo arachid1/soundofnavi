@@ -18,7 +18,36 @@ import json
 
 def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
 
-
+    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    x = layers.BatchNormalization()(i)
+    x = layers.TimeDistributed(layers.Conv1D(8, kernel_size=(4), activation='tanh'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(8, kernel_size=(1), activation='tanh'))(x)
+    x = layers.AveragePooling2D(pool_size=(2,2))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.TimeDistributed(layers.Conv1D(16, kernel_size=(4), activation='relu'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(16, kernel_size=(1), activation='relu'))(x)
+    x = layers.AveragePooling2D(pool_size=(2,2))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.TimeDistributed(layers.Conv1D(32, kernel_size=(4), activation='relu'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(32, kernel_size=(1), activation='relu'))(x)
+    x = layers.AveragePooling2D(pool_size=(2,2))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.TimeDistributed(layers.Conv1D(64, kernel_size=(4), activation='relu'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(64, kernel_size=(1), activation='relu'))(x)
+    x = layers.AveragePooling2D(pool_size=(2,2))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.TimeDistributed(layers.Conv1D(128, kernel_size=(4), activation='relu'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(128, kernel_size=(1), activation='relu'))(x)
+    x = layers.AveragePooling2D(pool_size=(2,2))(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.TimeDistributed(layers.Conv1D(256, kernel_size=(4), activation='relu'))(x)
+    x = layers.TimeDistributed(layers.Conv1D(256, kernel_size=(1), activation='relu'))(x)
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dropout(rate=0.1)(x)
+    x = layers.Dense(64, activation='relu', activity_regularizer=l2(0.001))(x)
+    o = layers.Dense(N_CLASSES, activity_regularizer=l2(
+        LL2_REG), activation="sigmoid")(x)
     # delete above
 
     model = Model(inputs=i, outputs=o, name="conv2d")

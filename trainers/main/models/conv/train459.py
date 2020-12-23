@@ -8,6 +8,7 @@ import argparse
 import pickle
 import tensorflow as tf
 
+
 from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.regularizers import l2
@@ -16,9 +17,16 @@ from tensorflow.python.keras import backend as K
 from tensorflow.python.lib.io import file_io
 import json
 
+print("Tensorflow Version: {}".format(tf.__version__))
+
 def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
 
-
+    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    x = tf.keras.applications.DenseNet201(include_top=False, weights="imagenet", input_tensor=i, input_shape=SHAPE, pooling="avg")(i)
+    # x = densenet.output
+    x = layers.BatchNormalization()(x)
+    x = layers.Flatten()(x)
+    o = layers.Dense(N_CLASSES, activation="sigmoid")(x)
     # delete above
 
     model = Model(inputs=i, outputs=o, name="conv2d")
@@ -96,93 +104,89 @@ def train_model(train_file, **args):
     print("Early Stopping Patience: {}".format(params["ES_PATIENCE"]))
     print("-----------------------")
 
-    strategy = tf.distribute.MirroredStrategy()
+    # data retrieval
+    print("Collecting data...")
+    file_stream = file_io.FileIO(train_file, mode="rb")
+    data = pickle.load(file_stream)
     
-    with strategy.scope(): 
+    _train = [
+        data[0][i] for i in range(0, len(data[0]))
+    ]
+    
+    _test = [
+        data[1][i] for i in range(0, len(data[1]))
+    ]
+    
+    info(_train, _test)
+    
+    # data preparation
+    train_data = [
+        sample
+        for label in _train
+        for sample in label
+    ]
+    validation_data = [
+        sample for label in _test for sample in label
+    ]
+    
+    callback_params = {
+        "validation_data": validation_data, 
+        "shape": shape, 
+        "n_classes": n_classes, 
+        "sr": sr, 
+        "save": save, 
+        "add_tuned": add_tuned, 
+        "es_patience": es_patience, 
+        "min_delta": min_delta,
+        "job_dir": job_dir
+    }
+    
+    generator_params = {
+        "train_data": train_data, 
+        "sr": sr, 
+        "n_classes": n_classes, 
+        "shape": shape, 
+        "batch_size": batch_size, 
+        "initial_channels": initial_channels, 
+    }
+
+    # generators
+    tg = data_generator(**generator_params)
+
+    # callbacks
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logs_path)
+    reduce_lr_callback = tf.keras.callbacks.ReduceLROnPlateau(
+        monitor="accuracy", **lr_params
+    )
+    confusion_m_callback = cm_callback(**callback_params)
+
+    # model setting
+    model = conv2d(**model_params)
+
+    model.summary()
+
+    weights = None
+
+    if bool(params["CLASS_WEIGHTS"]):
+        print("Initializing weights...")
+        y_train = label_data(validation_data)
+        weights = class_weight.compute_class_weight(
+            "balanced", np.unique(y_train), y_train)
+
+        weights = {i: weights[i] for i in range(0, len(weights))}
+        print("weights = {}".format(weights))
         
-        # data retrieval
-        print("Collecting data...")
-        file_stream = file_io.FileIO(train_file, mode="rb")
-        data = pickle.load(file_stream)
-
-        _train = [
-            data[0][i] for i in range(0, len(data[0]))
-        ]
-        
-        _test = [
-            data[1][i] for i in range(0, len(data[1]))
-        ]
-        
-        info(_train, _test)
-        
-        # data preparation
-        train_data = [
-            sample
-            for label in _train
-            for sample in label
-        ]
-        validation_data = [
-            sample for label in _test for sample in label
-        ]
-        
-        callback_params = {
-            "validation_data": validation_data, 
-            "shape": shape, 
-            "n_classes": n_classes, 
-            "sr": sr, 
-            "save": save, 
-            "add_tuned": add_tuned, 
-            "es_patience": es_patience, 
-            "min_delta": min_delta,
-            "job_dir": job_dir
-        }
-        
-        generator_params = {
-            "train_data": train_data, 
-            "sr": sr, 
-            "n_classes": n_classes, 
-            "shape": shape, 
-            "batch_size": batch_size, 
-            "initial_channels": initial_channels, 
-        }
-
-        # generators
-        tg = data_generator(**generator_params)
-
-        # callbacks
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logs_path)
-        reduce_lr_callback = tf.keras.callbacks.ReduceLROnPlateau(
-            monitor="accuracy", **lr_params
-        )
-        confusion_m_callback = cm_callback(**callback_params)
-
-        # model setting
-        model = conv2d(**model_params)
-
-        model.summary()
-
-        weights = None
-
-        if bool(params["CLASS_WEIGHTS"]):
-            print("Initializing weights...")
-            y_train = label_data(validation_data)
-            weights = class_weight.compute_class_weight(
-                "balanced", np.unique(y_train), y_train)
-
-            weights = {i: weights[i] for i in range(0, len(weights))}
-            print("weights = {}".format(weights))
-            
-        model.fit(
-                tg,
-                epochs=n_epochs,
-                verbose=2,
-                callbacks=[tensorboard_callback,
-                        confusion_m_callback,
-                        reduce_lr_callback,
-                        #    early_stopping_callback
-                        ],
-                class_weight=weights,
-        )
+    model.fit(
+            tg,
+            epochs=n_epochs,
+            verbose=2,
+            callbacks=[tensorboard_callback,
+                       confusion_m_callback,
+                       reduce_lr_callback,
+                       #    early_stopping_callback
+                       ],
+            class_weight=weights,
+    )
 
     model.save("model.h5")
 
@@ -193,8 +197,6 @@ def train_model(train_file, **args):
 
 
 if __name__ == "__main__":
-    print("Tensorflow Version: {}".format(tf.__version__))
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
     seed_everything()
     parser = argparse.ArgumentParser()
     # Input Arguments
