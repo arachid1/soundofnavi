@@ -373,7 +373,6 @@ class cm_callback(tf.keras.callbacks.LambdaCallback):
     def on_batch_end(self, batch, logs=None):
         acc = logs['accuracy']
         self.training_accs.append(acc)
-        print("end of batch")
         
     def on_train_end(self, logs=None):
 

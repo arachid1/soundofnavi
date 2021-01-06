@@ -32,7 +32,7 @@ HEIGHT=128
 
 export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
-DEFAULT=false
+DEFAULT=true
 
 if [ "$DEFAULT" = true ];
 then
