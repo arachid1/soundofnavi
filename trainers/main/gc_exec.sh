@@ -4,8 +4,6 @@ echo "File: " $MODULE_NAME
 echo "Description: " $DESCRIPTION
 echo "Parameters: " $PARAMS
 
-sleep 2
-
 echo "Config: " $YAML_CONFIG
 
 week=$(date +%U)

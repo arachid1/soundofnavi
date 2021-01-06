@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 
-export JOB_CAT=coch #LOG OR MEL OR COCH
-SR=8000
-
-#JOB
-
-export MODEL=conv #LSTM OR CONV
-export TRAIN_NUMBER=485
-export DESCRIPTION=redo
+export JOB_CAT=coch     #LOG OR MEL OR COCH
+export MODEL=conv
+export TRAIN_NUMBER=700
+export DESCRIPTION=mfcc_wpreparedata
 
 
 SAVE=0
@@ -17,36 +13,27 @@ CLASS_WEIGHTS=0
 
 # DATASET
 PREPROCESSED=v2
+AUGM=v0
+PARAM=v4
+
 if [ "$JOB_CAT" = "mel" ]
 then
-    PARAM=v6
     WIDTH=313
 elif [ "$JOB_CAT" = "coch" ]
 then
-    PARAM=v5
     WIDTH=1250
 fi
-AUGM=v0
-
 HEIGHT=128
+WIDTH=250
 
+
+SR=8000
 export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
 
-DEFAULT=false
+DEFAULT=true
 
 if [ "$DEFAULT" = true ];
 then
-    N_EPOCHS=80
-    WEIGHT_DECAY=1e-4 # default: 1e-4 
-    LL2_REG=0
-    BATCH_SIZE=64
-    LR=1e-3 # default: 1e-3
-    MIN_LR=1e-5 # default: 1e-4
-    FACTOR=0.5 # default: 0.5
-    PATIENCE=5 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=10
-    MIN_DELTA=0.01
-else
     N_EPOCHS=80
     WEIGHT_DECAY=1e-4 # default: 1e-4 
     LL2_REG=0
@@ -55,7 +42,18 @@ else
     MIN_LR=1e-5 # default: 1e-4
     FACTOR=0.5 # default: 0.5
     PATIENCE=5 # default: 8 <- reffering to lr patience
-    ES_PATIENCE=10
+    ES_PATIENCE=14
+    MIN_DELTA=0.01
+else
+    N_EPOCHS=80
+    WEIGHT_DECAY=1e-5 # default: 1e-4 
+    LL2_REG=0
+    BATCH_SIZE=32
+    LR=1e-4 # default: 1e-3
+    MIN_LR=1e-6 # default: 1e-4
+    FACTOR=0.5 # default: 0.5
+    PATIENCE=5 # default: 8 <- reffering to lr patience
+    ES_PATIENCE=14
     MIN_DELTA=0.01
 fi
 
