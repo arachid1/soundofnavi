@@ -26,6 +26,8 @@ from librosa import display
 import soundfile as sf
 import io
 
+from keras.utils.vis_utils import plot_model
+
 import nlpaug.flow as naf
 import nlpaug.augmenter.spectrogram as nas
 
@@ -126,8 +128,7 @@ def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON)
     x = layers.Conv2D(512, kernel_size=(3, 3),
                     activation="relu", padding="same",)(x)
     x = layers.GlobalAveragePooling2D()(x)
-    o = layers.Dense(N_CLASSES, activity_regularizer=l2(
-        LL2_REG), activation="sigmoid")(x)
+    o = layers.Dense(N_CLASSES)(x)
     # delete above
 
     y = Model(inputs=i, outputs=o, name="conv2d")
@@ -135,8 +136,7 @@ def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON)
     MFCC_SHAPE = (20, 32)
     i_2 = layers.Input(shape=MFCC_SHAPE, batch_size=BATCH_SIZE, name="input_2")
     x_2 = layers.Flatten()(i_2)
-    o_2 = layers.Dense(N_CLASSES, activity_regularizer=l2(
-        LL2_REG), activation="sigmoid")(x_2)
+    o_2 = layers.Dense(N_CLASSES)(x_2)
     
     z = Model(inputs=i_2, outputs=o_2, name="mfcc")
     
@@ -305,7 +305,6 @@ class data_generator(tf.keras.utils.Sequence):
 
         final_shape = (self.batch_size,
                        self.shape[0], self.shape[1], self.initial_channels)
-        print(final_shape)
 
         mfcc_shape = (self.batch_size, 20, 32)
 
@@ -346,7 +345,7 @@ class cm_callback(tf.keras.callbacks.LambdaCallback):
         self.es_patience = es_patience
         self.min_delta = min_delta
         self.num_of_val_samples = len(self.validation_data)
-        self.X = self.prepare_data(self.validation_data)
+        self.X, self.Z = self.prepare_data(self.validation_data)
         self.Y = label_data(self.validation_data)
         self.highest_acc = 0
         self.highest_acc_preds = None
@@ -410,8 +409,15 @@ class cm_callback(tf.keras.callbacks.LambdaCallback):
         epoch: default arg
         logs: default arg
         """
-        Y_pred = self.model.predict(self.X)
+        # mfcc_shape = (len(self.validation_data), 20, 32)
 
+        # mfcc_features = np.zeros(mfcc_shape, dtype=np.float32)
+        
+        # for i, sample in enumerate(self.validation_data):
+        #     mfccs = librosa.feature.mfcc(y=sample[3], sr=8000)
+        #     mfcc_features[i, :, :] = mfccs
+            
+        Y_pred = self.model.predict([self.X, self.Z])
         # Not tuned
 
         preds = np.zeros(Y_pred.shape)
@@ -654,14 +660,20 @@ class cm_callback(tf.keras.callbacks.LambdaCallback):
         Args:
         data: test data to be used in formal (no of elements in total, height, width, channels)
         """
+        mfcc_shape = (self.num_of_val_samples, 20, 32)
+        Z = np.zeros(mfcc_shape, dtype=np.float32)
+        
         final_shape = (self.num_of_val_samples,
                        self.shape[0], self.shape[1], self.shape[2])
         X = np.zeros(final_shape, dtype=np.float32,)
+        
         for i, wav in enumerate(data):
+            mfccs = librosa.feature.mfcc(y=wav[3], sr=8000)
+            Z[i, :, :] = mfccs 
             wav = wav[0]
             wav = np.expand_dims(wav, axis=-1)
             X[i, :, :] = wav
-        return X
+        return X, Z
 
     def convert(self, inp):
         out = []
@@ -766,6 +778,7 @@ def train_model(train_file, **args):
         for label in [none_train, c_train, w_train, c_w_train]
         for sample in label
     ]
+    
     validation_data = [
         sample for label in [none_test, c_test, w_test, c_w_test] for sample in label
     ]
@@ -799,6 +812,8 @@ def train_model(train_file, **args):
     # model setting
 
     model = conv2d(**model_params)
+    # plot_model(model, to_file='model.png', show_shapes=True)
+    # exit()
 
     # weights + model running/saving
 
