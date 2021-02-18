@@ -7,7 +7,6 @@ import numpy as np
 import datetime
 from google.cloud import storage
 import wave
-import scipy.io.wavfile as wf
 import librosa
 
 

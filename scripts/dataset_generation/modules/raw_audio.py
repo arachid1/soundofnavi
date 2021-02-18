@@ -68,7 +68,7 @@ def extract_wav(root, sr, overlap_threshold, audio_length, step_size):
     for file_name in filenames:
         if file_name == '226_1b1_Pl_sc_LittC2SE':
             continue
-        if "icbhi" in root:
+        if "icbhi" or "Simulated" in root:
             data = get_icbhi_samples(annotated_dict[file_name], file_name, root, sr, file_id, overlap_threshold, audio_length, step_size) 
             # data = get_icbhi_samples_with_events(annotated_dict[file_name], file_name, root, sr, file_id, overlap_threshold, audio_length, step_size) 
         elif "antwerp" in root:
