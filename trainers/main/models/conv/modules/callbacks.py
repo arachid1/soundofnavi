@@ -15,6 +15,78 @@ from librosa import display
 import soundfile as sf
 
 
+# class LearningRateLogger(tf.keras.callbacks.Callback):
+#     def __init__(self):
+#         super().__init__()
+#         self._supports_tf_logs = True
+
+#     def on_epoch_end(self, epoch, logs=None):
+#         if logs is None or "learning_rate" in logs:
+#             return
+#         tf.print(logs)
+#         logs["learning_rate"] = self.model.optimizer.lr
+
+class toggle_confusion_matrix(tf.keras.callbacks.Callback):
+    '''On test begin (i.e. when evaluate() is called or 
+     validation data is run during fit()) toggle metric flag '''
+     
+    def on_test_begin(self, logs):
+        for metric in self.model.metrics:
+            if 'confusion_matrix' in metric.name:
+                metric.on.assign(True)
+
+    def on_test_end(self,  logs):
+        for metric in self.model.metrics:
+            if 'confusion_matrix' in metric.name:
+                metric.on.assign(False)
+
+# class confusion_matrix(tf.keras.callbacks.Callback):
+#     def __init__(self, validation_data):
+#         super().__init__()
+#         self.validation_data = validation_data
+#         tf.print(self.validation_data)
+#         tf.print(len(self.validation_data))
+
+#     def on_epoch_end(self, epoch, logs=None):
+#         # computer confusion matrix every 5 epochs
+#         # if epoch % 5 == 0:  
+#         with tf.device('/GPU:0'):
+#             tf.print(self.validation_data)
+#             y_pred = self.model.predict(self.validation_data)
+#             tf.print(y_pred)
+
+#             y_pred = tf.cast(tf.round(y_pred), tf.int32)
+
+#             # preds = np.zeros(Y_pred.shape)
+
+#             # preds[Y_pred >= 0.5] = 1
+#             # preds[Y_pred < 0.5] = 0
+
+#             preds = self.convert(preds)
+
+class lr_tensorboard(tf.keras.callbacks.TensorBoard):
+    def __init__(self, log_dir, **kwargs):  # add other arguments to __init__ if you need
+        super().__init__(log_dir=log_dir, **kwargs)
+
+    def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        logs.update({'lr': K.eval(self.model.optimizer.lr)})
+        super().on_epoch_end(epoch, logs)
+
+# class validation_callback(tf.keras.callbacks.LambdaCallback):
+
+#     def on_epoch_end(self, batch, logs=None):
+#         Y_pred = self.model.predict(self.validation_data)
+#         tf.print(Y_pred)
+#         exit()
+        
+
+# class early_end_callback(tf.keras.callbacks.LambdaCallback):
+
+#     def on_batch_end(self, batch, logs=None):
+#         self.model.stop_training = True
+
+
 class cm_callback(tf.keras.callbacks.LambdaCallback):
     def __init__(
         self, validation_data, shape, n_classes, sr, save, add_tuned, es_patience, min_delta, job_dir

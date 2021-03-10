@@ -29,7 +29,7 @@ def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON)
 
     KERNEL_SIZE = 6
     POOL_SIZE = (2, 2)
-    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    i = layers.Input(shape=SHAPE)
     x = layers.BatchNormalization()(i)
     tower_1 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
     tower_1 = layers.Conv2D(16, (3,3), padding='same', activation='relu')(tower_1)
@@ -72,12 +72,13 @@ def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON)
     opt = tf.keras.optimizers.Adam(
         lr=LR, beta_1=0.9, beta_2=0.999, epsilon=EPSILON, decay=WEIGHT_DECAY, amsgrad=False
     )
-    class_acc = class_accuracy()
+    # class_acc = class_accuracy()
     model.compile(
         optimizer=opt,
         loss="binary_crossentropy",
         metrics=[
-            'accuracy'
+            # class_acc
+            calc_accuracy
         ],
     )
     return model
@@ -171,87 +172,94 @@ def train_model(train_file, **args):
     filenames = []
     labels = []
 
-    train_file = train_file.split('/')[-1].split('.')[0]
+    with tf.device('/CPU:0'): 
 
-    # strategy = tf.distribute.MirroredStrategy()
-    # with tf.device('/CPU:0'): 
+        train_file_name = train_file.split('/')[-1].split('.')[0]
 
-    #     path = '/home/alilerachidi/classification_algorithm/data/txt_datasets/{}'.format(train_file)
-    #     _list = os.path.join(path, 'paths_and_labels.txt')
-    #     with open(_list) as infile:
-    #         for line in infile:
-    #             elements = line.rstrip("\n").split(',')
-    #             filenames.append(elements[0])
-    #             labels.append((float(elements[1]), float(elements[2])))
+        path = '../../data/txt_datasets/{}'.format(train_file_name)
+        _list = os.path.join(path, 'paths_and_labels.txt')
+        with open(_list) as infile:
+            for line in infile:
+                elements = line.rstrip("\n").split(',')
+                elements[0] = '../' + elements[0]
+                filenames.append(elements[0])
+                # print((float(elements[1]), float(elements[2])))
+                labels.append((float(elements[1]), float(elements[2])))
 
-    #     samples = list(zip(filenames, labels))
+        samples = list(zip(filenames, labels))
 
-    #     random.shuffle(samples)
+        random.shuffle(samples)
 
-    #     train_samples, val_samples = train_test_split(
-    #         samples, test_size=train_test_ratio)
+        # samples = samples[:500]
 
-    #     train_filenames, train_labels = zip(*train_samples)
-    #     val_filenames, val_labels = zip(*val_samples)
+        train_samples, val_samples = train_test_split(
+            samples, test_size=train_test_ratio)
 
-    #     train_dataset = tf.data.Dataset.from_tensor_slices((list(train_filenames), list(train_labels)))
-    #     train_dataset = train_dataset.shuffle(len(train_filenames))
-    #     train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
-    #     train_dataset = train_dataset.batch(batch_size)
-    #     train_dataset = train_dataset.prefetch(1)
+        train_filenames, train_labels = zip(*train_samples)
+        val_filenames, val_labels = zip(*val_samples)
 
-    #     val_dataset = tf.data.Dataset.from_tensor_slices((list(val_filenames), list(val_labels)))
-    #     val_dataset = val_dataset.shuffle(len(val_filenames))
-    #     val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
-    #     val_dataset = val_dataset.batch(batch_size)
-    #     val_dataset = val_dataset.prefetch(1)
+        train_dataset = tf.data.Dataset.from_tensor_slices((list(train_filenames), list(train_labels)))
+        train_dataset = train_dataset.shuffle(len(train_filenames))
+        train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        train_dataset = train_dataset.batch(batch_size)
+        train_dataset = train_dataset.prefetch(1)
 
-    #     # model setting
-    #     model = conv2d(**model_params)
+        # print(list(val_filenames))
+        # print(list(val_labels))
 
-    #     model.summary()
+        val_dataset = tf.data.Dataset.from_tensor_slices((list(val_filenames), list(val_labels)))
+        val_dataset = val_dataset.shuffle(len(val_filenames))
+        val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
+        val_dataset = val_dataset.batch(batch_size)
+        val_dataset = val_dataset.prefetch(1)
 
-    #     weights = None
+        # model setting
+        model = conv2d(**model_params)
 
-    #     if bool(params["CLASS_WEIGHTS"]):
-    #         print("Initializing weights...")
-    #         y_train = label_data(validation_data)
-    #         weights = class_weight.compute_class_weight(
-    #             "balanced", np.unique(y_train), y_train)
+        model.summary()
 
-    #         weights = {i: weights[i] for i in range(0, len(weights))}
-    #         print("weights = {}".format(weights))
-    
-    print(get_available_gpus())
-    exit()
+        # callbacks
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logs_path, histogram_freq=1)
+        val_callback = validation_callback()
+
+        # weights
+        weights = None
+
+        if bool(params["CLASS_WEIGHTS"]):
+            print("Initializing weights...")
+            y_train = label_data(validation_data)
+            weights = class_weight.compute_class_weight(
+                "balanced", np.unique(y_train), y_train)
+
+            weights = {i: weights[i] for i in range(0, len(weights))}
+            print("weights = {}".format(weights))
+
     gpus = tf.config.experimental.list_logical_devices('GPU')
-    print(gpus)
-    if gpus:
-        for gpu in gpus:
-            with tf.device(gpu.name):
-                model.fit(
-                    train_dataset,
-                    validation_data=val_dataset,
-                    epochs=n_epochs,
-                    verbose=2,
-                    class_weight=weights,
-                )
+
+    with tf.device('/GPU:0'): 
+        model.fit(
+            train_dataset,
+            validation_data=val_dataset,
+            epochs=n_epochs,
+            verbose=1,
+            class_weight=weights,
+            callbacks=[tensorboard_callback, ]
+        )
 
     with tf.device('/CPU:0'): 
-        model.save("model.h5")
+        model.save(job_dir + "/model.h5")
 
-        # Save model.h5 on to google storage
-        with file_io.FileIO("model.h5", mode="rb") as input_f:
-            with file_io.FileIO(job_dir + "/model.h5", mode="w+") as output_f:
-                output_f.write(input_f.read())
 
 
 if __name__ == "__main__":
     print("Tensorflow Version: {}".format(tf.__version__))
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
+    # tf.debugging.set_log_device_placement(True)
+    # tf.debugging.set_log_device_placement(True)
     seed_everything()
     parser = argparse.ArgumentParser()
+
     # Input Arguments
     parser.add_argument(
         "--train-file",

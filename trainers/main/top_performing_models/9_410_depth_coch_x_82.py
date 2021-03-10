@@ -1,6 +1,6 @@
     KERNEL_SIZE = 6
     POOL_SIZE = (2, 2)
-    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    i = layers.Input(shape=SHAPE, )
     x = layers.BatchNormalization()(i)
     tower_1 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
     tower_1 = layers.Conv2D(16, (3,3), padding='same', activation='relu')(tower_1)

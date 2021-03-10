@@ -2,8 +2,8 @@
 
 export JOB_CAT=coch     #LOG OR MEL OR COCH
 export MODEL=conv
-export TRAIN_NUMBER=2000
-export DESCRIPTION=test
+export TRAIN_NUMBER=2006
+export DESCRIPTION=final_63_channels
 
 
 SAVE=0
@@ -14,7 +14,7 @@ CLASS_WEIGHTS=0
 # DATASET
 PREPROCESSED=v2
 AUGM=v0
-PARAM=v14
+PARAM=v20
 
 if [ "$JOB_CAT" = "mel" ]
 then
@@ -23,19 +23,19 @@ elif [ "$JOB_CAT" = "coch" ]
 then
     WIDTH=1250
 fi
-HEIGHT=128
+HEIGHT=64
 # WIDTH=250
 
 
 SR=8000
-# export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
-export FILE_NAME="perch_sw_${JOB_CAT}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
+export FILE_NAME="all_sw_${JOB_CAT}_preprocessed_${PREPROCESSED}_param_${PARAM}_augm_${AUGM}_cleaned_$SR.pkl"
+# export FILE_NAME="perch_sw_${JOB_CAT}_param_${PARAM}_augm_${AUGM}_$SR.pkl"
 
 DEFAULT=true
 
 if [ "$DEFAULT" = true ];
 then
-    N_EPOCHS=80
+    N_EPOCHS=35
     WEIGHT_DECAY=1e-4 # default: 1e-4 
     LL2_REG=0
     BATCH_SIZE=32
@@ -46,14 +46,14 @@ then
     ES_PATIENCE=7
     MIN_DELTA=0.01
 else
-    N_EPOCHS=80
-    WEIGHT_DECAY=1e-5 # default: 1e-4 
+    N_EPOCHS=35
+    WEIGHT_DECAY=1e-4 # default: 1e-4 
     LL2_REG=0
     BATCH_SIZE=32
-    LR=1e-4 # default: 1e-3
-    MIN_LR=1e-6 # default: 1e-4
+    LR=1e-3 # default: 1e-3
+    MIN_LR=1e-5 # default: 1e-4
     FACTOR=0.5 # default: 0.5
-    PATIENCE=5 # default: 8 <- reffering to lr patience
+    PATIENCE=1 # default: 8 <- reffering to lr patience
     ES_PATIENCE=7
     MIN_DELTA=0.01
 fi
@@ -83,7 +83,7 @@ export MODULE_NAME=$MODEL.train$TRAIN_NUMBER
 export PACKAGE_PATH=/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/trainers/main/$FOLDER/$MODEL
 
 export LOCAL_TRAIN_FILE=../../data/datasets/$FILE_NAME
-export LOCAL_JOB_DIR=../../cache/datasets/$JOB_NAME
+export LOCAL_JOB_DIR=../../cache/$JOB_NAME
 
 export REGION=us-central1
 
@@ -98,6 +98,7 @@ read confirmation
 
 # echo "Learning Rate = $LR  -  Minimum Lr = $MIN_LR  -  Weight Decay = $WEIGHT_DECAY "
 echo "Default: $DEFAULT"
+echo "Number of epochs: $N_EPOCHS"
 echo "Batch Size: $BATCH_SIZE"
 echo "Learning Rate: $LR"
 echo "Minimum Lr: $MIN_LR"

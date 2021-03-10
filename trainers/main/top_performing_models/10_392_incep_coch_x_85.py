@@ -4,7 +4,7 @@
     CHANNELS = 32
     DROPOUT = 0.1
     DENSE_LAYER = 32
-    i = layers.Input(shape=SHAPE, batch_size=BATCH_SIZE)
+    i = layers.Input(shape=SHAPE,)
     x = layers.BatchNormalization()(i)
     tower_1 = layers.Conv2D(8, (1,1), padding='same', activation='relu')(x)
     tower_1 = layers.Conv2D(8, (3,3), padding='same', activation='relu')(tower_1)
