@@ -17,7 +17,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.regularizers import l1, l2, l1_l2
 from tensorflow.keras import activations
 import tensorflow.keras.backend as K
-from vis.utils import utils
+# from vis.utils import ut
 from sklearn.metrics import confusion_matrix
 
 def label_data(validation_data):
@@ -384,7 +384,7 @@ def generate_acc(model, all_data, labels):
 def main():
 
     # model retrieval
-    filepath = './model9_nonperch_92.h5'
+    filepath = '../H5models/model9_nonperch_92.h5'
 
     sr = 8000
     SHAPE = (128, 1250, 3)
@@ -398,8 +398,8 @@ def main():
     # model.summary()
     
     ## data retrieval
-    train_file ='../../data/datasets/perch_sw_coch_param_v14_augm_v0_8000.pkl'
-    # train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v14_augm_v0_cleaned_8000.pkl'
+    # train_file ='../../data/datasets/perch_sw_coch_param_v14_augm_v0_8000.pkl'
+    train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v18_augm_v0_cleaned_8000.pkl'
     file_stream = file_io.FileIO(train_file, mode="rb")
     data = pickle.load(file_stream)
 
@@ -420,16 +420,18 @@ def main():
 
     all_data = np.array([
             np.repeat(sample[0][..., np.newaxis], 3, -1)
-            for label in data[0]
+            for label in data[1]
             for sample in label
     ])
 
-    _all = data[0][0] + data[0][1] + data[0][2] + data[0][3]
+    print("Created all_data.")
+
+    _all = data[1][0] + data[1][1] + data[1][2] + data[1][3]
 
     labels = label_data(_all)
 
     del data
-    print("delete data.")
+    print("deleted data.")
     print(len(all_data))
     print(len(labels))
 

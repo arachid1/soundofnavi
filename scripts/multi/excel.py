@@ -17,7 +17,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.regularizers import l1, l2, l1_l2
 from tensorflow.keras import activations
 import tensorflow.keras.backend as K
-from vis.utils import utils
+# from vis.utils import utils
 from sklearn.metrics import confusion_matrix
 
 def label_data(validation_data):
@@ -32,6 +32,18 @@ def label_data(validation_data):
         elif element[1] == 1 and element[2] == 1:
             labels_sequence.append(3)
     return labels_sequence
+
+def visualize_spectrogram(spect, sr, name):
+    fig = plt.figure(figsize=(20, 10))
+    display.specshow(
+        spect,
+        # y_axis="log",
+        sr=sr,
+        cmap="coolwarm"
+    )
+    plt.colorbar()
+    plt.show()
+    plt.savefig(name)
 
 def convert(inp):
     out = []
@@ -385,7 +397,8 @@ def generate_excel(model):
     count = 1
 
     wb = Workbook() 
-    sheet1 = wb.add_sheet('Sheet 1') 
+    sheet1 = wb.add_sheet('Sheet 1')
+    overall = np.zeros(128, 1250, 3)
 
     for patient_id in os.listdir(root):
         patient_root = os.path.join(root, patient_id)
@@ -417,6 +430,54 @@ def generate_excel(model):
         count += 1
     wb.save('model10_92_bangladesh.xls') 
 
+def generate_avg_tmp():
+    coch_path = '../../cochlear_preprocessing'
+    coch_a = np.loadtxt(os.path.join(coch_path,'COCH_A.txt'), delimiter=',')
+    coch_b = np.loadtxt(os.path.join(coch_path,'COCH_B.txt'), delimiter=',')
+    order = np.loadtxt(os.path.join(coch_path,'p.txt'), delimiter=',')
+    fs = 8000
+    bp = 1
+    coch_params = {
+        "frmlen": 8*(1/(fs/8000)), 
+        "tc": 8, 
+        "fac": -2, 
+        "shft": np.log2(fs/16000), 
+        "FULLT": 0, 
+        "FULLX": 0, 
+        "bp": bp
+    }
+    root = '../../data/raw_audios/Bangladesh_wo_details/'
+    patient_ids = []
+
+    overall = np.zeros((128, 1250))
+
+    count = 0
+    for patient_id in os.listdir(root):
+        patient_root = os.path.join(root, patient_id)
+        raw_audios = []
+        for file_ in os.listdir(patient_root):
+            if not file_.endswith('.wav'):
+                continue
+            name = file_.split('/')[-1]
+            raw_audios.append(name)
+        raw_audios = sorted(raw_audios)
+        for raw_audio in raw_audios:
+            data, rate = librosa.load(os.path.join(patient_root, raw_audio), 8000)
+            if not (len(data) == 80000):
+                print("Length of {} is {}".format(os.path.join(patient_root, raw_audio), len(data)))
+                data = generate_padded_samples(data, 80000)
+            data = generate_cochlear_spec(data, coch_params, coch_b, coch_a, order)
+            data = np.transpose(data)
+            # data = np.repeat(data[..., np.newaxis], 3, -1)
+            # print(data.shape)
+            overall += data
+            count +=1
+    # print(overall.shape)
+    overall_spec = overall/count
+    print(overall_spec)
+    print(np.mean(overall_spec))
+    visualize_spectrogram(overall_spec, 8000, "avg_spec")
+
 def main():
 
     # model retrieval
@@ -427,17 +488,17 @@ def main():
     BATCH_SIZE = 1
     N_CLASSES = 2
 
-    model = return_mod9(SHAPE, BATCH_SIZE, N_CLASSES)
+    # model = return_mod9(SHAPE, BATCH_SIZE, N_CLASSES)
     # model = return_mod10(SHAPE, BATCH_SIZE, N_CLASSES)
     
-    model.load_weights(filepath)
-    model.summary()
+    # model.load_weights(filepath)
+    # model.summary()
     
     ## data retrieval
     # train_file ='../../data/datasets/perch_sw_coch_param_v14_augm_v0_8000.pkl'
-    train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v16_augm_v0_cleaned_8000.pkl'
-    file_stream = file_io.FileIO(train_file, mode="rb")
-    data = pickle.load(file_stream)
+    # train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v16_augm_v0_cleaned_8000.pkl'
+    # file_stream = file_io.FileIO(train_file, mode="rb")
+    # data = pickle.load(file_stream)
 
     # info(data[0], data[1])
 
@@ -455,6 +516,7 @@ def main():
     ##### Excet sheet generation
 
     # generate_excel(model)
+    generate_avg_tmp()
 
 if __name__ == "__main__":
     main()

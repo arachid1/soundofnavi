@@ -17,13 +17,14 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.regularizers import l1, l2, l1_l2
 from tensorflow.keras import activations
 import tensorflow.keras.backend as K
-from vis.visualization import visualize_saliency
-from vis.utils import utils
+# from vis.visualization import visualize_saliency
+# from vis.utils import utils
 from tf_explain.core.grad_cam import GradCAM
 from tf_explain.core.activations import ExtractActivations
 from tf_explain.core.integrated_gradients import IntegratedGradients
 import random
 from PIL import Image
+import cv2
 
 def print_sample_count(none, crackles, wheezes, both):
     print('all:{}\nnone:{}\ncrackles:{}\nwheezes:{}\nboth:{}'.format(
@@ -363,55 +364,70 @@ def generate_acc(model, all_data):
 def main():
 
     # model retrieval
-    filepath = './model10_92.h5'
+    filepath = '../H5models/model9_93.h5'
 
     sr = 8000
     SHAPE = (128, 1250, 3)
     BATCH_SIZE = 1
     N_CLASSES = 2
 
-    # model = return_mod9(SHAPE, BATCH_SIZE, N_CLASSES)
-    model = return_mod10(SHAPE, BATCH_SIZE, N_CLASSES)
-    
+    model = return_mod9(SHAPE, BATCH_SIZE, N_CLASSES)
+    # model = return_mod10(SHAPE, BATCH_SIZE, N_CLASSES)
+    # 
     model.load_weights(filepath)
     model.summary()
 
+    version = 'v22'
+    file_path = '../../data/txt_datasets/all_sw_coch_preprocessed_v2_param_{}_augm_v0_cleaned_8000/antwerp_RESPT_CALSA_ACT_exa_005_V1_POST_Thsr_31.txt'.format(version)
+    spec = np.loadtxt(file_path, delimiter=',')
+    spec = np.repeat(spec[..., np.newaxis], 3, -1)
+
+    output = model.predict(np.array([spec]))
+    print(output)
+
+    explainer = GradCAM()
+
+    class_ind = 1
+    grid = explainer.explain(([spec], None), model, image_weight=1, class_index=class_ind)
+    explainer.save(grid, ".", "test_2.png")
+
     ## data retrieval
     # train_file ='../../data/datasets/perch_sw_coch_param_v14_augm_v0_8000.pkl'
-    train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v13_augm_v0_cleaned_8000.pkl'
-    file_stream = file_io.FileIO(train_file, mode="rb")
-    data = pickle.load(file_stream)
+    # train_file ='../../data/datasets/all_sw_coch_preprocessed_v2_param_v13_augm_v0_cleaned_8000.pkl'
+    # file_stream = file_io.FileIO(train_file, mode="rb")
+    # data = pickle.load(file_stream)
 
-    print("starting... ")
-    label = 2
-    index = 3
+    # print("starting... ")
+    # label = 2
+    # index = 3
     # explainer = IntegratedGradients()
-    explainer = GradCAM()
-    viz = "gradcam"
+    # viz = "gradcam"
     
-    element = data[1][label][index]
-    element = np.repeat(element[0][..., np.newaxis], 3, -1)
-    output = model.predict(np.array([element]))
-    print(output)
-    counter = 0
+    # element = data[1][label][index]
+    # element = np.repeat(element[0][..., np.newaxis], 3, -1)
+    # output = model.predict(np.array([element]))
+    # print(output)
+    # counter = 0
 
-    for layer in model.layers:
-        if layer.name == "dense" or layer.name == "input_1":
-            continue
-        for class_ind in range(0, 1):
-            grid = explainer.explain(([element], None), model, layer_name=layer.name, image_weight=1, class_index=class_ind)
-            explainer.save(grid, ".", "vizs/{}/1/grid_layer_{}_{}_{}_ind{}.png".format(viz, counter, layer.name, index, class_ind))
-            counter += 1
-    fig = plt.figure(figsize=(20, 10))                
-    display.specshow(
-        element[:, :, 0],
-        y_axis="log",
-        sr=8000,
-        cmap="coolwarm"
-    )
-    plt.show()
-    fig.savefig('vizs/{}/1/librosa_{}_label{}.png'.format(viz, index, label))
-    exit()
+    # for layer in model.layers:
+    #     if layer.name == "dense" or layer.name == "input_1":
+    #         continue
+    #     for class_ind in range(0, 1):
+    #         grid = explainer.explain(([element], None), model, layer_name=layer.name, image_weight=1, class_index=class_ind)
+    #         explainer.save(grid, ".", "vizs/{}/1/grid_layer_{}_{}_{}_ind{}.png".format(viz, counter, layer.name, index, class_ind))
+    #         counter += 1
+
+    # fig = plt.figure(figsize=(20, 10))       
+             
+    # display.specshow(
+    #     element[:, :, 0],
+    #     y_axis="log",
+    #     sr=8000,
+    #     cmap="coolwarm"
+    # )
+    # plt.show()
+    # fig.savefig('vizs/{}/1/librosa_{}_label{}.png'.format(viz, index, label))
+    # exit()
 
     # target_layers = [
     #     "average_pooling2d_5"
@@ -424,18 +440,6 @@ def main():
     # grid = explainer.explain(all_data, model, target_layers)
     # explainer.save(grid, ".", "activations.png")
 
-    ### eval
-
-    # generate_acc(model, all_data)
-    
-    ##### confidence interval
-
-    # for i in range(0, 10):
-    #     read_output_and_viz(model, data[1][3][i], sr, i)
-
-    ##### Excet sheet generation
-
-    # generate_excel(model)
 
 if __name__ == "__main__":
     main()

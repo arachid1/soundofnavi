@@ -2,8 +2,8 @@
 
 export JOB_CAT=coch     #LOG OR MEL OR COCH
 export MODEL=conv
-export TRAIN_NUMBER=2006
-export DESCRIPTION=final_63_channels
+export TRAIN_NUMBER=2009
+export DESCRIPTION=mod10_on64_normal
 
 
 SAVE=0
@@ -14,7 +14,7 @@ CLASS_WEIGHTS=0
 # DATASET
 PREPROCESSED=v2
 AUGM=v0
-PARAM=v20
+PARAM=v21
 
 if [ "$JOB_CAT" = "mel" ]
 then
@@ -35,7 +35,7 @@ DEFAULT=true
 
 if [ "$DEFAULT" = true ];
 then
-    N_EPOCHS=35
+    N_EPOCHS=30
     WEIGHT_DECAY=1e-4 # default: 1e-4 
     LL2_REG=0
     BATCH_SIZE=32
@@ -46,7 +46,7 @@ then
     ES_PATIENCE=7
     MIN_DELTA=0.01
 else
-    N_EPOCHS=35
+    N_EPOCHS=30
     WEIGHT_DECAY=1e-4 # default: 1e-4 
     LL2_REG=0
     BATCH_SIZE=32

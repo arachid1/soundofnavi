@@ -29,6 +29,71 @@ def get_available_gpus():
 
 def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
 
+    KERNEL_SIZE = (3, 3)
+    POOL_SIZE = (2, 2)
+    PADDING = "same"
+    CHANNELS = 32
+    DROPOUT = 0.1
+    DENSE_LAYER = 32
+    i = layers.Input(shape=SHAPE,)
+    x = layers.BatchNormalization()(i)
+    tower_1 = layers.Conv2D(8, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(8, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(8, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(8, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(8, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(16, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(16, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(16, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(32, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(32, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(32, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(64, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(64, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(64, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(128, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(128, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(128, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    tower_1 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_1 = layers.Conv2D(256, (3,3), padding='same', activation='relu')(tower_1)
+    tower_2 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(x)
+    tower_2 = layers.Conv2D(256, (5,5), padding='same', activation='relu')(tower_2)
+    tower_3 = layers.MaxPooling2D((3,3), strides=(1,1), padding='same')(x)
+    tower_3 = layers.Conv2D(256, (1,1), padding='same', activation='relu')(tower_3)
+    x = layers.Concatenate(axis=3)([tower_1, tower_2, tower_3])
+    x = layers.AveragePooling2D(pool_size=POOL_SIZE, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.GlobalAveragePooling2D()(x)
+    o = layers.Dense(N_CLASSES, activity_regularizer=l2(
+        LL2_REG), activation="sigmoid")(x)
     # delete above
 
     model = Model(inputs=i, outputs=o, name="conv2d")
@@ -121,7 +186,7 @@ def train_model(train_file, **args):
         with open(_list) as infile:
             for line in infile:
                 elements = line.rstrip("\n").split(',')
-                elements[0] = '../' + elements[0]
+                # elements[0] = '../' + elements[0]
                 filenames.append(elements[0])
                 labels.append((float(elements[1]), float(elements[2])))
 
@@ -140,14 +205,16 @@ def train_model(train_file, **args):
 
         train_dataset = tf.data.Dataset.from_tensor_slices((list(train_filenames), list(train_labels)))
         train_dataset = train_dataset.shuffle(len(train_filenames))
-        train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        # train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        train_dataset = train_dataset.map(lambda filename, label: parse_function(filename, label, shape), num_parallel_calls=4)
         train_dataset = train_dataset.batch(batch_size)
         # print(batch_size)
         train_dataset = train_dataset.prefetch(1)
 
         val_dataset = tf.data.Dataset.from_tensor_slices((list(val_filenames), list(val_labels)))
         val_dataset = val_dataset.shuffle(len(val_filenames))
-        val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
+        # val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
+        val_dataset = val_dataset.map(lambda filename, label: parse_function(filename, label, shape), num_parallel_calls=4)
         val_dataset = val_dataset.batch(batch_size)
         val_dataset = val_dataset.prefetch(1)
 
@@ -178,7 +245,7 @@ def train_model(train_file, **args):
     gpus = tf.config.experimental.list_logical_devices('GPU')
 
     if gpus:
-        with gpu in gpus:
+        for gpu in gpus:
             model.fit(
                 train_dataset,
                 validation_data=val_dataset,

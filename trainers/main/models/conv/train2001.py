@@ -121,7 +121,7 @@ def train_model(train_file, **args):
         with open(_list) as infile:
             for line in infile:
                 elements = line.rstrip("\n").split(',')
-                elements[0] = '../' + elements[0]
+                # elements[0] = '../' + elements[0]
                 filenames.append(elements[0])
                 labels.append((float(elements[1]), float(elements[2])))
 
@@ -140,14 +140,16 @@ def train_model(train_file, **args):
 
         train_dataset = tf.data.Dataset.from_tensor_slices((list(train_filenames), list(train_labels)))
         train_dataset = train_dataset.shuffle(len(train_filenames))
-        train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        # train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        train_dataset = train_dataset.map(lambda filename, label: parse_function(filename, label, shape), num_parallel_calls=4)
         train_dataset = train_dataset.batch(batch_size)
         # print(batch_size)
         train_dataset = train_dataset.prefetch(1)
 
         val_dataset = tf.data.Dataset.from_tensor_slices((list(val_filenames), list(val_labels)))
         val_dataset = val_dataset.shuffle(len(val_filenames))
-        val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
+        val_dataset = val_dataset.map(lambda filename, label: parse_function(filename, label, shape), num_parallel_calls=4)
+        # val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
         val_dataset = val_dataset.batch(batch_size)
         val_dataset = val_dataset.prefetch(1)
 
@@ -178,7 +180,7 @@ def train_model(train_file, **args):
     gpus = tf.config.experimental.list_logical_devices('GPU')
 
     if gpus:
-        with gpu in gpus:
+        for gpu in gpus:
             model.fit(
                 train_dataset,
                 validation_data=val_dataset,
