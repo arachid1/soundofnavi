@@ -19,7 +19,7 @@ In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (or 
 
 This an important section that you shouldn't have to modify for the most part. Its main objective is to creates a parent folder for file cache. Be aware that it deletes any prior cache folder that corresponds to that file, so for example, running local_gc_exec.sh for train2356 will delete any exisiting cache/train2356 folder and initialize a new one. It also seeds our libraries, defines training mode, etc. 
 
-'''
+```
     print("Tensorflow Version: {}".format(tf.__version__))
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     seed_everything() # seeding np, tf, etc
@@ -34,14 +34,14 @@ This an important section that you shouldn't have to modify for the most part. I
     initialize_file_folder()
     print("-----------------------")
 
-'''
+```
 
 Here, the function to look at is launch_job. 
 It first runs initialize_job(), which creates a child folder for the job (i.e., first job with id 1 goes goes into folder 1 in the parent cache folder, like train2356/cache/1) and handles other important tasks, like creating subfolders (i.e.,  "tp" or "tn") or incrementing parameters, like the job id that is super important for caching as we just saw. 
 Then, it runs train_model(), which is the last, and MAIN, function inside any file. It takes the parameters as described in the comments. The comments and the section on the backbone of the library used should help you understand its magic. 
 
 
-'''
+````
     ###### set up used for spec input models (default)
     parameters.hop_length = 254
     parameters.shape = (128, 311)
@@ -58,7 +58,7 @@ Then, it runs train_model(), which is the last, and MAIN, function inside any fi
     launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 0, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!
-'''
+````
 
 Finally, we must talk about the last few components necessary for training. The first is models/conv/modules, which
 
