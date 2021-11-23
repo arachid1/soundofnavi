@@ -1,0 +1,179 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+File:  conv.train2191
+Description:  2190_withcyclical
+WARNING:tensorflow:From /home/alirachidi/classification_algorithm/trainers/main/models/conv/modules/augmentation.py:19: experimental_run_functions_eagerly (from tensorflow.python.eager.def_function) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.config.run_functions_eagerly` instead of the experimental version.
+Tensorflow Version: 2.4.0
+Num GPUs Available:  1
+-----------------------
+Using module: nv/train2191.py
+Using train_file: ../../data/datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+Job directory: ../../new_cache/conv__2191__06_0522__v29__2190_withcyclical
+Parameters: {'N_CLASSES': 1, 'SR': 8000, 'BATCH_SIZE': 16, 'LR': 0.001, 'SHAPE': [128, 1250], 'LL2_REG': 0, 'WEIGHT_DECAY': 0.001, 'N_EPOCHS': 80, 'FACTOR': 0.75, 'PATIENCE': 4, 'MIN_LR': 1e-08, 'LABEL_SMOOTHING': 0, 'EPSILON': 1e-07, 'ES_PATIENCE': 25, 'OVERSAMPLE': 0, 'MIN_DELTA': 0, 'PARAM': 'v29', 'EPOCH_START': 1, 'CLAUSE': 1, 'AUGMENTATION': 1, 'TARGET': 1, 'INITIAL_CHANNELS': 1, 'CLASS_WEIGHTS': 0, 'SIX': 0, 'CONCAT': 0, 'TESTING': 0}
+Augmentation parameters for audio: {'ADD': 1, 'QUANTITY': 500, 'WAV_PATH': 'v36,v37'}
+Augmentation parameters for spectrograms: {'ADD': 1, 'QUANTITY': 500, 'TIME_MASKING': 1, 'FREQUENCY_MASKING': 1, 'LOUDNESS': 0}
+-----------------------
+Collecting Variables...
+All variables have been collected.
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow_addons/utils/ensure_tf_install.py:68: UserWarning: Tensorflow Addons supports using Python ops for all Tensorflow versions above or equal to 2.2.0 and strictly below 2.3.0 (nightly versions are not supported). 
+ The versions of TensorFlow you are currently using is 2.4.0 and is not supported. 
+Some things might work, some things might not.
+If you were to encounter a bug, do not file an issue.
+If you want to make sure you're using a tested and supported configuration, either change the TensorFlow version or the TensorFlow Addons's version. 
+You can find the compatibility matrix in TensorFlow Addon's readme:
+https://github.com/tensorflow/addons
+  UserWarning,
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+Original number of folders: 453
+Pneumonia patients: 109, Non-pneumonia patients: 270
+-----------------------
+Number of train recordings: 4212 with pneumonia: 1080 and non-pneumonia: 3132
+Length of training samples after audio augmentation: 5212
+Length of training samples after spec augmentation: 5712
+-----------------------
+Number of train recordings: 5712 with pneumonia: 2580 and non-pneumonia: 3132
+Number of val recordings: 1072 with pneumonia: 288 and non-pneumonia: 784
+-----------------------
+The initial learning rate for this job is: 0.0007373949579831934
+With concat = False and six = False, size of training set: 5712...
+...and size of validation set: 1072
+Model: "conv2d"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            [(None, 128, 1250, 1 0                                            
+__________________________________________________________________________________________________
+batch_normalization (BatchNorma (None, 128, 1250, 1) 4           input_1[0][0]                    
+__________________________________________________________________________________________________
+conv2d (Conv2D)                 (None, 128, 1250, 16 32          batch_normalization[0][0]        
+__________________________________________________________________________________________________
+conv2d_2 (Conv2D)               (None, 128, 1250, 16 32          batch_normalization[0][0]        
+__________________________________________________________________________________________________
+max_pooling2d (MaxPooling2D)    (None, 128, 1250, 1) 0           batch_normalization[0][0]        
+__________________________________________________________________________________________________
+conv2d_1 (Conv2D)               (None, 128, 1250, 16 2320        conv2d[0][0]                     
+__________________________________________________________________________________________________
+conv2d_3 (Conv2D)               (None, 128, 1250, 16 6416        conv2d_2[0][0]                   
+__________________________________________________________________________________________________
+conv2d_4 (Conv2D)               (None, 128, 1250, 16 32          max_pooling2d[0][0]              
+__________________________________________________________________________________________________
+concatenate (Concatenate)       (None, 128, 1250, 48 0           conv2d_1[0][0]                   
+                                                                 conv2d_3[0][0]                   
+                                                                 conv2d_4[0][0]                   
+__________________________________________________________________________________________________
+average_pooling2d (AveragePooli (None, 64, 625, 48)  0           concatenate[0][0]                
+__________________________________________________________________________________________________
+batch_normalization_1 (BatchNor (None, 64, 625, 48)  192         average_pooling2d[0][0]          
+__________________________________________________________________________________________________
+dropout (Dropout)               (None, 64, 625, 48)  0           batch_normalization_1[0][0]      
+__________________________________________________________________________________________________
+inverted_residual (InvertedResi (None, 64, 625, 32)  35840       dropout[0][0]                    
+__________________________________________________________________________________________________
+inverted_residual_1 (InvertedRe (None, 64, 625, 32)  20864       inverted_residual[0][0]          
+__________________________________________________________________________________________________
+average_pooling2d_1 (AveragePoo (None, 32, 312, 32)  0           inverted_residual_1[0][0]        
+__________________________________________________________________________________________________
+batch_normalization_2 (BatchNor (None, 32, 312, 32)  128         average_pooling2d_1[0][0]        
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 32, 312, 32)  0           batch_normalization_2[0][0]      
+__________________________________________________________________________________________________
+inverted_residual_2 (InvertedRe (None, 32, 312, 64)  27136       dropout_1[0][0]                  
+__________________________________________________________________________________________________
+inverted_residual_3 (InvertedRe (None, 32, 312, 64)  66304       inverted_residual_2[0][0]        
+__________________________________________________________________________________________________
+average_pooling2d_2 (AveragePoo (None, 16, 156, 64)  0           inverted_residual_3[0][0]        
+__________________________________________________________________________________________________
+batch_normalization_3 (BatchNor (None, 16, 156, 64)  256         average_pooling2d_2[0][0]        
+__________________________________________________________________________________________________
+dropout_2 (Dropout)             (None, 16, 156, 64)  0           batch_normalization_3[0][0]      
+__________________________________________________________________________________________________
+inverted_residual_4 (InvertedRe (None, 16, 156, 128) 91136       dropout_2[0][0]                  
+__________________________________________________________________________________________________
+inverted_residual_5 (InvertedRe (None, 16, 156, 128) 230912      inverted_residual_4[0][0]        
+__________________________________________________________________________________________________
+average_pooling2d_3 (AveragePoo (None, 8, 78, 128)   0           inverted_residual_5[0][0]        
+__________________________________________________________________________________________________
+batch_normalization_4 (BatchNor (None, 8, 78, 128)   512         average_pooling2d_3[0][0]        
+__________________________________________________________________________________________________
+dropout_3 (Dropout)             (None, 8, 78, 128)   0           batch_normalization_4[0][0]      
+__________________________________________________________________________________________________
+inverted_residual_6 (InvertedRe (None, 8, 78, 256)   329728      dropout_3[0][0]                  
+__________________________________________________________________________________________________
+inverted_residual_7 (InvertedRe (None, 8, 78, 256)   855040      inverted_residual_6[0][0]        
+__________________________________________________________________________________________________
+average_pooling2d_4 (AveragePoo (None, 4, 39, 256)   0           inverted_residual_7[0][0]        
+__________________________________________________________________________________________________
+batch_normalization_5 (BatchNor (None, 4, 39, 256)   1024        average_pooling2d_4[0][0]        
+__________________________________________________________________________________________________
+dropout_4 (Dropout)             (None, 4, 39, 256)   0           batch_normalization_5[0][0]      
+__________________________________________________________________________________________________
+inverted_residual_8 (InvertedRe (None, 4, 39, 512)   1249280     dropout_4[0][0]                  
+__________________________________________________________________________________________________
+inverted_residual_9 (InvertedRe (None, 4, 39, 512)   3282944     inverted_residual_8[0][0]        
+__________________________________________________________________________________________________
+global_average_pooling2d (Globa (None, 512)          0           inverted_residual_9[0][0]        
+__________________________________________________________________________________________________
+dense (Dense)                   (None, 1)            513         global_average_pooling2d[0][0]   
+==================================================================================================
+Total params: 6,200,645
+Trainable params: 6,159,139
+Non-trainable params: 41,506
+__________________________________________________________________________________________________
+Epoch 1/80
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Traceback (most recent call last):
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/eager/context.py", line 2113, in execution_mode
+    yield
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/iterator_ops.py", line 733, in _next_internal
+    output_shapes=self._flat_output_shapes)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/ops/gen_dataset_ops.py", line 2579, in iterator_get_next
+    _ops.raise_from_not_ok_status(e, name)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/framework/ops.py", line 6862, in raise_from_not_ok_status
+    six.raise_from(core._status_to_exception(e.code, message), None)
+  File "<string>", line 3, in raise_from
+tensorflow.python.framework.errors_impl.NotFoundError: ../../data/txt_datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000/augmented/0271146_170812-001-6_F_0___1_v36_304.txt; No such file or directory
+	 [[{{node ReadFile}}]] [Op:IteratorGetNext]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/alirachidi/classification_algorithm/trainers/main/models/conv/train2191.py", line 412, in <module>
+    train_model(train_file, job_dir, params, wav_params, spec_params)
+  File "/home/alirachidi/classification_algorithm/trainers/main/models/conv/train2191.py", line 320, in train_model
+    callbacks=[metrics_callback]
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/wandb/integration/keras/keras.py", line 124, in new_v2
+    return old_v2(*args, **kwargs)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/keras/engine/training.py", line 1100, in fit
+    tmp_logs = self.train_function(iterator)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/keras/engine/training.py", line 805, in train_function
+    return step_function(self, iterator)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/keras/engine/training.py", line 794, in step_function
+    data = next(iterator)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/iterator_ops.py", line 747, in __next__
+    return self._next_internal()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/iterator_ops.py", line 739, in _next_internal
+    return structure.from_compatible_tensor_list(self._element_spec, ret)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/contextlib.py", line 130, in __exit__
+    self.gen.throw(type, value, traceback)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/eager/context.py", line 2116, in execution_mode
+    executor_new.wait()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/eager/executor.py", line 69, in wait
+    pywrap_tfe.TFE_ExecutorWaitForAllPendingNodes(self._handle)
+tensorflow.python.framework.errors_impl.NotFoundError: ../../data/txt_datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000/augmented/0271146_170812-001-6_F_0___1_v36_304.txt; No such file or directory
+	 [[{{node ReadFile}}]]
+wandb: Waiting for W&B process to finish, PID 18523
+wandb: Program failed with code 1. 
+wandb: Find user logs for this run at: /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210605_052256-1sd6btvb/logs/debug.log
+wandb: Find internal logs for this run at: /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210605_052256-1sd6btvb/logs/debug-internal.log
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210605_052256-1sd6btvb
+
+
+ See logs at ../../new_cache/conv__2191__06_0522__v29__2190_withcyclical/logs/

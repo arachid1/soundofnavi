@@ -1,0 +1,157 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v39_augm_v0_cleaned_8000.pkl
+File:  conv.train2386
+Description:  lstm
+Collecting Variables...
+All variables have been collected.
+-----------------------
+Job id is 0.
+2274 Bd audios have been loaded.
+379 Bd groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split and flattened. ---
+- Bd has 4302 training samples with 3216 0's and 1086 1's, and 982 val samples with 700 0's and 282 1's - 
+--- Original training dataset contains 4302 elements ---
+--- Final training dataset went from 4302 to 4302 elements, with 3216 0's, 1086 1's and 0 others ---
+--- Validation dataset contains 982 elements, with 700 0's and 282 1's ---
+Initializing weights...
+weights = {0: 0.6688432835820896, 1: 1.9806629834254144}
+Model: "conv2d"
+______________________________________________________________________________________________________________
+Layer (type)                        Output Shape            Param #      Connected to                         
+==============================================================================================================
+input_1 (InputLayer)                [(None, 3, 105, 128, 1) 0                                                 
+______________________________________________________________________________________________________________
+batch_normalization (BatchNormaliza (None, 3, 105, 128, 1)  4            input_1[0][0]                        
+______________________________________________________________________________________________________________
+time_distributed (TimeDistributed)  (None, 3, 105, 128, 16) 32           batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+time_distributed_2 (TimeDistributed (None, 3, 105, 128, 16) 32           batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+time_distributed_4 (TimeDistributed (None, 3, 105, 128, 1)  0            batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+time_distributed_1 (TimeDistributed (None, 3, 105, 128, 16) 2320         time_distributed[0][0]               
+______________________________________________________________________________________________________________
+time_distributed_3 (TimeDistributed (None, 3, 105, 128, 16) 6416         time_distributed_2[0][0]             
+______________________________________________________________________________________________________________
+time_distributed_5 (TimeDistributed (None, 3, 105, 128, 16) 32           time_distributed_4[0][0]             
+______________________________________________________________________________________________________________
+concatenate (Concatenate)           (None, 3, 105, 128, 48) 0            time_distributed_1[0][0]             
+                                                                         time_distributed_3[0][0]             
+                                                                         time_distributed_5[0][0]             
+______________________________________________________________________________________________________________
+time_distributed_6 (TimeDistributed (None, 3, 53, 64, 48)   0            concatenate[0][0]                    
+______________________________________________________________________________________________________________
+batch_normalization_1 (BatchNormali (None, 3, 53, 64, 48)   192          time_distributed_6[0][0]             
+______________________________________________________________________________________________________________
+dropout (Dropout)                   (None, 3, 53, 64, 48)   0            batch_normalization_1[0][0]          
+______________________________________________________________________________________________________________
+time_distributed_7 (TimeDistributed (None, 3, 48)           0            dropout[0][0]                        
+______________________________________________________________________________________________________________
+bidirectional (Bidirectional)       (None, 3, 256)          181248       time_distributed_7[0][0]             
+______________________________________________________________________________________________________________
+bidirectional_1 (Bidirectional)     (None, 3, 256)          394240       bidirectional[0][0]                  
+______________________________________________________________________________________________________________
+dense (Dense)                       (None, 3, 128)          32896        bidirectional_1[0][0]                
+______________________________________________________________________________________________________________
+dense_1 (Dense)                     (None, 3, 1)            129          dense[0][0]                          
+______________________________________________________________________________________________________________
+flatten (Flatten)                   (None, 3)               0            dense_1[0][0]                        
+______________________________________________________________________________________________________________
+dense_2 (Dense)                     (None, 1)               4            flatten[0][0]                        
+==============================================================================================================
+Total params: 617,545
+Trainable params: 617,447
+Non-trainable params: 98
+______________________________________________________________________________________________________________
+Epoch 1/65
+135/135 - 23s - loss: 0.6943 - accuracy: 0.4296
+Confusion matrix: 
+ [[  0 700]
+ [  0 282]]
+Normalized Confusion matrix: 
+ [[0. 1.]
+ [0. 1.]]
+Validation f1: 44.62
+Validation ROC auc: 0.5637183383991895
+Validation average accuracy: 0.5
+Validation accuracy: 28.72
+Validation recall: 100.00
+Validation precision: 28.72
+Validation class accuracies: [0.0, 1.0]
+
+Patient Confusion matrix: 
+ [[ 0 53]
+ [ 0 22]] 
+
+Patient Normalized Confusion matrix: 
+ [[0. 1.]
+ [0. 1.]] 
+
+Patient Validation accuracy: 
+ 29.33 
+
+Patient Validation class accuracies: 
+ [0.0, 1.0] 
+
+Saving model...
+Epoch 2/65
+135/135 - 14s - loss: 0.6879 - accuracy: 0.5672
+Confusion matrix: 
+ [[559 141]
+ [215  67]]
+Normalized Confusion matrix: 
+ [[0.799 0.201]
+ [0.762 0.238]]
+Validation f1: 27.35
+Validation ROC auc: 0.5410587639311043
+Validation average accuracy: 0.5180800405268491
+Validation accuracy: 63.75
+Validation recall: 23.76
+Validation precision: 32.21
+Validation class accuracies: [0.7985714285714286, 0.2375886524822695]
+
+Patient Confusion matrix: 
+ [[15 38]
+ [ 5 17]] 
+
+Patient Normalized Confusion matrix: 
+ [[0.283 0.717]
+ [0.227 0.773]] 
+
+Patient Validation accuracy: 
+ 42.67 
+
+Patient Validation class accuracies: 
+ [0.2830188679245283, 0.7727272727272727] 
+
+Saving model...
+Epoch 3/65
+135/135 - 14s - loss: 0.6878 - accuracy: 0.5595
+Confusion matrix: 
+ [[203 497]
+ [ 54 228]]
+Normalized Confusion matrix: 
+ [[0.29  0.71 ]
+ [0.191 0.809]]
+Validation f1: 45.28
+Validation ROC auc: 0.578161094224924
+Validation average accuracy: 0.5492553191489361
+Validation accuracy: 43.89
+Validation recall: 80.85
+Validation precision: 31.45
+Validation class accuracies: [0.29, 0.8085106382978723]
+
+Patient Confusion matrix: 
+ [[ 0 53]
+ [ 0 22]] 
+
+Patient Normalized Confusion matrix: 
+ [[0. 1.]
+ [0. 1.]] 
+
+Patient Validation accuracy: 
+ 29.33 
+
+Patient Validation class accuracies: 
+ [0.0, 1.0] 
+
