@@ -1,4 +1,6 @@
-# Training (Pneumonia and Icbhi/Jordan specific)
+# Training (Pneumonia and Icbhi/Jordan specific as of 11/23)  
+
+# First
 
 1) Upload data and place 'data' folder inside classification_algorithm
 ```
@@ -14,19 +16,24 @@ gcloud compute scp --recurse classification:/home/alirachidi/classification_algo
 
 What are some important components we will be using? 
 - most important library used: main/models/conv/modules
-- train files for pneumonia training: main/models/train$.py, following a train$ format, with $ an integer (refer to traintemplate.py)
+- train files for pneumonia training: main/models/train$.py, following a train$ format, with $ an integer (refer to train1.py as the template)
 - utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about. 
-
 a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
-b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere accordingly
+
+b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
 
 # Now...
 
-In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (or folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file. 
+In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (i.e., folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file. 
 
 The following is an important section that you shouldn't have to modify for the most part. Its main objective is to creates a parent folder for file cache. Be aware that it deletes any prior cache folder that corresponds to that file, so for example, running local_gc_exec.sh for train2356 will delete any exisiting cache/pneumonia/train2356 folder and initialize a new one. It also seeds our libraries, defines training mode, etc. 
 
 ```
+def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
+    initialize_job()
+    train_model(datasets, model, spec_aug_params, audio_aug_params, parse_function)
+
+if __name__ == "__main__":
     print("Tensorflow Version: {}".format(tf.__version__))
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     seed_everything() # seeding np, tf, etc
@@ -36,16 +43,16 @@ The following is an important section that you shouldn't have to modify for the 
     parameters.file_dir = os.path.join(parameters.cache_root, parameters.mode, os.path.basename(__file__).split('.')[0])
     parameters.description = arguments["description"]
     testing_mode(int(arguments["testing"]))
-    # works to set up the folder (i.e., overwrites for testing folders, duplication for non-testing folders) 
+    # works to set up the folder (i.e., overwrites for all folders) 
     # and works well with initialize_job, which initializes each job inside the file (i.e, creates all the subfolders like tp/tn/gradcam/etc, file saving conventions, etc)
     initialize_file_folder()
     print("-----------------------")
 
 ```
 
-Here, the function to look at is launch_job().
+In the following section, the function to look at is launch_job().
 
-It first runs initialize_job(), which creates a child folder for the job (i.e., first job with id 1 goes goes into folder 1 in the parent cache folder, like cache/pneumonia/train2356/1) and handles other important tasks, like creating subfolders (i.e.,  "tp" or "tn") or incrementing parameters, like the job_id that is super important for caching as we just saw. 
+It first runs initialize_job(), which creates a child folder for the job (i.e., first job with id 1 goes goes into folder 1 in the parent cache folder, like cache/pneumonia/train2356/1) and handles other important tasks, like creating subfolders (i.e.,  "tp" or "tn") or incrementing parameters, such as job_id that is super important for caching as we just saw. 
 
 Then, it runs train_model(), which is the last, and MAIN, function inside any file. It takes the parameters as described in the comments. The comments and the section on the backbone of the library used should help you understand its magic. 
 

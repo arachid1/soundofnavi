@@ -143,7 +143,7 @@ def spec_augment_samples(train_samples, spec_aug_params):
 def audio_augment_samples(train_audios_c_dict, train_samples, audio_aug_params):
     audio_aug_samples = [] #TODO: Use a dictionary so you can avoid converting augmix to specs
     for key, samples in train_audios_c_dict.items():
-        print("- Augmenting spectrograms.")
+        print("- Augmenting audios.")
         for params in audio_aug_params:
             augmenter = return_audio_augmenter(samples, params[0], params[1])
             augmenter.augment_all_samples()

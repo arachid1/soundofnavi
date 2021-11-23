@@ -130,7 +130,7 @@ if __name__ == "__main__":
     parameters.file_dir = os.path.join(parameters.cache_root, parameters.mode, os.path.basename(__file__).split('.')[0])
     parameters.description = arguments["description"]
     testing_mode(int(arguments["testing"]))
-    # works to set up the folder (i.e., overwrites for testing folders, duplication for non-testing folders) 
+    # works to set up the folder (i.e., overwrites for all folders) 
     # and works well with initialize_job, which initializes each job inside the file (i.e, creates all the subfolders like tp/tn/gradcam/etc, file saving conventions, etc)
     initialize_file_folder()
     print("-----------------------")
