@@ -1,18 +1,24 @@
 # Training
 
 1) Upload data and place 'data' folder inside classification_algorithm
+```
 gcloud auth login
-initializr 'data' folder
+```
+create empty 'data' folder
+```
 gcloud compute scp --recurse classification:/home/alirachidi/classification_algorithm/data data --zone us-central1-a
+```
 2) Install python 3.7.9 and libraries (see requirements.txt)
 3) Edit local_gc_exec.sh according to your needs (see instructions inside file)
 4) RUN: bash local_gc_exec.sh
 
 access to important components (from inside trainers):
 - most important library used: main/models/conv/modules
-- train files for pneumonia training: main/models/__.py
+- train files for pneumonia training: main/models/__.py, following a train$ format, with $ an integer
 - utilities for train file: main/models/conv/modules/main, which contains
+
 a) helpers.py: most of the functions called inside __.py, like load_audios, will be called from there
+
 b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere accordingly
 
 In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (or folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file. 
