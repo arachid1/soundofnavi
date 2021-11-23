@@ -1,5 +1,15 @@
 # Training 
 
+|   | Pneumonia| Crackles and Wheezes |
+| ------------- | ------------- | ------------- |
+| ICBHI  | X |  X |
+| PERCH  |  |  X |
+| JORDAN  | X | ? |
+| ANTWERP  |  | X |
+| ANTWERP SIM  |  | X |
+| BD  | X |  |
+
+''''
             pneumonia   C/W
             
 ICBHI       X           X
@@ -10,7 +20,7 @@ ANT SIM                 X
 BD          X            
 
 
-Note: this is specific to the Pneumonia problem for the Icbhi/Jordan as of 11/23. To be extended by adding BD to pneumonia + other datasets in CW
+NOTE: As of 11/23, this applies to the Pneumonia problem for the Icbhi/Jordan. To be extended by adding training on BD for pneumonia + other datasets in CW
 
 # First
 
@@ -18,7 +28,7 @@ Note: this is specific to the Pneumonia problem for the Icbhi/Jordan as of 11/23
 ```
 gcloud auth login
 ```
-then, create empty 'data' folder
+Create empty 'data' folder. Then, run:
 ```
 gcloud compute scp --recurse classification:/home/alirachidi/classification_algorithm/data data --zone us-central1-a
 ```
@@ -31,11 +41,11 @@ What are some important components we will be using?
 - train files for pneumonia training: main/models/train$.py, following a train$ format, with $ an integer (refer to train1.py as the template)
 - utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about: 
 
-a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
+    - a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
 
-b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
+    - b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
 
-- files! train3 has an extra 'validation_only' parameters which, if set to true, print the validation results by loading our **best model** from July/August 2020. You can also find all its training details inside best_model_cache(2360)/ at the root of the repo, including report.txt, tns.txt, its log 2360.out file, the saved models, some spectrograms...
+- files! train2 has an extra 'validation_only' parameters which, if set to true, print the validation results by loading our **best model** from July/August 2020. You can also find all its training details inside best_model_cache(2360)/ at the root of the repo, including report.txt, tns.txt, its log 2360.out file, the saved models, some spectrograms...
 
 # Now...
 
