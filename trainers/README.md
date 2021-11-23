@@ -1,4 +1,6 @@
-# Training (Pneumonia and Icbhi/Jordan specific as of 11/23)  
+# Training 
+
+Note: Specific to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
 
 # First
 
@@ -77,17 +79,16 @@ Then, it runs train_model(), which is the last, and MAIN, function inside any fi
 
 Finally, we must talk about the role of some of the components necessary for training. 
 
-The first is models/conv/modules, which will be covered in a section below. 
+A) The first is models/conv/modules, which will be covered in a section below. 
 
-The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed, and the appropriate paths, etc. 
+B) The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed, and the appropriate paths, etc. 
 
-The last is helpers.py, which contains all 
+C) the third is models. You can write your model inside train$.py, but I'd recommend importing a a model from modules/models.py Models.py has access to inside core.py, which has thecustom mixednet layers, inverted residual layers, etc, so you HAVE to write inside models.py for those elements.
+
+4) More to come on augmentation
 
 Last note: careful with GPUs vs non-GPUs runs implementation but that should all be debuggable in train$.py
-parameters.py and helpers.py inside modules.
-pneumonia only
-models/core/gpu
 
 # Backbone of our (still unnamed) audio library...
 
-Coming soon (as of 11/23)
+Coming soon 
