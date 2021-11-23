@@ -1,6 +1,6 @@
 # Training 
 
-Note: Specific to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
+Note: this is to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
 
 # First
 
