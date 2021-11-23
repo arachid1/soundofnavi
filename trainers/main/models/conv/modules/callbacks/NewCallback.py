@@ -18,7 +18,7 @@ import itertools
 import librosa
 from librosa import display
 import soundfile as sf
-import wandb
+# import wandb
 import matplotlib
 import matplotlib.cm as plt_cm
 matplotlib.use('Agg')
@@ -60,8 +60,8 @@ class NewCallback(tf.keras.callbacks.LambdaCallback):
             if metric_name == "model":
                 continue
             tf.print("Best {}: {}".format(metric_name, metric_value))
-        wandb.init(project="tensorboard-integration", sync_tensorboard=False)
-        wandb.save(self.job_dir + "/report.txt")
+        # wandb.init(project="tensorboard-integration", sync_tensorboard=False)
+        # wandb.save(self.job_dir + "/report.txt")
 
     def on_epoch_end(self, epoch, logs=None):
 
@@ -106,10 +106,12 @@ class NewCallback(tf.keras.callbacks.LambdaCallback):
         self.best_metrics_dict["model"] = self.model
         for key, value in metrics_dict.items():
             self.best_metrics_dict[key] = value
+        # write tns, fns, etc AND grad cam visualizations
         self.write_cases(patients_dict) 
-        # if not (parameters.mode == "cw"):
-        #     best_patient_cm = self.generate_patient_report(patients_dict)
-            # self.best_metrics_dict["patient_cm"] = best_patient_cm
+        # patient report for pneumonia only thus far
+        if not (parameters.mode == "cw"):
+            best_patient_cm = self.generate_patient_report(patients_dict)
+            self.best_metrics_dict["patient_cm"] = best_patient_cm
         print("Saving model...")
         self.model.save(self.job_dir + "/model_epoch{}.h5".format(one_indexed_epoch))
 

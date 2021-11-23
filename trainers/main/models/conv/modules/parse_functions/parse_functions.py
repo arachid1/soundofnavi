@@ -8,7 +8,6 @@ def spec_parser(spectrogram, label, shape, initial_channels, cuberooting, normal
     # tf.print("inside parse")
     # label = sample[1]
     # tf.print(spectrogram)
-    tf.print(tf.shape(spectrogram))
     # tf.print(label)
     spectrogram = tf.reshape(spectrogram, shape)
     # if cuberooting:

@@ -40,24 +40,24 @@ def print_dataset(train_labels, val_labels, original_training_length="0", name="
     else:
         train_non_pneumonia_nb, train_pneumonia_nb = train_labels.count(0), train_labels.count(1)
         print("--- {} training dataset went from {} to {} elements, with {} 0's, {} 1's and {} others ---".format(name, 0, len(train_labels), train_non_pneumonia_nb, train_pneumonia_nb, len(train_labels) - train_non_pneumonia_nb - train_pneumonia_nb))
-        print("--- {} dataset contains {} elements, with {} 0's and {} 1's ---".format(name, len(val_labels), val_labels.count(0), val_labels.count(1)))
+        print("--- {} Validation dataset contains {} elements, with {} 0's and {} 1's ---".format(name, len(val_labels), val_labels.count(0), val_labels.count(1)))
 
 """
-input:  
-- Dictionary of data split by dataset {Icbhi: [], Jordan: [], ...} 100%
-output: 
-- Training  dictionary:   {Icbhi: [], Jordan: [], ...}  ratio %
-- Val  dictionary:   {Icbhi: [], Jordan: [], ...}       (1 - ratio) %
+2 main functionalities:
+splits the data
 """
 def split_and_extend(audios_c_dict, train_test_ratio, random_state=12, kfold=False):
+
     train_dict = defaultdict(lambda: {})
     val_dict = defaultdict(lambda: {})
+
     print("--- Samples are being split and flattened. ---")
     for key, key_samples in audios_c_dict.items():
         stratify_labels = []
+        # collecting PATIENT labels for PNEUMONIA <- this wouldn't be the same C/W or NON-PATIENT labelling 
         for patient in key_samples:
             if len(patient) == 0:
-                print("len is 0 here")
+                print("Empty patient while splitting")
                 continue
             stratify_labels.append(patient[0][1])
         if kfold:
@@ -67,9 +67,13 @@ def split_and_extend(audios_c_dict, train_test_ratio, random_state=12, kfold=Fal
                 train_dict[i][key] = [key_samples[ind] for ind in train_indexes]
                 val_dict[i][key] = [key_samples[ind] for ind in val_indexes]
         else:
+            # splitting by patient
             key_val_samples, key_train_samples = train_test_split(key_samples, test_size=train_test_ratio, stratify=stratify_labels, random_state=random_state)
-            key_train_samples, key_train_labels = zip(*[[c, c[1]] for audio_chunks in key_train_samples for c in audio_chunks])
+
+            # flattening from grouped by patient to simple audios (because the split has already been done so we don't care if it's organize by patient!)
+            key_train_samples, key_train_labels = zip(*[[c, c[1]] for audio_chunks in key_train_samples for c in audio_chunks]) 
             key_val_samples, key_val_labels = zip(*[[c, c[1]] for audio_chunks in key_val_samples for c in audio_chunks])
+
             key_train_samples = list(key_train_samples)
             key_val_samples = list(key_val_samples)
             train_dict[key] = key_train_samples
@@ -107,7 +111,7 @@ def seed_everything():
 def load_audios(audio_loaders):
     audios_dict = {}
     for loader in audio_loaders:
-        print("Loading {}".format(loader.name))
+        print("- Loading {}.".format(loader.name))
         loader.load_all_samples()
         audios_dict[loader.name] = loader.return_all_samples()
         print("{} {} audios have been loaded.".format(len(audios_dict[loader.name]), loader.name))
@@ -117,7 +121,7 @@ def prepare_audios(audios_dict):
     audios_c_dict = {}
     for key, dict_samples in audios_dict.items():
         preparer = return_preparer(key, dict_samples) 
-        print("Preparing {}".format(preparer.name))
+        print("- Preparing {}.".format(preparer.name))
         preparer.prepare_all_samples()
         # audios_c_dict[preparer.name] = preparer.return_all_samples()
         audios_c_dict[preparer.name] = preparer.return_all_samples_by_patient()
@@ -128,16 +132,18 @@ def spec_augment_samples(train_samples, spec_aug_params):
 
     spec_aug_samples = []
     for params in spec_aug_params:
+        print("- Augmenting spectrograms.")
         augmenter = return_spec_augmenter(train_samples, params[0], params[1])
         augmenter.augment_all_samples()
         augmenter_samples = augmenter.return_all_samples()
         spec_aug_samples.extend(augmenter_samples)
-        print("- {} with {} elements with the following params: {} -".format(augmenter.name, len(augmenter_samples), params[1]))
+        print("Applied {} with {} elements with the following params: {} -".format(augmenter.name, len(augmenter_samples), params[1]))
     return spec_aug_samples
 
 def audio_augment_samples(train_audios_c_dict, train_samples, audio_aug_params):
     audio_aug_samples = [] #TODO: Use a dictionary so you can avoid converting augmix to specs
     for key, samples in train_audios_c_dict.items():
+        print("- Augmenting spectrograms.")
         for params in audio_aug_params:
             augmenter = return_audio_augmenter(samples, params[0], params[1])
             augmenter.augment_all_samples()
@@ -164,14 +170,16 @@ def generate_audio_samples(audios_c_dict):
 def set_up_training_samples(train_audios_c_dict, spec_aug_params, audio_aug_params):
 
     # 1) spectrogram generation
-    train_samples = generate_samples(train_audios_c_dict)
+    train_samples = generate_spec_samples(train_audios_c_dict)
     original_training_length = len(train_samples)
     print("--- Original training dataset contains {} elements ---".format(len(train_samples)))
 
     # 2) spectrogram augmentation 
+    # cross-dataset (for example, Augmix can use an image from Icbhi and Jordan)
     spec_aug_samples = spec_augment_samples(train_samples, spec_aug_params)
 
     # 2) audio augmentation 
+    # NOT cross-dataset
     audio_aug_samples = audio_augment_samples(train_audios_c_dict, train_samples, audio_aug_params)
 
     # concatenating all the train elements
@@ -180,6 +188,13 @@ def set_up_training_samples(train_audios_c_dict, spec_aug_params, audio_aug_para
 
     return train_samples, original_training_length
 
+def testing_mode(t):
+    if int(t):
+        parameters.file_dir += "_testing"
+        parameters.n_epochs = 2
+        parameters.train_test_ratio = 0.5
+        parameters.testing = 1
+        parameters.description = "testing"
 
 ########################
 

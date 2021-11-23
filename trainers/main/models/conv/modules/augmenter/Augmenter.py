@@ -57,9 +57,6 @@ class Augmenter:
         return label_samples
     
     def shuffle(self, to_shuffle):
-        # print(to_shuffle[:5])
-        # print(to_shuffle[0])
-        # print(type(to_shuffle))
         random.shuffle(to_shuffle)
     
     def return_all_samples(self):

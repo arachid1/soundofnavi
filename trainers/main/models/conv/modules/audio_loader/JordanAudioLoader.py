@@ -11,9 +11,13 @@ class JordanAudioLoader(AudioLoader):
         self.label_root = root
         self.name = "Jordan"
 
+    # example: BP2_Asthma,E W,P L L R,52,F -> 1 
+    # (the patient here identicated by 2 and assigned a 0-inxeded label of 1)
+    # if I remember properly, it's for excel reading purposes
     def get_patient_id(self, filename):
         return (int(filename.split('_')[0][2:]) - 1)
     
+    # simply reading from the object representing the excel sheet 
     def read_label(self, _dict, patient_id):
         return _dict[patient_id]
     

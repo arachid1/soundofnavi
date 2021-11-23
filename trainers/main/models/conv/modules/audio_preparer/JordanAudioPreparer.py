@@ -20,17 +20,22 @@ class JordanAudioPreparer(AudioPrepaper):
         else:
             return 0
     
+    # we have 113 files and look for a specific filter type, so we can parse through all possible files and collect the present ones with the right FT
     def return_all_samples_by_patient(self):
+
         samples_by_patients = []
+        filter_type = "BP"
         for i in range(1, 113):
-            data_type = "BP{}_".format(i)
+            data_type = "{}{}_".format(filter_type, i)
             patient_samples = []
             count = 0
             for s in self.chunked_samples:
                 if (s[0][2].startswith(data_type)):
                     patient_samples.extend(s)
                 count += 1
+            # no samples have been 
             if len(patient_samples) == 0:
+                # print("Jordan patient N{} has no samples (JordanAudioPreparer)".format(i))
                 continue
             samples_by_patients.append(patient_samples) #TODO: instead of doing at [0], squeeze (& standarize across objects)
         self.chunked_samples = samples_by_patients

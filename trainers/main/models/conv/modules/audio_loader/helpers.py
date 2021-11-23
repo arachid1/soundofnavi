@@ -3,9 +3,7 @@ import glob
 import pandas as pd
 
 def default_get_filenames(self):
-    print("yoo")
-    print([s.split('.')[0] for s in os.listdir(path=self.root) 
-                        if '.wav' in s][:10])
+
     return [s.split('.')[0] for s in os.listdir(path=self.root) 
                         if '.wav' in s]
 
@@ -48,5 +46,5 @@ def bd_get_filenames(self):
         #     print(f)
         #     filenames.extend(f)
         # exit()
-    print("BD: there are 3 folders with their own issues, {} with empty excel columns and {} with uninterpretable PEP1 value".format(count_2, count_3))
+    print("BD: there are 3 folders with their own issues, {} with empty excel columns and {} with uninterpretable PEP1 value. ".format(count_2, count_3))
     return filenames
