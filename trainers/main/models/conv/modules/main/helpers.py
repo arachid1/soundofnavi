@@ -51,7 +51,7 @@ def split_and_extend(audios_c_dict, train_test_ratio, random_state=12, kfold=Fal
     train_dict = defaultdict(lambda: {})
     val_dict = defaultdict(lambda: {})
 
-    print("--- Samples are being split and flattened. ---")
+    print("--- Samples are being split into training/val groups and de-grouped by patient ---")
     for key, key_samples in audios_c_dict.items():
         stratify_labels = []
         # collecting PATIENT labels for PNEUMONIA <- this wouldn't be the same C/W or NON-PATIENT labelling 

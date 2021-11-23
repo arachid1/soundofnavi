@@ -9,20 +9,11 @@
 | ANTWERP SIM  |  | X |
 | BD  | X |  |
 
-''''
-            pneumonia   C/W
-            
-ICBHI       X           X
-PERCH                   X
-JORDAN      X           ?
-ANT                     X
-ANT SIM                 X
-BD          X            
 
+NOTE: As of 11/23, this applies to the Pneumonia problem for Icbhi/Jordan. To be extended by adding training on BD for pneumonia + other datasets in CW
 
-NOTE: As of 11/23, this applies to the Pneumonia problem for the Icbhi/Jordan. To be extended by adding training on BD for pneumonia + other datasets in CW
-
-# First
+# The Pneumonia Problem
+## First
 
 1) Upload data and place 'data' folder inside classification_algorithm
 ```
@@ -43,11 +34,12 @@ What are some important components we will be using?
 
     - a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
 
-    - b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
+    - b) parameters.py: a module (which is imported im most folders) to keep track of MOST 40+ (!!) parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
 
-- files! train2 has an extra 'validation_only' parameters which, if set to true, print the validation results by loading our **best model** from July/August 2020. You can also find all its training details inside best_model_cache(2360)/ at the root of the repo, including report.txt, tns.txt, its log 2360.out file, the saved models, some spectrograms...
+### files! 
+train2 has an extra 'validation_only' parameters which, if set to true, print the validation results by loading our **best model** from July/August 2020. You can also find all its training details inside best_model_cache(2360)/ at the root of the repo, including report.txt, tns.txt, its log 2360.out file, the saved models, some spectrograms...
 
-# Now...
+## Now...
 
 In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (i.e., folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file.
 
@@ -114,10 +106,10 @@ B) The second is parameters.py, which resides inside modules/main, and is a supe
 
 C) the third is models. You can write your model inside the train file train$.py, but I'd recommend writing inside and importing your model from modules/models.py. Models.py has access to inside core.py, which has the custom mixednet layers, inverted residual layers, etc, so you HAVE to write inside models.py to use those elements.
 
-4) More to come on augmentation
+D) More to come on augmentation.
 
-Last note: careful with GPUs vs non-GPUs runs implementation but that should all be debuggable in train$.py
+LASTE NOTE ON GPU/CPU: CUDA_DEVICES_VISIBLE is set to 0 or 1 to run in, respectively, CPU and GPU mode. careful with GPUs vs non-GPUs runs implementation but that should all be debuggable in train$.py
 
-# Backbone of our (still unnamed) audio library...
+## Backbone of our (still unnamed) audio library...
 
 Coming soon 

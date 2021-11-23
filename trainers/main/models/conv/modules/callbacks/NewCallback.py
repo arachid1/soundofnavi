@@ -489,6 +489,8 @@ class NewCallback(tf.keras.callbacks.LambdaCallback):
 def return_layer(model):
     if model.name == "mixednet":
         return model.layers[1].name
+    elif model.name == "model9":
+        return "inverted_residual_6"
     elif model.name == "time_series_model":
         return "time_distributed_3"
     elif model.name == "audio_model":

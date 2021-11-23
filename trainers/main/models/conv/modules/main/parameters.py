@@ -6,6 +6,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def init():
     print("Collecting Variables...")
+    global testing
+    global mode
+
+    # most NN parameters
     global n_classes
     global n_epochs
     global lr
@@ -18,6 +22,8 @@ def init():
     global job_version
     global es_patience
     global min_delta
+
+    # mainly bools for setting parameters in callback, model, etc
     global six
     global concat
     global epoch_start
@@ -27,10 +33,14 @@ def init():
     global cuberooting
     global normalizing
     global initial_channels
+    global class_weights
+
+    # adaptive lr
     global factor
     global lr_patience
     global min_lr
-    global train_test_ratio
+
+    # FFT, mel, ASP parameters
     global sr
     global audio_length
     global step_size
@@ -38,16 +48,16 @@ def init():
     global hop_length
     global n_mels
     global job_id
-    global class_weights
     global n_sequences
-
-    global trainable_fb
-    global to_decibel
-    global mode
-
     global overlap_threshold
+    
+    # splitting and data handling
+    global train_test_ratio
     global kfold
-    global testing
+
+    # paths
+    global data_root
+    global cache_root
     global file_dir
     global jordan_root
     global icbhi_root
@@ -55,16 +65,20 @@ def init():
     global excel_path
     global perch_root
     global ant_root
-
     global description
-    global cache_root
+
+    # kapre
+    global trainable_fb
+    global to_decibel
     
     # TODO
-    cache_root = "/home/alirachidi/classification_algorithm/cache/"
+    # cache_root = "/home/alirachidi/classification_algorithm/cache/"
+    cache_root = "../cache/"
 
     description = None
 
-    data_root = "/home/alirachidi/classification_algorithm/data/"
+    # data_root = "/home/alirachidi/classification_algorithm/data/"
+    data_root = "../data/"
     jordan_root = os.path.join(data_root, 'jwyy9np4gv-3/')
     icbhi_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
     bd_root = os.path.join(data_root, 'PCV_SEGMENTED_Processed_Files/')
@@ -104,16 +118,13 @@ def init():
     cuberooting = 1
     normalizing = 1
     class_weights = 1
-    # oversample
+    # oversample =
 
     initial_channels = 1
 
     factor = 0.5
     lr_patience = 3
     min_lr = 1e-6
-
-    trainable_fb = False
-    to_decibel = True
 
     train_test_ratio = 0.8
     sr = 8000
@@ -130,6 +141,12 @@ def init():
     mode = "pneumonia"
 
     overlap_threshold = 0.15
+
+    # for Kapre
+    trainable_fb = False
+    to_decibel = True
+
+    # old augmentation parameters
 
     # augmentation = bool(params['AUGMENTATION'])
     # spec_add = bool(spec_params['ADD'])
