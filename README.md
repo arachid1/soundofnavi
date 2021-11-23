@@ -1,3 +1,5 @@
+11/23: OLD README, to be updated!
+
 # Classification_algorithm
 
 classification_algorithm is a repository for classification of abnormal lung sounds by Sonavi Labs Inc.
