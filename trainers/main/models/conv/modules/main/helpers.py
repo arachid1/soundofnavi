@@ -149,7 +149,7 @@ def audio_augment_samples(train_audios_c_dict, train_samples, audio_aug_params):
             augmenter.augment_all_samples()
             augmenter_samples = augmenter.return_all_samples()
             audio_aug_samples.extend(augmenter_samples)
-            print("- {} on {} with {} elements with the following params: {} -".format(augmenter.name, key, len(augmenter_samples), params[1]))
+            print("Applied {} on {} with {} elements with the following params: {} -".format(augmenter.name, key, len(augmenter_samples), params[1]))
 
     return audio_aug_samples
 

@@ -1,6 +1,16 @@
 # Training 
 
-Note: this is specific to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
+            pneumonia   C/W
+            
+ICBHI       X           X
+PERCH                   X
+JORDAN      X           ?
+ANT                     X
+ANT SIM                 X
+BD          X            
+
+
+Note: this is specific to the Pneumonia problem for the Icbhi/Jordan as of 11/23. To be extended by adding BD to pneumonia + other datasets in CW
 
 # First
 
@@ -8,7 +18,7 @@ Note: this is specific to Pneumonia and Icbhi/Jordan as of 11/23. To be extended
 ```
 gcloud auth login
 ```
-create empty 'data' folder
+then, create empty 'data' folder
 ```
 gcloud compute scp --recurse classification:/home/alirachidi/classification_algorithm/data data --zone us-central1-a
 ```
@@ -22,16 +32,24 @@ What are some important components we will be using?
 - utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about: 
 
 a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
+
 b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
+
+- files! train3 has an extra 'validation_only' parameters which, if set to true, print the validation results by loading our **best model** from July/August 2020. You can also find all its training details inside best_model_cache(2360)/ at the root of the repo, including report.txt, tns.txt, its log 2360.out file, the saved models, some spectrograms...
 
 # Now...
 
-In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (i.e., folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file. 
+In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (i.e., folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file.
 
 The following is an important section that you shouldn't have to modify for the most part. Its main objective is to creates a parent folder for file cache. Be aware that it deletes any prior cache folder that corresponds to that file, so for example, running local_gc_exec.sh for train2356 will delete any exisiting cache/pneumonia/train2356 folder and initialize a new one. It also seeds our libraries, defines training mode, etc. 
 
 ```
 def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
+    # parameters: 
+    # dictionary:  datasets to use, 
+    # model:  imported from modules/models.py, 
+    # augmentation parameters:  (No augmentation if empty list is passed), 
+    # parse function:  (inside modules/parsers) used to create tf.dataset object in create_tf_dataset
     initialize_job()
     train_model(datasets, model, spec_aug_params, audio_aug_params, parse_function)
 
@@ -49,6 +67,9 @@ if __name__ == "__main__":
     # and works well with initialize_job, which initializes each job inside the file (i.e, creates all the subfolders like tp/tn/gradcam/etc, file saving conventions, etc)
     initialize_file_folder()
     print("-----------------------")
+    .
+    .
+    .
 
 ```
 
@@ -59,6 +80,9 @@ It first runs initialize_job(), which creates a child folder for the job (i.e., 
 Then, it runs train_model(), which is the last, and MAIN, function inside any file. It takes the parameters as described in the comments. The comments and the section on the backbone of the library used should help you understand its magic. 
 
 ````
+    .
+    .
+    .
     ###### set up used for spec input models (default)
     parameters.hop_length = 254
     parameters.shape = (128, 311)
@@ -67,23 +91,18 @@ Then, it runs train_model(), which is the last, and MAIN, function inside any fi
         ["mixup", {"quantity" : 0.2, "no_pad" : False, "label_one" : 0, "label_two" : 1, "minval" : 0.3, "maxval" : 0.7}],
     ]
     audio_aug_params = [["augmix", {"quantity" : 0.2, "label": -1, "no_pad" : False, "minval" : 0.3, "maxval" : 0.7, "aug_functions": [shift_pitch, stretch_time]}]]
-    # parameters: 
-    # dictionary:  datasets to use, 
-    # model:  imported from modules/models.py, 
-    # augmentation parameters:  (No augmentation if empty list is passed), 
-    # parse function:  (inside modules/parsers) used to create tf.dataset object in create_tf_dataset
     launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 0, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
-    # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!
+    # to run another job, add a line to modify whatever parameters, like "parameters.n_fft = 128", change the model, the augmentation parameters... and rerun a launch_job function as many times as you want!
 ````
 
 Finally, we must talk about the role of some of the components necessary for training. 
 
 A) The first is models/conv/modules, which will be covered in a section below. 
 
-B) The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed, and the appropriate paths, etc. 
+B) The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed (so for example, switching from the first job with id 1 to the second job with id 2), and the appropriate paths, etc. 
 
-C) the third is models. You can write your model inside train$.py, but I'd recommend importing a a model from modules/models.py Models.py has access to inside core.py, which has thecustom mixednet layers, inverted residual layers, etc, so you HAVE to write inside models.py for those elements.
+C) the third is models. You can write your model inside the train file train$.py, but I'd recommend writing inside and importing your model from modules/models.py. Models.py has access to inside core.py, which has the custom mixednet layers, inverted residual layers, etc, so you HAVE to write inside models.py to use those elements.
 
 4) More to come on augmentation
 

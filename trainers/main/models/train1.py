@@ -116,7 +116,15 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     model.save(parameters.job_dir + "/model_{}.h5".format(parameters.n_epochs))
 
 def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
-    initialize_job()
+    '''
+    parameters: 
+    # dictionary:  datasets to use, 
+    # model:  imported from modules/models.py, 
+    # augmentation parameters:  (No augmentation if empty list is passed), 
+    # parse function:  (inside modules/parsers) used to create tf.dataset object in create_tf_dataset
+    '''
+    # in a given file named train$ (parent/cache folder named train$), we can have multiple jobs (child folders named 1,2,3)
+    initialize_job() #  initialize each (child) job inside the file (i.e, creates all the subfolders like tp/tn/gradcam/etc, file saving conventions, etc)
     train_model(datasets, model, spec_aug_params, audio_aug_params, parse_function)
 
 if __name__ == "__main__":
@@ -129,9 +137,8 @@ if __name__ == "__main__":
     parameters.mode = "pneumonia"
     parameters.file_dir = os.path.join(parameters.cache_root, parameters.mode, os.path.basename(__file__).split('.')[0])
     parameters.description = arguments["description"]
-    testing_mode(int(arguments["testing"]))
-    # works to set up the folder (i.e., overwrites for all folders) 
-    # and works well with initialize_job, which initializes each job inside the file (i.e, creates all the subfolders like tp/tn/gradcam/etc, file saving conventions, etc)
+    testing_mode(int(arguments["testing"])) # if true, adds _testing to the cache folder, sets a small number of epochs, smaller dataset, turn off a few settings in the callback, etc
+    # works to set up the parent folder (i.e., overwrites if already exists) + works well with initialize_job above
     initialize_file_folder()
     print("-----------------------")
     
@@ -140,14 +147,11 @@ if __name__ == "__main__":
     parameters.shape = (128, 311)
     parameters.n_sequences = 9
     spec_aug_params = [
-        ["mixup", {"quantity" : 0.2, "no_pad" : False, "label_one" : 0, "label_two" : 1, "minval" : 0.3, "maxval" : 0.7}],
+        ["mixup", {"quantity" : 0.2, "no_pad" : False, "label_one" : 0, "label_two" : 1, "minval" : 0.3, "maxval" : 0.7}]
     ]
-    audio_aug_params = [["augmix", {"quantity" : 0.2, "label": -1, "no_pad" : False, "minval" : 0.3, "maxval" : 0.7, "aug_functions": [shift_pitch, stretch_time]}]]
-    # parameters: 
-    # dictionary:  datasets to use, 
-    # model:  imported from modules/models.py, 
-    # augmentation parameters:  (No augmentation if empty list is passed), 
-    # parse function:  (inside modules/parsers) used to create tf.dataset object in create_tf_dataset
-    launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
+    audio_aug_params = [
+        ["augmix", {"quantity" : 0.2, "label": -1, "no_pad" : False, "minval" : 0.3, "maxval" : 0.7, "aug_functions": [shift_pitch, stretch_time]}]
+    ]
+    launch_job({"Bd": 0, "Jordan": 0, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!

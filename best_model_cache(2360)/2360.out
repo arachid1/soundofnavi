@@ -1,0 +1,612 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v39_augm_v0_cleaned_8000.pkl
+File:  conv.train2360
+Description:  augmentation
+Collecting Variables...
+All variables have been collected.
+-----------------------
+Job id is 0.
+725 Icbhi audios have been loaded.
+336 Jordan audios have been loaded.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+111 Jordan groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split and flattened. ---
+- Icbhi has 1951 training samples with 1855 0's and 96 1's, and 388 val samples with 373 0's and 15 1's - 
+- Jordan has 269 training samples with 258 0's and 11 1's, and 53 val samples with 48 0's and 5 1's - 
+--- Original training dataset contains 2220 elements ---
+- spec_mixup with 284 elements with the following params: {'quantity': 4, 'no_pad': True, 'label_one': 0, 'label_two': 1, 'minval': 0.2, 'maxval': 0.8} -
+- spec_cutmix with 284 elements with the following params: {'quantity': 4, 'no_pad': True, 'label_one': 0, 'label_two': 1, 'minval': 0.2, 'maxval': 0.8} -
+- spec_mixup with 142 elements with the following params: {'quantity': 2, 'no_pad': True, 'label_one': 1, 'label_two': 1, 'minval': 0.2, 'maxval': 0.8} -
+- spec_cutmix with 144 elements with the following params: {'quantity': 0.1, 'no_pad': True, 'label_one': 0, 'label_two': 0, 'minval': 0.2, 'maxval': 0.8} -
+- audio_augmix on Icbhi with 384 elements with the following params: {'quantity': 4, 'label': 1, 'no_pad': False, 'minval': 0.2, 'maxval': 0.8, 'aug_functions': [<function stretch_time at 0x7fd80f3ecdd0>]} -
+- audio_augmix on Icbhi with 384 elements with the following params: {'quantity': 4, 'label': 1, 'no_pad': False, 'minval': 0.2, 'maxval': 0.8, 'aug_functions': [<function shift_pitch at 0x7fd80f420830>]} -
+- audio_augmix on Jordan with 44 elements with the following params: {'quantity': 4, 'label': 1, 'no_pad': False, 'minval': 0.2, 'maxval': 0.8, 'aug_functions': [<function stretch_time at 0x7fd80f3ecdd0>]} -
+- audio_augmix on Jordan with 44 elements with the following params: {'quantity': 4, 'label': 1, 'no_pad': False, 'minval': 0.2, 'maxval': 0.8, 'aug_functions': [<function shift_pitch at 0x7fd80f420830>]} -
+--- Final training dataset went from 2220 to 3930 elements, with 2257 0's, 1105 1's and 568 others ---
+--- Validation dataset contains 441 elements, with 421 0's and 20 1's ---
+Initializing weights...
+weights = {0: 0.744793974302171, 1: 1.5212669683257918}
+Model: "conv2d"
+______________________________________________________________________________________________________________
+Layer (type)                                     Output Shape                                Param #          
+==============================================================================================================
+input_1 (InputLayer)                             [(None, 128, 313, 1)]                       0                
+______________________________________________________________________________________________________________
+conv2d (Conv2D)                                  (None, 128, 313, 8)                         80               
+______________________________________________________________________________________________________________
+mix_depth_group_convolution2d (MixDepthGroupConv (None, 128, 313, 8)                         162              
+______________________________________________________________________________________________________________
+average_pooling2d (AveragePooling2D)             (None, 64, 157, 8)                          0                
+______________________________________________________________________________________________________________
+batch_normalization (BatchNormalization)         (None, 64, 157, 8)                          32               
+______________________________________________________________________________________________________________
+conv2d_1 (Conv2D)                                (None, 64, 157, 16)                         1168             
+______________________________________________________________________________________________________________
+mix_depth_group_convolution2d_1 (MixDepthGroupCo (None, 64, 157, 16)                         414              
+______________________________________________________________________________________________________________
+average_pooling2d_1 (AveragePooling2D)           (None, 32, 79, 16)                          0                
+______________________________________________________________________________________________________________
+batch_normalization_1 (BatchNormalization)       (None, 32, 79, 16)                          64               
+______________________________________________________________________________________________________________
+conv2d_2 (Conv2D)                                (None, 32, 79, 32)                          4640             
+______________________________________________________________________________________________________________
+mix_depth_group_convolution2d_2 (MixDepthGroupCo (None, 32, 79, 32)                          828              
+______________________________________________________________________________________________________________
+average_pooling2d_2 (AveragePooling2D)           (None, 16, 40, 32)                          0                
+______________________________________________________________________________________________________________
+batch_normalization_2 (BatchNormalization)       (None, 16, 40, 32)                          128              
+______________________________________________________________________________________________________________
+conv2d_3 (Conv2D)                                (None, 16, 40, 64)                          18496            
+______________________________________________________________________________________________________________
+mix_depth_group_convolution2d_3 (MixDepthGroupCo (None, 16, 40, 64)                          1656             
+______________________________________________________________________________________________________________
+average_pooling2d_3 (AveragePooling2D)           (None, 8, 20, 64)                           0                
+______________________________________________________________________________________________________________
+batch_normalization_3 (BatchNormalization)       (None, 8, 20, 64)                           256              
+______________________________________________________________________________________________________________
+conv2d_4 (Conv2D)                                (None, 8, 20, 128)                          73856            
+______________________________________________________________________________________________________________
+mix_depth_group_convolution2d_4 (MixDepthGroupCo (None, 8, 20, 128)                          3402             
+______________________________________________________________________________________________________________
+average_pooling2d_4 (AveragePooling2D)           (None, 4, 10, 128)                          0                
+______________________________________________________________________________________________________________
+batch_normalization_4 (BatchNormalization)       (None, 4, 10, 128)                          512              
+______________________________________________________________________________________________________________
+global_average_pooling2d (GlobalAveragePooling2D (None, 128)                                 0                
+______________________________________________________________________________________________________________
+dense (Dense)                                    (None, 1)                                   129              
+==============================================================================================================
+Total params: 105,823
+Trainable params: 105,327
+Non-trainable params: 496
+______________________________________________________________________________________________________________
+Epoch 1/65
+246/246 - 36s - loss: 0.2772 - accuracy: 0.7977
+Confusion matrix: 
+ [[160 261]
+ [  2  18]]
+Normalized Confusion matrix: 
+ [[0.38 0.62]
+ [0.1  0.9 ]]
+Validation f1: 12.04
+Validation accuracy: 40.36
+Validation recall: 90.00
+Validation precision: 6.45
+Validation class accuracies: [0.38004750593824227, 0.9]
+
+Patient Confusion matrix: 
+ [[ 9 33]
+ [ 0  2]] 
+
+Patient Normalized Confusion matrix: 
+ [[0.214 0.786]
+ [0.    1.   ]] 
+
+Patient Validation accuracy: 
+ 25.00 
+
+Patient Validation class accuracies: 
+ [0.21428571428571427, 1.0] 
+
+Saving model...
+Epoch 2/65
+246/246 - 31s - loss: 0.2035 - accuracy: 0.8282
+Confusion matrix: 
+ [[  1 420]
+ [  0  20]]
+Normalized Confusion matrix: 
+ [[0.002 0.998]
+ [0.    1.   ]]
+Validation f1: 8.70
+Validation accuracy: 4.76
+Validation recall: 100.00
+Validation precision: 4.55
+Validation class accuracies: [0.0023752969121140144, 1.0]
+The validation tracker metric at 0.12040133779264213 hasn't increased by 0 in 1 epochs
+Epoch 3/65
+246/246 - 31s - loss: 0.1691 - accuracy: 0.8389
+Confusion matrix: 
+ [[395  26]
+ [  4  16]]
+Normalized Confusion matrix: 
+ [[0.938 0.062]
+ [0.2   0.8  ]]
+Validation f1: 51.61
+Validation accuracy: 93.20
+Validation recall: 80.00
+Validation precision: 38.10
+Validation class accuracies: [0.9382422802850356, 0.8]
+
+Patient Confusion matrix: 
+ [[35  7]
+ [ 0  2]] 
+
+Patient Normalized Confusion matrix: 
+ [[0.833 0.167]
+ [0.    1.   ]] 
+
+Patient Validation accuracy: 
+ 84.09 
+
+Patient Validation class accuracies: 
+ [0.8333333333333334, 1.0] 
+
+Saving model...
+Epoch 4/65
+246/246 - 31s - loss: 0.1513 - accuracy: 0.8478
+Confusion matrix: 
+ [[419   2]
+ [ 13   7]]
+Normalized Confusion matrix: 
+ [[0.995 0.005]
+ [0.65  0.35 ]]
+Validation f1: 48.28
+Validation accuracy: 96.60
+Validation recall: 35.00
+Validation precision: 77.78
+Validation class accuracies: [0.995249406175772, 0.35]
+The validation tracker metric at 0.5161290322580645 hasn't increased by 0 in 1 epochs
+Epoch 5/65
+246/246 - 31s - loss: 0.1397 - accuracy: 0.8494
+Confusion matrix: 
+ [[414   7]
+ [  8  12]]
+Normalized Confusion matrix: 
+ [[0.983 0.017]
+ [0.4   0.6  ]]
+Validation f1: 61.54
+Validation accuracy: 96.60
+Validation recall: 60.00
+Validation precision: 63.16
+Validation class accuracies: [0.9833729216152018, 0.6]
+
+Patient Confusion matrix: 
+ [[40  2]
+ [ 1  1]] 
+
+Patient Normalized Confusion matrix: 
+ [[0.952 0.048]
+ [0.5   0.5  ]] 
+
+Patient Validation accuracy: 
+ 93.18 
+
+Patient Validation class accuracies: 
+ [0.9523809523809523, 0.5] 
+
+Saving model...
+Epoch 6/65
+246/246 - 31s - loss: 0.1309 - accuracy: 0.8519
+Confusion matrix: 
+ [[400  21]
+ [  4  16]]
+Normalized Confusion matrix: 
+ [[0.95 0.05]
+ [0.2  0.8 ]]
+Validation f1: 56.14
+Validation accuracy: 94.33
+Validation recall: 80.00
+Validation precision: 43.24
+Validation class accuracies: [0.9501187648456056, 0.8]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 1 epochs
+Epoch 7/65
+246/246 - 31s - loss: 0.1246 - accuracy: 0.8534
+Confusion matrix: 
+ [[327  94]
+ [  5  15]]
+Normalized Confusion matrix: 
+ [[0.777 0.223]
+ [0.25  0.75 ]]
+Validation f1: 23.26
+Validation accuracy: 77.55
+Validation recall: 75.00
+Validation precision: 13.76
+Validation class accuracies: [0.7767220902612827, 0.75]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 2 epochs
+Epoch 8/65
+246/246 - 31s - loss: 0.1187 - accuracy: 0.8550
+Confusion matrix: 
+ [[391  30]
+ [  4  16]]
+Normalized Confusion matrix: 
+ [[0.929 0.071]
+ [0.2   0.8  ]]
+Validation f1: 48.48
+Validation accuracy: 92.29
+Validation recall: 80.00
+Validation precision: 34.78
+Validation class accuracies: [0.9287410926365796, 0.8]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 3 epochs
+Epoch 9/65
+246/246 - 31s - loss: 0.1175 - accuracy: 0.8542
+Confusion matrix: 
+ [[411  10]
+ [  9  11]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.45  0.55 ]]
+Validation f1: 53.66
+Validation accuracy: 95.69
+Validation recall: 55.00
+Validation precision: 52.38
+Validation class accuracies: [0.9762470308788599, 0.55]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 4 epochs
+Epoch 10/65
+246/246 - 31s - loss: 0.1148 - accuracy: 0.8532
+Confusion matrix: 
+ [[414   7]
+ [ 12   8]]
+Normalized Confusion matrix: 
+ [[0.983 0.017]
+ [0.6   0.4  ]]
+Validation f1: 45.71
+Validation accuracy: 95.69
+Validation recall: 40.00
+Validation precision: 53.33
+Validation class accuracies: [0.9833729216152018, 0.4]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 5 epochs
+Lr has been adjusted to 0.0002500000118743628
+Epoch 11/65
+246/246 - 31s - loss: 0.1091 - accuracy: 0.8555
+Confusion matrix: 
+ [[408  13]
+ [  6  14]]
+Normalized Confusion matrix: 
+ [[0.969 0.031]
+ [0.3   0.7  ]]
+Validation f1: 59.57
+Validation accuracy: 95.69
+Validation recall: 70.00
+Validation precision: 51.85
+Validation class accuracies: [0.9691211401425178, 0.7]
+The validation tracker metric at 0.6153846153846154 hasn't increased by 0 in 6 epochs
+Epoch 12/65
+246/246 - 31s - loss: 0.1024 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  5  15]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.25  0.75 ]]
+Validation f1: 66.67
+Validation accuracy: 96.60
+Validation recall: 75.00
+Validation precision: 60.00
+Validation class accuracies: [0.9762470308788599, 0.75]
+
+Patient Confusion matrix: 
+ [[40  2]
+ [ 0  2]] 
+
+Patient Normalized Confusion matrix: 
+ [[0.952 0.048]
+ [0.    1.   ]] 
+
+Patient Validation accuracy: 
+ 95.45 
+
+Patient Validation class accuracies: 
+ [0.9523809523809523, 1.0] 
+
+Saving model...
+Epoch 13/65
+246/246 - 31s - loss: 0.1045 - accuracy: 0.8545
+Confusion matrix: 
+ [[411  10]
+ [  8  12]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.4   0.6  ]]
+Validation f1: 57.14
+Validation accuracy: 95.92
+Validation recall: 60.00
+Validation precision: 54.55
+Validation class accuracies: [0.9762470308788599, 0.6]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 1 epochs
+Epoch 14/65
+246/246 - 31s - loss: 0.1019 - accuracy: 0.8552
+Confusion matrix: 
+ [[410  11]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.974 0.026]
+ [0.35  0.65 ]]
+Validation f1: 59.09
+Validation accuracy: 95.92
+Validation recall: 65.00
+Validation precision: 54.17
+Validation class accuracies: [0.9738717339667459, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 2 epochs
+Epoch 15/65
+246/246 - 31s - loss: 0.0997 - accuracy: 0.8550
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 3 epochs
+Epoch 16/65
+246/246 - 31s - loss: 0.1003 - accuracy: 0.8552
+Confusion matrix: 
+ [[410  11]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.974 0.026]
+ [0.35  0.65 ]]
+Validation f1: 59.09
+Validation accuracy: 95.92
+Validation recall: 65.00
+Validation precision: 54.17
+Validation class accuracies: [0.9738717339667459, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 4 epochs
+Epoch 17/65
+246/246 - 31s - loss: 0.0983 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 5 epochs
+Lr has been adjusted to 6.25000029685907e-05
+Epoch 18/65
+246/246 - 31s - loss: 0.0987 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 6 epochs
+Epoch 19/65
+246/246 - 31s - loss: 0.0973 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 7 epochs
+Epoch 20/65
+246/246 - 31s - loss: 0.0985 - accuracy: 0.8545
+Confusion matrix: 
+ [[410  11]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.974 0.026]
+ [0.35  0.65 ]]
+Validation f1: 59.09
+Validation accuracy: 95.92
+Validation recall: 65.00
+Validation precision: 54.17
+Validation class accuracies: [0.9738717339667459, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 8 epochs
+Epoch 21/65
+246/246 - 31s - loss: 0.0970 - accuracy: 0.8550
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 9 epochs
+Epoch 22/65
+246/246 - 31s - loss: 0.0975 - accuracy: 0.8545
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 10 epochs
+Lr has been adjusted to 1.5625000742147677e-05
+Epoch 23/65
+246/246 - 31s - loss: 0.0988 - accuracy: 0.8547
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 11 epochs
+Epoch 24/65
+246/246 - 31s - loss: 0.0971 - accuracy: 0.8555
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 12 epochs
+Epoch 25/65
+246/246 - 31s - loss: 0.0955 - accuracy: 0.8555
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 13 epochs
+Epoch 26/65
+246/246 - 31s - loss: 0.0993 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 14 epochs
+Epoch 27/65
+246/246 - 31s - loss: 0.0990 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 15 epochs
+Lr has been adjusted to 3.906250185536919e-06
+Epoch 28/65
+246/246 - 31s - loss: 0.0956 - accuracy: 0.8550
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 16 epochs
+Epoch 29/65
+246/246 - 31s - loss: 0.0954 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 17 epochs
+Epoch 30/65
+246/246 - 31s - loss: 0.0955 - accuracy: 0.8550
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 18 epochs
+Epoch 31/65
+246/246 - 31s - loss: 0.0951 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+The validation tracker metric at 0.6666666666666665 hasn't increased by 0 in 19 epochs
+Epoch 32/65
+246/246 - 31s - loss: 0.0956 - accuracy: 0.8552
+Confusion matrix: 
+ [[411  10]
+ [  7  13]]
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.35  0.65 ]]
+Validation f1: 60.47
+Validation accuracy: 96.15
+Validation recall: 65.00
+Validation precision: 56.52
+Validation class accuracies: [0.9762470308788599, 0.65]
+
+The metrics for job 0 with the best target metric are: 
+Best cm: [[411  10]
+ [  5  15]]
+Best normalized cm: [[0.976 0.024]
+ [0.25  0.75 ]]
+Best f1: 0.67
+Best patient cm: [[40  2]
+ [ 0  2]]
+Best accuracy: 0.97
+Best recall: 0.75
+Best precision: 0.60
+Best AUC: 0.00
+Best class accuracies: [0.9762470308788599, 0.75]
+Best epoch: 12
+The number of epochs since last 1% equals the patience
+Lr has been adjusted to 9.765625463842298e-07
+
+ See logs at ../../new_cache/conv__2360__07_0723__v39__augmentation/logs/
