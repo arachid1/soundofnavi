@@ -148,6 +148,6 @@ if __name__ == "__main__":
     # model:  imported from modules/models.py, 
     # augmentation parameters:  (No augmentation if empty list is passed), 
     # parse function:  (inside modules/parsers) used to create tf.dataset object in create_tf_dataset
-    launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 0, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
+    launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!

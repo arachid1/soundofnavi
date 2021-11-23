@@ -1,6 +1,6 @@
 # Training 
 
-Note: this is to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
+Note: this is specific to Pneumonia and Icbhi/Jordan as of 11/23. To be extended for BD in pneumonia + other datasets in CW
 
 # First
 
@@ -19,9 +19,9 @@ gcloud compute scp --recurse classification:/home/alirachidi/classification_algo
 What are some important components we will be using? 
 - most important library used: main/models/conv/modules
 - train files for pneumonia training: main/models/train$.py, following a train$ format, with $ an integer (refer to train1.py as the template)
-- utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about. 
-a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
+- utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about: 
 
+a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
 b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere in a synchronized manner.
 
 # Now...
