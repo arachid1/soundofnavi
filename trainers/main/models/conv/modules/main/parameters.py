@@ -59,6 +59,7 @@ def init():
     global description
     global cache_root
     
+    # TODO
     cache_root = "/home/alirachidi/classification_algorithm/cache/"
 
     description = None
