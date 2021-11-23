@@ -1,4 +1,4 @@
-# Training
+# Training (Pneumonia and Icbhi/Jordan specific)
 
 1) Upload data and place 'data' folder inside classification_algorithm
 ```
@@ -12,18 +12,19 @@ gcloud compute scp --recurse classification:/home/alirachidi/classification_algo
 3) Edit local_gc_exec.sh according to your needs (see instructions inside file)
 4) RUN: bash local_gc_exec.sh
 
-access to important components (from inside trainers):
+What are some important components we will be using? 
 - most important library used: main/models/conv/modules
-- train files for pneumonia training: main/models/__.py, following a train$ format, with $ an integer
-- utilities for train file: main/models/conv/modules/main, which contains
+- train files for pneumonia training: main/models/train$.py, following a train$ format, with $ an integer (refer to traintemplate.py)
+- utilities for train file: main/models/conv/modules/main, which contains the following that we will learn more about. 
 
-a) helpers.py: most of the functions called inside __.py, like load_audios, will be called from there
-
+a) helpers.py: most of the functions called inside train$.py, like load_audios, will be called from there
 b) parameters.py: a module (which is imported im most folders) to keep track of ALL parameters across files (for example, to allow accessing parameters.sr inside file A or B) and reflect modifications everywhere accordingly
+
+# Now...
 
 In local_gc_exe.sh, you have indicated the appropriate trainer for the mode (or folder/task) you want to work on, a training file and other important elements. Let's take a look inside your training file. 
 
-This an important section that you shouldn't have to modify for the most part. Its main objective is to creates a parent folder for file cache. Be aware that it deletes any prior cache folder that corresponds to that file, so for example, running local_gc_exec.sh for train2356 will delete any exisiting cache/train2356 folder and initialize a new one. It also seeds our libraries, defines training mode, etc. 
+The following is an important section that you shouldn't have to modify for the most part. Its main objective is to creates a parent folder for file cache. Be aware that it deletes any prior cache folder that corresponds to that file, so for example, running local_gc_exec.sh for train2356 will delete any exisiting cache/pneumonia/train2356 folder and initialize a new one. It also seeds our libraries, defines training mode, etc. 
 
 ```
     print("Tensorflow Version: {}".format(tf.__version__))
@@ -42,10 +43,11 @@ This an important section that you shouldn't have to modify for the most part. I
 
 ```
 
-Here, the function to look at is launch_job. 
-It first runs initialize_job(), which creates a child folder for the job (i.e., first job with id 1 goes goes into folder 1 in the parent cache folder, like train2356/cache/1) and handles other important tasks, like creating subfolders (i.e.,  "tp" or "tn") or incrementing parameters, like the job id that is super important for caching as we just saw. 
-Then, it runs train_model(), which is the last, and MAIN, function inside any file. It takes the parameters as described in the comments. The comments and the section on the backbone of the library used should help you understand its magic. 
+Here, the function to look at is launch_job().
 
+It first runs initialize_job(), which creates a child folder for the job (i.e., first job with id 1 goes goes into folder 1 in the parent cache folder, like cache/pneumonia/train2356/1) and handles other important tasks, like creating subfolders (i.e.,  "tp" or "tn") or incrementing parameters, like the job_id that is super important for caching as we just saw. 
+
+Then, it runs train_model(), which is the last, and MAIN, function inside any file. It takes the parameters as described in the comments. The comments and the section on the backbone of the library used should help you understand its magic. 
 
 ````
     ###### set up used for spec input models (default)
@@ -66,11 +68,19 @@ Then, it runs train_model(), which is the last, and MAIN, function inside any fi
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!
 ````
 
-Finally, we must talk about the last few components necessary for training. The first is models/conv/modules, which
+Finally, we must talk about the role of some of the components necessary for training. 
 
-The first is parameters.py, which resides inside modules/main, and is a super important file that allows us to have one copy of every parameter needed across all files and 
+The first is models/conv/modules, which will be covered in a section below. 
 
+The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed, and the appropriate paths, etc. 
+
+The last is helpers.py, which contains all 
+
+Last note: careful with GPUs vs non-GPUs runs implementation but that should all be debuggable in train$.py
 parameters.py and helpers.py inside modules.
 pneumonia only
 models/core/gpu
 
+# Backbone of our (still unnamed) audio library...
+
+Coming soon (as of 11/23)
