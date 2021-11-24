@@ -1,6 +1,6 @@
 export TESTING=1 # allows for debugging by picking a smaller dataset/lower number of epochs
 export MODE=main # folder indication: trainers/main (=> pneumonia) vs trainers/cw for crackles and wheezes
-export TRAIN_NUMBER=1
+export TRAIN_NUMBER=3
 export DESCRIPTION="some description"
 export MODULE_NAME=train$TRAIN_NUMBER
 export OUTPUT_FILE=$MODE/job_outputs/${TRAIN_NUMBER}.out # destination for .out file if nohup is used (example: pneumonia/job_outputs/1.out)
