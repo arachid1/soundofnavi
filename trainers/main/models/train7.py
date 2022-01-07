@@ -2,33 +2,31 @@ import sys
 sys.path.insert(0, 'main/models/conv')
 from modules.main import parameters
 from modules.main.helpers import *
-
 from modules.audio_loader.JordanAudioLoader import JordanAudioLoader
 from modules.audio_loader.IcbhiAudioLoader import IcbhiAudioLoader
 from modules.audio_loader.BdAudioLoader import BdAudioLoader
 from modules.audio_loader.PerchAudioLoader import PerchAudioLoader
 from modules.audio_loader.helpers import default_get_filenames, bd_get_filenames, perch_get_filenames
-
 from modules.spec_generator.SpecGenerator import SpecGenerator
-
 from modules.callbacks.NewCallback import NewCallback
-
 from modules.models import mixednet, model9, time_series_model, kapre_model
-
 from modules.parse_functions.parse_functions import spec_parser, generate_timed_spec
 
 from modules.augmenter.functions import stretch_time, shift_pitch 
-
+from sklearn.metrics import confusion_matrix
+from pytorch_grad_cam import GradCAM
 from collections import Counter
 from sklearn.utils import class_weight
 import tensorflow as tf
-
 from nnAudio import Spectrogram
 from scipy.io import wavfile
+
 import torch
 import torch.optim as optim
 import torch.nn as nn
 from torchsummary import summary
+import torch.nn.functional as F
+import numpy as np
 
 
 
@@ -47,7 +45,7 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
 
 
 class TorchModel(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, train_nn):
         super(TorchModel, self).__init__()
         # Getting Mel Spectrogram on the fly
         self.spec_layer = Spectrogram.STFT(n_fft=parameters.n_fft, freq_bins=None,
@@ -55,7 +53,7 @@ class TorchModel(torch.nn.Module):
                                            freq_scale='no', center=True,
                                            pad_mode='reflect', 
                                            #fmin=50,fmax=6000, 
-                                           sr=parameters.sr, trainable=True,
+                                           sr=parameters.sr, trainable=train_nn,
                                            output_format='Magnitude'
                                            )
         
@@ -75,12 +73,12 @@ class TorchModel(torch.nn.Module):
         
         self.CNN_freq = nn.Conv2d(1,k_out,
                                 kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        print("frq layer")
-        print(self.CNN_freq)
+        # print("frq layer")
+        # print(self.CNN_freq)
         self.CNN_time = nn.Conv2d(k_out,k2_out,
                                 kernel_size=(1,regions),stride=(1,1))
-        print("time layer")
-        print(self.CNN_time)
+        # print("time layer")
+        # print(self.CNN_time)
         self.AvgPool = nn.AvgPool2d(pool_size)
         self.bn = nn.BatchNorm2d(k2_out)
 
@@ -93,23 +91,32 @@ class TorchModel(torch.nn.Module):
 
         self.CNN_freq_2 = nn.Conv2d(k_out,k_out,
                                 kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        print("frq layer")
-        print(self.CNN_freq_2)
         self.CNN_time_2 = nn.Conv2d(k_out,k2_out,
                                 kernel_size=(1,regions),stride=(1,1))
-        print("time layer")
-        print(self.CNN_time_2)
         self.AvgPool_2 = nn.AvgPool2d(pool_size)
         self.bn_2 = nn.BatchNorm2d(k2_out)
 
-        self.region_v = 1 + (self.n_bins-self.CNN_freq_kernel_size[0])//self.CNN_freq_kernel_stride[0]
-        print("expected linear input length after")
-        print(k2_out*self.region_v)
+        # Block 3
+        self.CNN_freq_kernel_size=(8,1)
+        self.CNN_freq_kernel_stride=(2,1)
+        k_out = 128
+        k2_out = 256
+        regions = 15 # seems to be some time variable
+
+        self.CNN_freq_3 = nn.Conv2d(k_out,k_out,
+                                kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
+        self.CNN_time_3 = nn.Conv2d(k_out,k2_out,
+                                kernel_size=(1,regions),stride=(1,1))
+        self.AvgPool_3 = nn.AvgPool2d(pool_size)
+        self.bn_3 = nn.BatchNorm2d(k2_out)
+
+        # self.region_v = 1 + (self.n_bins-self.CNN_freq_kernel_size[0])//self.CNN_freq_kernel_stride[0]
+        # print("expected linear input length after")
+        # print(k2_out*self.region_v)
         # self.linear = torch.nn.Linear(k2_out*self.region_v, m, bias=False)
-        self.linear = torch.nn.Linear(235008, m, bias=False)
-        # self.linear = torch.nn.Linear(k_out, m, bias=False)
-        print("linear layer")
-        print(self.linear)
+        # self.global_avg_pool = F.adaptive_avg_pool2d(x, (1, 1))
+        #235008
+        self.linear = torch.nn.Linear(256, m, bias=False)
 
     def forward(self,x):
         # print("forward")
@@ -133,20 +140,25 @@ class TorchModel(torch.nn.Module):
         # print(z3.shape)
 
         z4 = torch.relu(self.CNN_freq_2(z3))
-        # print("ff: third frq conv")
-        # print(z4.shape)
         z5 = torch.relu(self.CNN_time_2(z4))
-        # print("ff: fourth time conv")
-        # print(z5.shape)
         z5 = self.AvgPool_2(z5)
-        # print("ff: pool")
-        # print(z5.shape)
         z5 = self.bn_2(z5)
-        # print("ff: bn")
-        # print(z5.shape)
 
+        z6 = torch.relu(self.CNN_freq_3(z5))
+        z7 = torch.relu(self.CNN_time_3(z6))
+        z7 = self.AvgPool_3(z7)
+        z7 = self.bn_3(z7)
 
-        y = self.linear(torch.relu(torch.flatten(z5,1)))
+        # z = torch.relu(torch.flatten(z5,1))
+        # print(torch.flatten(z5,1).shape)
+        # y = self.linear(torch.relu(torch.flatten(z5,1)))
+        # print(y.shape)
+        z = F.adaptive_avg_pool2d(z7, (1, 1)) 
+        # print(z.shape)
+        z = torch.squeeze(z)
+        # print(z.shape)
+
+        y = self.linear(z)
         return torch.sigmoid(y)
 
 def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params, parse_function):
@@ -229,9 +241,9 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     # print(use_cuda)
     # print(torch.cuda.current_device())
     print(device)
-    # print(torch.rand(1, device="cuda:0"))
+    print(torch.rand(1, device="cuda:0"))
 
-    net = TorchModel()
+    net = TorchModel(parameters.train_nn)
     net = net.to(device)
     summary(net, (1, 80000))
 
@@ -239,18 +251,17 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     optimizer = optim.SGD(net.parameters(), lr=parameters.lr, momentum=0.9) 
 
     for epoch in range(parameters.n_epochs):  # loop over the dataset multiple times
-
-        # TRAINING
+        
+        ### TRAINING ###
+        print("Epoch: {}".format(epoch))
         train_correct = 0
         running_loss = 0.0
         for i, (local_batch, local_labels) in enumerate(train_loader):
-            # print(len(local_batch))
-            # print(len(local_labels))
+
             # get the inputs; data is a list of [inputs, labels]
             local_labels = local_labels.type(torch.FloatTensor)
             local_labels = local_labels.unsqueeze(1)
             local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-            
 
             # zero the parameter gradients
             optimizer.zero_grad()
@@ -261,8 +272,6 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
             # accuracy
             train_correct += (torch.round(outputs) == local_labels).float().sum()
 
-            # print(outputs)
-            # print(local_labels)
             loss = criterion(outputs, local_labels)
             loss.backward()
             optimizer.step()
@@ -275,33 +284,41 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
                     (epoch + 1, i + 1, running_loss / 2000))
                 running_loss = 0.0
         
-        train_accuracy = 100 * train_correct / len(train_loader)
+        train_accuracy = 100 * train_correct / len(train_loader.dataset)
 
+        # print("Number of train elements: {}".format(len(train_loader.dataset)))
         print("Train accuracy = {}".format(train_accuracy))
-        print('Finished training for epoch {}'.format(epoch))
         
-        # VALIDATION
+        ### VALIDATION ###
         val_correct = 0
+        y_true = []
+        y_pred = []
         with torch.set_grad_enabled(False):
             for local_batch, local_labels in val_loader:
                 # Transfer to GPU
+                local_labels = local_labels.type(torch.FloatTensor)
+                local_labels = local_labels.unsqueeze(1)
                 local_batch, local_labels = local_batch.to(device), local_labels.to(device)
 
                 # Model computations
                 outputs = net(local_batch)
-                # print(outputs)
-                # print(torch.round(outputs))
-                # print(len(val_loader))
-                # print(outputs)
-                # print(local_labels)
-                val_correct += (torch.round(outputs) == local_labels).float().sum()
-                # print(correct)
-                # exit()
+                outputs = torch.round(outputs)
+  
+                val_correct += (outputs == local_labels).float().sum()
+     
+                y_pred.extend(outputs.detach().cpu().numpy())
+                y_true.extend(local_labels.detach().cpu().numpy())
         
-        val_accuracy = 100 * val_correct / len(val_loader)
+        # l = [module for module in net.modules() if not isinstance(module, nn.Sequential)]
+        # print(l[1])
+        # cam = GradCAM(model=net, target_layers=l[1], use_cuda=False)
 
-        print("Val accuracy = {}".format(val_accuracy))
-        print('Finished validation for epoch {}'.format(epoch))
+        val_accuracy =  100*val_correct / len(val_loader.dataset)
+        cm = confusion_matrix(y_true, y_pred)
+        print("Confusion matrix: {}".format(cm))
+        normalized_cm = confusion_matrix(y_true, y_pred, normalize='true')
+        print("Normalized confusion matrix: {}".format(normalized_cm))
+        print("Val accuracy for {} elements = {}".format(len(val_loader.dataset), val_accuracy))
 
 def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
     '''
@@ -334,14 +351,13 @@ if __name__ == "__main__":
     parameters.hop_length = 254
     parameters.shape = (128, 311)
     parameters.n_sequences = 9
-    parameters.batch_size = 1
-    parameters.lr = 5e-5
-    spec_aug_params = [
-        ["mixup", {"quantity" : 0.2, "no_pad" : False, "label_one" : 0, "label_two" : 1, "minval" : 0.3, "maxval" : 0.7}]
-    ]
-    audio_aug_params = [
-        ["augmix", {"quantity" : 0.2, "label": -1, "no_pad" : False, "minval" : 0.3, "maxval" : 0.7, "aug_functions": [shift_pitch, stretch_time]}]
-    ]
+    parameters.batch_size = 8
+    parameters.lr = 1e-4
+    parameters.n_epochs = 15
+    spec_aug_params = []
+    audio_aug_params = []
     launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
+    # parameters.train_nn = False
+    # launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!

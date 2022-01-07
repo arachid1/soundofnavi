@@ -99,7 +99,7 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     model = model_to_be_trained(**parameters.return_model_params())
 
     if validation_only: 
-        model_path = '../best_model_cache(2360)/0/model_epoch12.h5'
+        model_path = '../best_model_cache_2360/0/model_epoch12.h5'
         model.load_weights(model_path)
 
     model.summary(line_length=110)

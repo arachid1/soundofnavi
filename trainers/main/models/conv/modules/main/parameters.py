@@ -71,12 +71,11 @@ def init():
     global trainable_fb
     global to_decibel
     
-    # TODO
+    global train_nn
+    
+
     # cache_root = "/home/alirachidi/classification_algorithm/cache/"
     cache_root = "../cache/"
-
-    description = None
-
     # data_root = "/home/alirachidi/classification_algorithm/data/"
     data_root = "../data/"
     jordan_root = os.path.join(data_root, 'jwyy9np4gv-3/')
@@ -90,27 +89,28 @@ def init():
     # excel_path = "../data/Bangladesh_PCV_onlyStudyPatients.xlsx"
     # perch_root="../data/raw_audios/perch_8000_10seconds/"
 
+    description = None
+    job_id = 0
+    mode = "pneumonia"
+    
     n_classes = 1
-
+    shape = (128, 313)
     n_epochs = 45
 
     lr = 1e-3
     batch_size = 16
-
     ll2_reg = 0
     weight_decay = 1e-4
     label_smoothing = 0
-
     epsilon = 1e-7
-
-    shape = (128, 313)
-
     es_patience = 6
     min_delta = 0
 
+    train_test_ratio = 0.8
+    kfold = False
+
     # six = bool(params["SIX"])
     # concat = bool(params["CONCAT"])
-
     clause = 0
     epoch_start = 0
     testing = 0
@@ -126,25 +126,20 @@ def init():
     lr_patience = 3
     min_lr = 1e-6
 
-    train_test_ratio = 0.8
     sr = 8000
     audio_length = 10
     step_size = 5
-
     n_fft = 1024
     hop_length = 256
     n_mels = 128
-
-    job_id = 0
-    kfold = False
-
-    mode = "pneumonia"
 
     overlap_threshold = 0.15
 
     # for Kapre
     trainable_fb = False
     to_decibel = True
+
+    train_nn = True
 
     # old augmentation parameters
 

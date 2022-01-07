@@ -487,6 +487,7 @@ class NewCallback(tf.keras.callbacks.LambdaCallback):
         return y_true_all, preds_all, rounded_preds_all, x_all, patients_dict
 
 def return_layer(model):
+
     if model.name == "mixednet":
         return model.layers[1].name
     elif model.name == "model9":
