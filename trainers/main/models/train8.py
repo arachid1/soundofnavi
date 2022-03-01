@@ -48,17 +48,17 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
     def __len__(self):
         return len(self.dataset)
 
-
 class TorchModel(torch.nn.Module):
     def __init__(self, train_nn):
         super(TorchModel, self).__init__()
+        # Getting Mel Spectrogram on the fly
         self.spec_layer = Spectrogram.STFT(n_fft=parameters.n_fft, 
                                            hop_length=parameters.hop_length, 
                                            sr=parameters.sr, 
                                            trainable=train_nn,
                                            output_format='Magnitude'
                                            )
-        # self.spec_layer = Spectrogram.STFT(n_fft=64, sr=parameters.sr,   trainable=True,  output_format='Magnitude')
+        
         print(self.spec_layer)
 
         pool_size = 2
@@ -67,8 +67,8 @@ class TorchModel(torch.nn.Module):
         
 
         # Block 1
-        self.CNN_freq_kernel_size=(16,1)
-        self.CNN_freq_kernel_stride=(2,1)
+        self.CNN_freq_kernel_size=(8,1)
+        self.CNN_freq_kernel_stride=(1,1)
         k_out = 32
         k2_out = 64
         regions = 15 # seems to be some time variable
@@ -93,45 +93,37 @@ class TorchModel(torch.nn.Module):
 
         self.CNN_freq_2 = nn.Conv2d(k_out,k_out,
                                 kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
+        # print("frq layer")
+        # print(self.CNN_freq_2)
         self.CNN_time_2 = nn.Conv2d(k_out,k2_out,
                                 kernel_size=(1,regions),stride=(1,1))
+        # print("time layer")
+        # print(self.CNN_time_2)
         self.AvgPool_2 = nn.AvgPool2d(pool_size)
         self.bn_2 = nn.BatchNorm2d(k2_out)
 
-        # Block 3
-        self.CNN_freq_kernel_size=(8,1)
-        self.CNN_freq_kernel_stride=(2,1)
-        k_out = 128
-        k2_out = 256
-        regions = 15 # seems to be some time variable
-
-        self.CNN_freq_3 = nn.Conv2d(k_out,k_out,
-                                kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        self.CNN_time_3 = nn.Conv2d(k_out,k2_out,
-                                kernel_size=(1,regions),stride=(1,1))
-        self.AvgPool_3 = nn.AvgPool2d(pool_size)
-        self.bn_3 = nn.BatchNorm2d(k2_out)
-
-        # self.region_v = 1 + (self.n_bins-self.CNN_freq_kernel_size[0])//self.CNN_freq_kernel_stride[0]
+        self.region_v = 1 + (self.n_bins-self.CNN_freq_kernel_size[0])//self.CNN_freq_kernel_stride[0]
         # print("expected linear input length after")
         # print(k2_out*self.region_v)
         # self.linear = torch.nn.Linear(k2_out*self.region_v, m, bias=False)
         # self.global_avg_pool = F.adaptive_avg_pool2d(x, (1, 1))
         #235008
-        self.linear = torch.nn.Linear(256, m, bias=False)
+        self.linear = torch.nn.Linear(128, m, bias=False)
+        # self.linear = torch.nn.Linear(k_out, m, bias=False)
+        # print("linear layer")
+        # print(self.linear)
 
-    def forward(self,x, return_spec=False):
+    def forward(self,x):
         # print("forward")
         # print("ff: input")
         # print(x.shape)
-        z = self.spec_layer(x, return_spec=return_spec)
-        z = torch.log(z)
-        if return_spec:
-            return z
-        print(z.shape)
+        z = self.spec_layer(x)
+        # print(z.shape)
+        z = torch.log(z+parameters.epsilon)
+
         z2 = torch.relu(self.CNN_freq(z.unsqueeze(1)))
         # print("ff: first frq conv")
-        print(z2.shape)
+        # print(z2.shape)
         z3 = torch.relu(self.CNN_time(z2))
         # print("ff: second time conv")
         # print(z3.shape)
@@ -143,20 +135,23 @@ class TorchModel(torch.nn.Module):
         # print(z3.shape)
 
         z4 = torch.relu(self.CNN_freq_2(z3))
+        # print("ff: third frq conv")
+        # print(z4.shape)
         z5 = torch.relu(self.CNN_time_2(z4))
+        # print("ff: fourth time conv")
+        # print(z5.shape)
         z5 = self.AvgPool_2(z5)
+        # print("ff: pool")
+        # print(z5.shape)
         z5 = self.bn_2(z5)
-
-        z6 = torch.relu(self.CNN_freq_3(z5))
-        z7 = torch.relu(self.CNN_time_3(z6))
-        z7 = self.AvgPool_3(z7)
-        z7 = self.bn_3(z7)
+        # print("ff: bn")
+        # print(z5.shape)
 
         # z = torch.relu(torch.flatten(z5,1))
         # print(torch.flatten(z5,1).shape)
         # y = self.linear(torch.relu(torch.flatten(z5,1)))
         # print(y.shape)
-        z = F.adaptive_avg_pool2d(z7, (1, 1)) 
+        z = F.adaptive_avg_pool2d(z5, (1, 1)) 
         # print(z.shape)
         z = torch.squeeze(z)
         # print(z.shape)

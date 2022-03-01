@@ -26,6 +26,29 @@ def visualize_spec(self, spec, sr, dest, title=None): #TODO: fix the self parame
     plt.savefig(dest + ".png")
     plt.close()
 
+def visualize_spec_bis(spec, sr, dest, title=None): 
+
+    fig = plt.figure(figsize=(20, 10))
+    display.specshow(
+        spec,
+        # x_axis="time",
+        sr=sr,
+        cmap="coolwarm",
+    )
+    height = spec.shape[0]
+    width = spec.shape[1]
+    height_interval = int(height/10)
+    width_interval = int(width/10)
+    plt.yticks(np.arange(0, height, height_interval))
+    plt.xticks(np.arange(0, width, width_interval))
+    plt.colorbar()
+    if title:
+        plt.title(title)
+        dest = dest + "__" + title
+    plt.show()
+    plt.savefig(dest + ".png")
+    plt.close()
+
 
 def visualize_audio(audio_c, dest, title=None, xlabel=None, ylabel=None):
     plt.figure()

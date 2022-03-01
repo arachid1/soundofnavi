@@ -72,6 +72,7 @@ def init():
     global to_decibel
     
     global train_nn
+    global train_mel
     
 
     # cache_root = "/home/alirachidi/classification_algorithm/cache/"
@@ -139,7 +140,8 @@ def init():
     trainable_fb = False
     to_decibel = True
 
-    train_nn = True
+    train_nn = False
+    train_mel = False
 
     # old augmentation parameters
 

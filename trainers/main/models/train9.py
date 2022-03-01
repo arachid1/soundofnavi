@@ -68,7 +68,7 @@ class TorchModel(torch.nn.Module):
 
         # Block 1
         self.CNN_freq_kernel_size=(16,1)
-        self.CNN_freq_kernel_stride=(2,1)
+        self.CNN_freq_kernel_stride=(1,1)
         k_out = 32
         k2_out = 64
         regions = 15 # seems to be some time variable
@@ -86,7 +86,7 @@ class TorchModel(torch.nn.Module):
 
         # Block 2
         self.CNN_freq_kernel_size=(16,1)
-        self.CNN_freq_kernel_stride=(2,1)
+        self.CNN_freq_kernel_stride=(1,1)
         k_out = 64
         k2_out = 128
         regions = 15 # seems to be some time variable
@@ -118,7 +118,7 @@ class TorchModel(torch.nn.Module):
         # self.linear = torch.nn.Linear(k2_out*self.region_v, m, bias=False)
         # self.global_avg_pool = F.adaptive_avg_pool2d(x, (1, 1))
         #235008
-        self.linear = torch.nn.Linear(256, m, bias=False)
+        self.linear = torch.nn.Linear(128, m, bias=False)
 
     def forward(self,x, return_spec=False):
         # print("forward")
@@ -128,10 +128,10 @@ class TorchModel(torch.nn.Module):
         z = torch.log(z)
         if return_spec:
             return z
-        print(z.shape)
+        # print(z.shape)
         z2 = torch.relu(self.CNN_freq(z.unsqueeze(1)))
         # print("ff: first frq conv")
-        print(z2.shape)
+        # print(z2.shape)
         z3 = torch.relu(self.CNN_time(z2))
         # print("ff: second time conv")
         # print(z3.shape)
@@ -147,16 +147,12 @@ class TorchModel(torch.nn.Module):
         z5 = self.AvgPool_2(z5)
         z5 = self.bn_2(z5)
 
-        z6 = torch.relu(self.CNN_freq_3(z5))
-        z7 = torch.relu(self.CNN_time_3(z6))
-        z7 = self.AvgPool_3(z7)
-        z7 = self.bn_3(z7)
+        # z6 = torch.relu(self.CNN_freq_3(z5))
+        # z7 = torch.relu(self.CNN_time_3(z6))
+        # z7 = self.AvgPool_3(z7)
+        # z7 = self.bn_3(z7)
 
-        # z = torch.relu(torch.flatten(z5,1))
-        # print(torch.flatten(z5,1).shape)
-        # y = self.linear(torch.relu(torch.flatten(z5,1)))
-        # print(y.shape)
-        z = F.adaptive_avg_pool2d(z7, (1, 1)) 
+        z = F.adaptive_avg_pool2d(z5, (1, 1))  # <- change to z7
         # print(z.shape)
         z = torch.squeeze(z)
         # print(z.shape)
@@ -248,7 +244,7 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
 
     net = TorchModel(parameters.train_nn)
     net = net.to(device)
-    # summary(net, (1, 80000))
+    summary(net, (1, 80000))
 
     criterion = nn.BCELoss()
     optimizer = optim.SGD(net.parameters(), lr=parameters.lr, momentum=0.9) 
@@ -258,7 +254,7 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
     fig = plt.figure(figsize=(20, 10))
     plt.imshow(net.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-    plt.savefig("weights_original")
+    plt.savefig("temp/weights_original")
     plt.close()
 
     for epoch in range(parameters.n_epochs):  # loop over the dataset multiple times
@@ -438,9 +434,9 @@ if __name__ == "__main__":
     parameters.hop_length = 128
 
     # general parametes
-    parameters.lr = 1e-4
+    parameters.lr = 1e-3
     parameters.n_epochs = 15
-    parameters.batch_size = 8
+    parameters.batch_size = 16
 
     # augm params
     spec_aug_params = []

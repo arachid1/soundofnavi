@@ -18,7 +18,7 @@ from sklearn.metrics import confusion_matrix
 
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
-
+import pytorch_lightning as pl
 
 from collections import Counter
 from sklearn.utils import class_weight
@@ -34,7 +34,7 @@ import torch.nn.functional as F
 import numpy as np
 from matplotlib import pyplot as plt
 
-
+import os, shutil
 # from .models import *
 
 class Custom_Dataset(torch.utils.data.dataset.Dataset):
@@ -48,121 +48,54 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
     def __len__(self):
         return len(self.dataset)
 
+class Model(pl.LightningModule):
 
-class TorchModel(torch.nn.Module):
-    def __init__(self, train_nn):
-        super(TorchModel, self).__init__()
-        self.spec_layer = Spectrogram.STFT(n_fft=parameters.n_fft, 
-                                           hop_length=parameters.hop_length, 
-                                           sr=parameters.sr, 
-                                           trainable=train_nn,
-                                           output_format='Magnitude'
-                                           )
-        # self.spec_layer = Spectrogram.STFT(n_fft=64, sr=parameters.sr,   trainable=True,  output_format='Magnitude')
-        print(self.spec_layer)
-
-        pool_size = 2
-        self.n_bins = 2048 // 2 + 1 # number of bins
-        m = 1 # output size for last layer (which should be 1)
+    def __init__(self):
+        super(Model,self).__init__()
+        self.spec_layer = Spectrogram.STFT(n_fft=parameters.n_fft, hop_length=parameters.hop_length,  sr=parameters.sr, 
+                                            trainable=parameters.train_nn, output_format="Magnitude")
+        # self.spec_layer = Spectrogram.MelSpectrogram(n_fft=parameters.n_fft, sr=parameters.sr, n_mels=64, hop_length=parameters.hop_length, 
+        #                                     trainable_mel=True, trainable_STFT=True)                                   
+        self.CNN_layer1 = torch.nn.Conv2d(1,1, kernel_size=(1, 1))
+        self.CNN_layer2 = torch.nn.Conv2d(1,8, kernel_size=(3, 3))
+        self.AVGPOOL1 = torch.nn.AvgPool2d(2)
+        self.BN1 = torch.nn.BatchNorm2d(8)
+        self.CNN_layer3 = torch.nn.Conv2d(8,8, kernel_size=(1,1))
+        self.CNN_layer4 = torch.nn.Conv2d(8,16, kernel_size=(3,3))
+        self.AVGPOOL2 = torch.nn.AvgPool2d(2)
+        self.BN2 = torch.nn.BatchNorm2d(16)
+        self.final_neurons = 16*30*76
+        self.regressor = torch.nn.Linear(self.final_neurons,1)
         
+    def on_after_backward(self):
+        # freeze bins 
+        self.spec_layer.wsin.grad[30:] = 0
+        self.spec_layer.wcos.grad[30:] = 0
 
-        # Block 1
-        self.CNN_freq_kernel_size=(16,1)
-        self.CNN_freq_kernel_stride=(2,1)
-        k_out = 32
-        k2_out = 64
-        regions = 15 # seems to be some time variable
-        
-        self.CNN_freq = nn.Conv2d(1,k_out,
-                                kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        # print("frq layer")
-        # print(self.CNN_freq)
-        self.CNN_time = nn.Conv2d(k_out,k2_out,
-                                kernel_size=(1,regions),stride=(1,1))
-        # print("time layer")
-        # print(self.CNN_time)
-        self.AvgPool = nn.AvgPool2d(pool_size)
-        self.bn = nn.BatchNorm2d(k2_out)
-
-        # Block 2
-        self.CNN_freq_kernel_size=(16,1)
-        self.CNN_freq_kernel_stride=(2,1)
-        k_out = 64
-        k2_out = 128
-        regions = 15 # seems to be some time variable
-
-        self.CNN_freq_2 = nn.Conv2d(k_out,k_out,
-                                kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        self.CNN_time_2 = nn.Conv2d(k_out,k2_out,
-                                kernel_size=(1,regions),stride=(1,1))
-        self.AvgPool_2 = nn.AvgPool2d(pool_size)
-        self.bn_2 = nn.BatchNorm2d(k2_out)
-
-        # Block 3
-        self.CNN_freq_kernel_size=(8,1)
-        self.CNN_freq_kernel_stride=(2,1)
-        k_out = 128
-        k2_out = 256
-        regions = 15 # seems to be some time variable
-
-        self.CNN_freq_3 = nn.Conv2d(k_out,k_out,
-                                kernel_size=self.CNN_freq_kernel_size,stride=self.CNN_freq_kernel_stride)
-        self.CNN_time_3 = nn.Conv2d(k_out,k2_out,
-                                kernel_size=(1,regions),stride=(1,1))
-        self.AvgPool_3 = nn.AvgPool2d(pool_size)
-        self.bn_3 = nn.BatchNorm2d(k2_out)
-
-        # self.region_v = 1 + (self.n_bins-self.CNN_freq_kernel_size[0])//self.CNN_freq_kernel_stride[0]
-        # print("expected linear input length after")
-        # print(k2_out*self.region_v)
-        # self.linear = torch.nn.Linear(k2_out*self.region_v, m, bias=False)
-        # self.global_avg_pool = F.adaptive_avg_pool2d(x, (1, 1))
-        #235008
-        self.linear = torch.nn.Linear(256, m, bias=False)
-
-    def forward(self,x, return_spec=False):
+    def forward(self, x, return_spec=False):
         # print("forward")
-        # print("ff: input")
         # print(x.shape)
-        z = self.spec_layer(x, return_spec=return_spec)
-        z = torch.log(z)
+        x = self.spec_layer(x)
+        x = torch.log(x)
         if return_spec:
-            return z
-        print(z.shape)
-        z2 = torch.relu(self.CNN_freq(z.unsqueeze(1)))
-        # print("ff: first frq conv")
-        print(z2.shape)
-        z3 = torch.relu(self.CNN_time(z2))
-        # print("ff: second time conv")
-        # print(z3.shape)
-        z3 = self.AvgPool(z3)
-        # print("ff: pool")
-        # print(z3.shape)
-        z3 = self.bn(z3)
-        # print("ff: bn")
-        # print(z3.shape)
-
-        z4 = torch.relu(self.CNN_freq_2(z3))
-        z5 = torch.relu(self.CNN_time_2(z4))
-        z5 = self.AvgPool_2(z5)
-        z5 = self.bn_2(z5)
-
-        z6 = torch.relu(self.CNN_freq_3(z5))
-        z7 = torch.relu(self.CNN_time_3(z6))
-        z7 = self.AvgPool_3(z7)
-        z7 = self.bn_3(z7)
-
-        # z = torch.relu(torch.flatten(z5,1))
-        # print(torch.flatten(z5,1).shape)
-        # y = self.linear(torch.relu(torch.flatten(z5,1)))
-        # print(y.shape)
-        z = F.adaptive_avg_pool2d(z7, (1, 1)) 
-        # print(z.shape)
-        z = torch.squeeze(z)
-        # print(z.shape)
-
-        y = self.linear(z)
-        return torch.sigmoid(y)
+            return x
+        # print(x.shape)
+        # print(x.unsqueeze(1).shape)
+        # print(x.shape)
+        x = self.CNN_layer1(x.unsqueeze(1)) # unsqueeze has the purpose of adding a channel dim
+        x = self.CNN_layer2(x)
+        x = self.AVGPOOL1(x)
+        x = self.BN1(x)
+        x = self.CNN_layer3(x)
+        x = self.CNN_layer4(x)
+        x = self.AVGPOOL2(x)
+        x = self.BN2(x)
+        # print(x.shape)
+        # x = x.view(x.data.size()[0], -1)
+        x = x.view(x.data.size()[0], self.final_neurons)
+        x = self.regressor(torch.relu(x))
+        # print(x.shape)
+        return torch.sigmoid(x)
 
 def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params, parse_function):
 
@@ -172,6 +105,12 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     # optional parameters: or other custom parameters, like the Bangladesh excel path
     # NOTE: name attribute: to distinguish between datasets when the same audio loader object is used for different datasets, such as antwerp and icbhi that both use IcbhiAudioLoader
 
+    d = "temp/"
+    if os.path.isdir(d):
+        shutil.rmtree(d)
+        print('contents inside {} removed'.format(d))
+    os.mkdir(d)
+    
     audio_loaders = []
     
     if datasets["Jordan"]: audio_loaders.append(JordanAudioLoader(parameters.jordan_root, default_get_filenames))
@@ -225,15 +164,25 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     torch.cuda.empty_cache()
 
     _, train_specs, train_labels, train_filenames = create_tf_dataset(train_samples, batch_size=parameters.batch_size, shuffle=True, parse_func=None)
-    _, val_specs, val_labels, val_filenames = create_tf_dataset(val_samples, batch_size=1, shuffle=False, parse_func=None)
-
     train_dataset = list(tf.data.Dataset.from_tensor_slices((train_specs, train_labels)).as_numpy_iterator())
-    train_loader = torch.utils.data.DataLoader(dataset=Custom_Dataset(train_dataset),
+    # print(train_dataset[:2])
+    # exit()
+
+    positive_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 1]
+    positive_cases = positive_cases 
+    negative_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 0]
+    negative_cases = negative_cases[:len(positive_cases)]
+    print(len(negative_cases))
+    print(len(positive_cases))
+    train_dataset = positive_cases + negative_cases
+
+    trainloader = torch.utils.data.DataLoader(dataset=Custom_Dataset(train_dataset),
                                            batch_size=parameters.batch_size,
                                            shuffle=True)
 
+    _, val_specs, val_labels, val_filenames = create_tf_dataset(val_samples, batch_size=1, shuffle=False, parse_func=None)
     val_dataset = list(tf.data.Dataset.from_tensor_slices((val_specs, val_labels)).as_numpy_iterator())
-    val_loader = torch.utils.data.DataLoader(dataset=Custom_Dataset(val_dataset),
+    testloader = torch.utils.data.DataLoader(dataset=Custom_Dataset(val_dataset),
                                            batch_size=parameters.batch_size,
                                            shuffle=False)
     
@@ -241,16 +190,26 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     device = torch.device("cuda:0" if use_cuda else "cpu")
     # torch.backends.cudnn.benchmark = True
 
-    # print(use_cuda)
-    # print(torch.cuda.current_device())
     print(device)
     print(torch.rand(1, device="cuda:0"))
 
-    net = TorchModel(parameters.train_nn)
+    net = Model()
     net = net.to(device)
-    # summary(net, (1, 80000))
+    summary(net, (1, 40000))
+    # for layer in net.layers():
+    #     print(layer)
+    # print(len(list(net.parameters())))
+    # print(list(net.parameters)[:3])
 
-    criterion = nn.BCELoss()
+    # for i, param in enumerate(net.parameters()):
+    #     if i == 2:
+    #         break
+    #     param.requires_grad = False
+    # net.spec_layer.params.requires_grad = False
+    # net.spec_layer.bias.requires_grad = False
+
+
+    loss_function = nn.BCELoss()
     optimizer = optim.SGD(net.parameters(), lr=parameters.lr, momentum=0.9) 
 
     original_basis_real = net.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
@@ -261,43 +220,77 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     plt.savefig("weights_original")
     plt.close()
 
+    # index = 0
+    # spec_to_track = iter(testloader)[0][index].to(device)
+    # # label_to_track = local_labels[index]
+    # outputs = net(spec_to_track, return_spec=True)
+    # outputs = np.squeeze(outputs.to("cpu").numpy())
+    # # print("spec")
+    # # print(outputs)
+    # visualize_spec_bis(outputs, parameters.sr, "temp/test", title="epoch_{}".format(epoch))
+
+    index = 7
+    with torch.no_grad():
+            for local_batch, local_labels in testloader:
+                print(local_labels)
+                spec_to_track = local_batch[index].to(device)
+                label_to_track = local_labels[index]
+                outputs = net(spec_to_track, return_spec=True)
+                old_outputs = np.squeeze(outputs.to("cpu").numpy())
+                visualize_spec_bis(old_outputs, parameters.sr, "temp/outputs", title="orig_index_{}_label_{}".format(index, label_to_track))
+                break
+
+    old_wcos = net.spec_layer.wcos.cpu()
+    old_wsin = net.spec_layer.wsin.cpu()
+    
+    loss_train = []
+    loss_test = []
+
+    print("epoch\ttrain loss\ttest loss")
+
     for epoch in range(parameters.n_epochs):  # loop over the dataset multiple times
         
-        ### TRAINING ###
         print("Epoch: {}".format(epoch))
         train_correct = 0
         running_loss = 0.0
-        for i, (local_batch, local_labels) in enumerate(train_loader):
+        loss_train_e = 0.0
+        loss_test_e = 0.0
 
-            # get the inputs; data is a list of [inputs, labels]
+        # if epoch == 10:
+        #     for i, param in enumerate(net.parameters()):
+        #         param.requires_grad = True
+
+        ### TRAINING ###
+        for i, (local_batch, local_labels) in enumerate(trainloader):
             local_labels = local_labels.type(torch.FloatTensor)
             local_labels = local_labels.unsqueeze(1)
             local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-
-            # zero the parameter gradients
+            
             optimizer.zero_grad()
-
-            # forward + backward + optimize
             outputs = net(local_batch)
-
-            # accuracy
-            train_correct += (torch.round(outputs) == local_labels).float().sum()
-
-            loss = criterion(outputs, local_labels)
+            loss = loss_function(outputs, local_labels)
+            # print("here")
+            # print(loss)
             loss.backward()
             optimizer.step()
+            loss_train_e += loss.item()
+            train_correct += (torch.round(outputs) == local_labels).float().sum()
 
-            # print statistics
-            running_loss += loss.item()
+        loss_train.append(loss_train_e/len(trainloader))
 
-            if i % 2000 == 1999:    # print every 2000 mini-batches
-                print('[%d, %5d] loss: %.3f' %
-                    (epoch + 1, i + 1, running_loss / 2000))
-                running_loss = 0.0
-        
-        train_accuracy = 100 * train_correct / len(train_loader.dataset)
+        # intermediary calculations
+        print("Average loss per batch (size {}): {} ".format(parameters.batch_size, loss_train[-1]))
+        new_wcos = net.spec_layer.wcos.cpu()
+        diff = abs(new_wcos - old_wcos)
+        visualize_spec_bis(np.squeeze(diff.detach().numpy()), parameters.sr, "temp/wcos_diff_epoch_{}".format(epoch))
+        old_wcos = new_wcos
 
-        # print("Number of train elements: {}".format(len(train_loader.dataset)))
+        new_wsin = net.spec_layer.wsin.cpu()
+        diff = abs(new_wsin - old_wsin)
+        visualize_spec_bis(np.squeeze(diff.detach().numpy()), parameters.sr, "temp/wsin_diff_epoch_{}".format(epoch))
+        old_wsin = new_wsin
+
+        train_accuracy = 100 * train_correct / len(trainloader.dataset)
         print("Train accuracy = {}".format(train_accuracy))
         
         ### VALIDATION ###
@@ -305,20 +298,18 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
         y_true = []
         y_pred = []
         viz_counter = 0
-        with torch.set_grad_enabled(False):
-            for local_batch, local_labels in val_loader:
-                # if epoch == 2:
-                #     exit()
-                if viz_counter == 0:
-                    
+        # with torch.set_grad_enabled(False):
+        with torch.no_grad():
+            for local_batch, local_labels in testloader:
+                if viz_counter == 0 and epoch % 10 == 0:
                     trained_basis_real = net.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
                     trained_basis_imag = net.spec_layer.wsin.cpu().detach().numpy().squeeze(1)
                     # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
                     fig = plt.figure(figsize=(20, 10))
                     plt.imshow(net.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-                    plt.savefig("temp/weights_wsin_epoch_{}".format(epoch))
+                    plt.savefig("kernels/weights_wsin_epoch_{}".format(epoch))
                     plt.imshow(net.spec_layer.wcos.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-                    plt.savefig("temp/weights_wcos_epoch_{}".format(epoch))
+                    plt.savefig("kernels/weights_wcos_epoch_{}".format(epoch))
                     plt.close()
                     
                     fig, ax = plt.subplots(5,2, figsize=(12,18))
@@ -339,35 +330,47 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
                         ax[i,0].tick_params(labelsize=12)
                         ax[i,1].tick_params(labelsize=12)
                         ax[i,1].legend(['real','imaginary'])
-                    plt.savefig("temp/kernels_epoch_{}".format(epoch))
+                    plt.savefig("kernels/kernels_epoch_{}".format(epoch))
                     plt.close()
 
-                    index = 0
+                    # indexes = range(0, 10)
+                    # for index in indexes:
                     spec_to_track = local_batch[index].to(device)
                     label_to_track = local_labels[index]
                     outputs = net(spec_to_track, return_spec=True)
                     outputs = np.squeeze(outputs.to("cpu").numpy())
-                    # print("spec")
-                    # print(outputs)
-                    visualize_spec_bis(outputs, parameters.sr, "temp/test", title="epoch_{}".format(epoch))
+                    visualize_spec_bis(outputs, parameters.sr, "temp/outputs", title="_{}_label_{}_epoch_{}".format(index, label_to_track, epoch))
+                    to_viz = outputs - old_outputs 
+                    # old_outputs = outputs
+                    visualize_spec_bis(to_viz, parameters.sr, "temp/diff", title="_{}_label_{}_epoch_{}".format(index, label_to_track, epoch))
 
                 # Transfer to GPU
                 local_labels = local_labels.type(torch.FloatTensor)
                 local_labels = local_labels.unsqueeze(1)
                 local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-
-                # Model computations
+                
+                # optimizer.zero_grad()
                 outputs = net(local_batch)
+                loss = loss_function(outputs, local_labels)
+                # loss.requires_grad = False
+                # print("val")
+                # print(loss)
+                # loss.backward()
+                # optimizer.step()
+                loss_test_e += loss.item()
                 outputs = torch.round(outputs)
   
                 val_correct += (outputs == local_labels).float().sum()
-     
                 y_pred.extend(outputs.detach().cpu().numpy())
                 y_true.extend(local_labels.detach().cpu().numpy())
                 viz_counter += 1
-        
-        # val_loader_iter = iter(val_loader)
-        # gradcam_batch, gradcam_labels = next(val_loader_iter)
+
+        loss_test.append(loss_test_e/len(testloader))
+        print(' '*100, end='\r')
+        print(f"{epoch}\t{loss_train[-1]:.6f}\t{loss_test[-1]:.6f}")
+
+        # testloader_iter = iter(testloader)
+        # gradcam_batch, gradcam_labels = next(testloader_iter)
         # l = [module for module in net.modules() if not isinstance(module, nn.Sequential)]
         # target_layers = [l[-1]]
 
@@ -392,12 +395,12 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
         # # visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
         # exit()
 
-        val_accuracy =  100*val_correct / len(val_loader.dataset)
+        val_accuracy =  100*val_correct / len(testloader.dataset)
         cm = confusion_matrix(y_true, y_pred)
-        print("Confusion matrix: {}".format(cm))
+        # print("Confusion matrix: {}".format(cm))
         normalized_cm = confusion_matrix(y_true, y_pred, normalize='true')
-        print("Normalized confusion matrix: {}".format(normalized_cm))
-        print("Val accuracy for {} elements = {}".format(len(val_loader.dataset), val_accuracy))
+        # print("Normalized confusion matrix: {}".format(normalized_cm))
+        # print("Val accuracy for {} elements = {}".format(len(testloader.dataset), val_accuracy))
 
 def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
     '''
@@ -434,13 +437,16 @@ if __name__ == "__main__":
     # parameters.batch_size = 8
 
     ###### set up used for audio input models
-    parameters.n_fft = 128
+    parameters.n_fft = 256
     parameters.hop_length = 128
+    parameters.train_nn = True
 
     # general parametes
     parameters.lr = 1e-4
-    parameters.n_epochs = 15
-    parameters.batch_size = 8
+    parameters.n_epochs = 150
+    parameters.batch_size = 32
+    parameters.audio_length = 5
+    parameters.weight_decay = 0
 
     # augm params
     spec_aug_params = []
