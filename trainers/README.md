@@ -28,9 +28,9 @@ When logged in, create empty 'data' folder. Then, run:
 gcloud compute scp --recurse classification:/home/alirachidi/classification_algorithm/data data --zone us-central1-a
 ```
 
-2) Install python 3.7.9 and libraries (see requirements.txt)
-3) Edit local_gc_exec.sh according to your needs (see instructions inside file)
-4) RUN: bash local_gc_exec.sh
+Step 2) Install python 3.7.9 and libraries (see requirements.txt)
+Step 3) Edit local_gc_exec.sh according to your needs (see instructions inside file)
+Step 4) RUN: bash local_gc_exec.sh
 
 What are some important components we will be using? 
 - most important library used: trainers/modules
@@ -119,9 +119,11 @@ A) The first is modules, which will be covered in a section below.
 
 B) The second is parameters.py, which resides inside modules/main, and is a super important file. Think of it as an object accessible everywhere to extract virtually ANY parameter from a long list in a synchronized way. For example, it allows me to access parameters.sr inside train$.py BUT also inside my callback. Another instance where it's critical is, every time we run launch_job (and therefore initialize_job), it updates the job_id parameter to reflect the current job being executed (so for example, switching from the first job with id 1 to the second job with id 2), and the appropriate paths, etc. 
 
-C) the third is models. You can write your model inside the train file train$.py, but I'd recommend writing inside and importing your model from modules/models/model$.py, with $ the number of the model. each model$.py has access to inside core.py, which has the custom mixednet layers, inverted residual layers, etc, so you HAVE to write inside models.py to use those elements. You can use mixednet.py as the template to copy/paste.
+C) the third is models. You can write your model inside the train file train$.py, but I'd recommend writing inside and importing your model from modules/models/$.py, with $ the number of the file/model. each $.py has access to core.py, which has the custom mixednet layers, inverted residual layers, additional functions, etc. You can use mixednet.py as the template to copy/paste.
 
 D) More to come on augmentation.
+
+E) each trainer has a job_outputs folder, which contains the .out files for logging when running the job in the backend with nohup (see local_gc_exec.sh). 
 
 LASTE NOTE ON GPU/CPU: CUDA_DEVICES_VISIBLE is set to -1 or 0/1 inside local_gc_exec.sh to run in, respectively, CPU and GPU mode. GPUs vs non-GPUs runs may require slight modifications but that should all be debuggable in train$.py
 
