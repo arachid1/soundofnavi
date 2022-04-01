@@ -29,7 +29,9 @@ gcloud compute scp --recurse classification:/home/alirachidi/classification_algo
 ```
 
 Step 2) Install python 3.7.9 and libraries (see requirements.txt)
+
 Step 3) Edit local_gc_exec.sh according to your needs (see instructions inside file)
+
 Step 4) RUN: bash local_gc_exec.sh
 
 What are some important components we will be using? 
