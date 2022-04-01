@@ -7,7 +7,7 @@
 | JORDAN  | X | X |
 | ANTWERP  |  | X |
 | ANTWERP SIM  |  | X |
-| BD  | - (available but not inplemented yet) |  |
+| BD  | - (available but not implemented yet) |  |
 
 
 NOTE: As of 11/23, only Pneumonia problem for Icbhi/Jordan has been implemented. To be extended by adding training on BD for pneumonia + other datasets in CW.
@@ -127,15 +127,17 @@ D) More to come on augmentation.
 
 E) each trainer has a job_outputs folder, which contains the .out files for logging when running the job in the backend with nohup (see local_gc_exec.sh). 
 
-LASTE NOTE ON GPU/CPU: CUDA_DEVICES_VISIBLE is set to -1 or 0/1 inside local_gc_exec.sh to run in, respectively, CPU and GPU mode. GPUs vs non-GPUs runs may require slight modifications but that should all be debuggable in train$.py
+F) GPU/CPU: CUDA_DEVICES_VISIBLE is set to -1 or 0/1 inside local_gc_exec.sh to run in, respectively, CPU and GPU mode. GPUs vs non-GPUs runs may require slight modifications but that should all be debuggable in train$.py
 
 
 ## The Crackles/Wheezes problem
 
-It's essentially very similar to pneumonia. However, I still have to implement augmentation and class weights for crackles/wheezes. the template for cw is cw/train0, equivalent to main/train0.
+It's essentially the same as pneumonia. However, I still have to implement augmentation and class weights for crackles/wheezes. 
 
-TODOs
-## Add Bangladesh for pneumonia
-## Augmentation and class weights for crackles wheezes
-## Details on Augmentation
-## Details on our audio library, modules
+The template for cw is cw/train0, equivalent to main/train0.
+
+### TODOs
+# Add Bangladesh for pneumonia
+# Augmentation and class weights for crackles wheezes
+# Details on Augmentation
+# Details on our audio library, modules
