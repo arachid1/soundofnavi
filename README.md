@@ -1,4 +1,6 @@
-11/23: OLD README, to be updated!
+As of 11/23/2021, this is an OLD README. Only the section on cochlear preprocessing is relevant. Disregard the rest and refer to the README inside trainers folder
+
+________
 
 # Classification_algorithm
 
