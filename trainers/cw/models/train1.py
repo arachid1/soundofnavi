@@ -16,7 +16,7 @@ from modules.augmenter.functions import stretch_time, shift_pitch
 
 from pytorch_lightning.loggers import TensorBoardLogger
 # from modules.pytorch_core import *
-from modules.models_pytorch import Model1, Model2, inv_depthwise_model, inv_depthwise_model_2
+from modules.models_pytorch import inv_depthwise_model_2_cw, inv_depthwise_model_3_cw
 
 from sklearn.metrics import confusion_matrix
 
@@ -54,9 +54,10 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
         return len(self.dataset)
 
 class MetricTracker(Callback):
-    def __init__(self):
+    def __init__(self, folder):
         self.train_losses = []
         self.val_losses = []
+        self.folder = folder
     
     def on_validation_batch_end(self, trainer, module):
         self.val_losses.append(trainer.logged_metrics["val_loss"])
@@ -66,7 +67,7 @@ class MetricTracker(Callback):
 
     def on_train_end(self, trainer, pl_module):
         plt.plot(torch.range(1, len(self.train_losses)), self.train_losses)
-        plt.savefig("temp/losses.png") 
+        plt.savefig("{}/losses.png".format(self.folder)) 
 
 # class Model2(pl.LightningModule):
 
@@ -217,12 +218,6 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     # mandatory parameters:  (1) root of dataset (2) function for extracting filenames 
     # optional parameters: or other custom parameters, like the Bangladesh excel path
     # NOTE: name attribute: to distinguish between datasets when the same audio loader object is used for different datasets, such as antwerp and icbhi that both use IcbhiAudioLoader
-
-    d = "temp/"
-    if os.path.isdir(d):
-        shutil.rmtree(d)
-        print('contents inside {} removed'.format(d))
-    os.mkdir(d)
     
     audio_loaders = []
     
@@ -259,14 +254,12 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
 
     # simplest step: now that everything is ready, we convert to spectrograms! it's the most straightforward step...
     # convert: [audio, label, filename] -> [SPEC, label, filename]
-    # val
     val_samples = generate_audio_samples(val_audios_c_dict)
     # val_samples = generate_spec_samples(val_audios_c_dict)
 
     # ... but it's different for training because of augmentation. the following function sets up and merges 2 branches:
     #   1) augment AUDIO and convert to spectrogram
     #   2) convert to spectrogram and augment SPECTROGRAM
-    # val
     train_samples = generate_audio_samples(train_audios_c_dict)
     # train_samples, original_training_length = set_up_training_samples(train_audios_c_dict, spec_aug_params, audio_aug_params) 
     # train_samples = generate_spec_samples(train_audios_c_dict) # the same as above if no augmentation 
@@ -279,13 +272,13 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     _, train_specs, train_labels, train_filenames = create_tf_dataset(train_samples, batch_size=parameters.batch_size, shuffle=True, parse_func=None)
     train_dataset = list(tf.data.Dataset.from_tensor_slices((train_specs, train_labels)).as_numpy_iterator())
 
-    positive_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 1]
-    positive_cases = positive_cases 
-    negative_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 0]
-    # negative_cases = negative_cases[:len(positive_cases)]
-    print(len(negative_cases))
-    print(len(positive_cases))
-    train_dataset = positive_cases + negative_cases
+    # positive_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 1]
+    # # positive_cases = positive_cases 
+    # negative_cases = [train_dataset[i] for i in range(len(train_dataset)) if train_dataset[i][1] == 0]
+    # # negative_cases = negative_cases[:len(positive_cases)]
+    # print(len(negative_cases))
+    # print(len(positive_cases))
+    # train_dataset = positive_cases + negative_cases
 
     trainloader = torch.utils.data.DataLoader(dataset=Custom_Dataset(train_dataset),
                                            batch_size=parameters.batch_size,
@@ -305,293 +298,119 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     print(device)
     print(torch.rand(1, device="cuda:0"))
 
-    for threshold in ["none"]:
-        model = inv_depthwise_model_2(threshold).to(device)
+    threshold = "none"
 
-        # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=False)
-        # first_conv_layer = [nn.Conv2d(1, 3, kernel_size=3, stride=1, padding=1, dilation=1, groups=1, bias=True)]
-        # first_conv_layer.extend(list(model.features))  
-        # model.features= nn.Sequential(*first_conv_layer ) 
-#       summary(model, (1, 40000))
+    # models
+    # epochs
+    # train_mel
 
-        # exit()
-        # for layer in net.layers():
-        #     print(layer)
-        # print(len(list(net.parameters())))
-        # print(list(net.parameters)[:3])
-
-        # for i, param in enumerate(net.parameters()):
-        #     if i == 2:
-        #         break
-        #     param.requires_grad = False
-        # net.spec_layer.params.requires_grad = False
-        # net.spec_layer.bias.requires_grad = False
-
-        # loss_function = nn.BCELoss()
-        # optimizer = optim.SGD(model.parameters(), lr=parameters.lr, momentum=0.9) 
-
-
-        # # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
-        # fig = plt.figure(figsize=(20, 10))
-        # plt.imshow(net.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-        # plt.savefig("weights_original")
-        # plt.close()
-
-        # index = 0
-        # spec_to_track = iter(testloader)[0][index].to(device)
-        # # label_to_track = local_labels[index]
-        # outputs = net(spec_to_track, return_spec=True)
-        # outputs = np.squeeze(outputs.to("cpu").numpy())
-        # # print("spec")
-        # # print(outputs)
-        # visualize_spec_bis(outputs, parameters.sr, "temp/test", title="epoch_{}".format(epoch))
-
-        index = 7
-        with torch.no_grad():
-                for local_batch, local_labels in testloader:
-                    print(local_labels)
-                    # for i in range(len(local_labels)):
-                    #     if local_labels[i] == 1:
-                    #         index = i
-                    #         break
-                    spec_to_track = local_batch[index].to(device)
-                    label_to_track = local_labels[index]
-                    outputs, p = model(spec_to_track, return_spec=True)
-                    no_train_out = np.squeeze(outputs.to("cpu").numpy())
-                    visualize_spec_bis(p.cpu().numpy(), parameters.sr, "temp/orig_p_{}_".format(threshold))
-                    visualize_spec_bis(no_train_out, parameters.sr, "temp/orig_outputs_{}_".format(threshold), title="index_{}_label_{}".format(index, label_to_track))
-                    break
-
-        # original_basis_real = model.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
-        # original_basis_imag = model.spec_layer.wsin.cpu().detach().numpy().squeeze(1)
-        # original_weight = model.spec_layer.wsin.detach().cpu()
-
-        logger = TensorBoardLogger(save_dir=parameters.job_dir, version=1, name="lightning_logs")
-        trainer = pl.Trainer(max_epochs=parameters.n_epochs, logger=logger, callbacks=[MetricTracker()], gpus=1)
-
-        trainer.fit(model, trainloader)
-
-        # changed_weight = model.spec_layer.wsin.detach().cpu()
-
-        # check if bin 0-20 are still the same after training
-        # print(torch.equal(original_weight[:20],changed_weight[:20]))
-        # It should return False
-
-        # check if bin 20-1025 are still the same after training
-        # print(torch.equal(original_weight[20:],changed_weight[20:]))
-
-        model = model.to(device)
-
-        with torch.no_grad():
-                for local_batch, local_labels in testloader:
-                    local_labels = local_labels.type(torch.FloatTensor)
-                    local_labels = local_labels.unsqueeze(1)
-                    local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-                    spec_to_track = local_batch[index]
-                    label_to_track = local_labels[index]
-                    outputs, p = model(spec_to_track, return_spec=True)
-                    last_epoch_out = np.squeeze(outputs.to("cpu").numpy())
-                    visualize_spec_bis(p.cpu().numpy(), parameters.sr, "temp/end_p_{}_".format(threshold))
-                    visualize_spec_bis(last_epoch_out, parameters.sr, "temp/end_outputs_{}_".format(threshold), title="index_{}_label_{}".format(index, label_to_track))
-                    break
-
-        to_viz = last_epoch_out - no_train_out 
-        visualize_spec_bis(to_viz, parameters.sr, "temp/diff_{}".format(threshold))
-
-        print(parameters.job_dir)
-
-        # trained_basis_real = model.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
-        # trained_basis_imag = model.spec_layer.wsin.cpu().detach().numpy().squeeze(1)
-        # # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
-        # fig = plt.figure(figsize=(20, 10))
-        # plt.imshow(model.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-        # plt.savefig("temp/weights_{}_wsin_last_epoch".format(threshold))
-        # plt.imshow(model.spec_layer.wcos.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-        # plt.savefig("temp/weights_{}_wcos_last_epoch".format(threshold))
-        # plt.close()
-
-        # fig, ax = plt.subplots(5,2, figsize=(12,18))
-        # cols = ['Original Fourier Kernels', 'Trained Fourier Kernels']
-        # rows = np.arange(1,6)
-        # for ax_idx, col in zip(ax[0], cols):
-        #     ax_idx.set_title(col, size=16)
-        # for ax_idx, row in zip(ax[:,0], rows):
-        #     ax_idx.set_ylabel(f'k={row}', size=16)    
-        # for i in range(5):
-        #     ax[i,0].plot(original_basis_real[i+1], 'b')
-        #     ax[i,1].plot(trained_basis_real[i+1], 'b')
-        #     ax[i,0].tick_params(labelsize=12)
-        #     ax[i,1].tick_params(labelsize=12)
-        # for i in range(5):
-        #     ax[i,0].plot(original_basis_imag[i*2+1], 'g')
-        #     ax[i,1].plot(trained_basis_imag[i*2+1], 'g')
-        #     ax[i,0].tick_params(labelsize=12)
-        #     ax[i,1].tick_params(labelsize=12)
-        #     ax[i,1].legend(['real','imaginary'])
-        # plt.savefig("temp/kernels_{}".format(threshold))
-        # plt.close()
-
-    # old_wcos = net.spec_layer.wcos.cpu()
-    # old_wsin = net.spec_layer.wsin.cpu()
+    d = "temp/"
+    if os.path.isdir(d):
+        shutil.rmtree(d)
+        print('contents inside {} removed'.format(d))
+    os.mkdir(d)
     
-    # loss_train = []
-    # loss_test = []
+    ind = 0
+    for m in [inv_depthwise_model_3_cw, inv_depthwise_model_2_cw]:
+        for e in [5, 25]:
+            for t in [False, True]:
+                folder = "temp/{}/".format(ind)
+                os.mkdir(folder)
+                ind += 1
+                parameters.train_mel = t
+                parameters.n_epochs = e
+                model = m(threshold).to(device)
+                # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=False)
+                # first_conv_layer = [nn.Conv2d(1, 3, kernel_size=3, stride=1, padding=1, dilation=1, groups=1, bias=True)]
+                # first_conv_layer.extend(list(model.features))  
+                # model.features= nn.Sequential(*first_conv_layer ) 
+        #       summary(model, (1, 40000))
+                # exit()
+                # for layer in net.layers():
+                #     print(layer)
+                # print(len(list(net.parameters())))
+                # print(list(net.parameters)[:3])
 
-    # print("epoch\ttrain loss\ttest loss")
+                # for i, param in enumerate(net.parameters()):
+                #     if i == 2:
+                #         break
+                #     param.requires_grad = False
+                # net.spec_layer.params.requires_grad = False
+                # net.spec_layer.bias.requires_grad = False
 
-    # for epoch in range(parameters.n_epochs):  # loop over the dataset multiple times
-        
-    #     print("Epoch: {}".format(epoch))
-    #     train_correct = 0
-    #     running_loss = 0.0
-    #     loss_train_e = 0.0
-    #     loss_test_e = 0.0
+                # loss_function = nn.BCELoss()
+                # optimizer = optim.SGD(model.parameters(), lr=parameters.lr, momentum=0.9) 
 
-    #     # if epoch == 10:
-    #     #     for i, param in enumerate(net.parameters()):
-    #     #         param.requires_grad = True
 
-    #     ### TRAINING ###
-    #     for i, (local_batch, local_labels) in enumerate(trainloader):
-    #         local_labels = local_labels.type(torch.FloatTensor)
-    #         local_labels = local_labels.unsqueeze(1)
-    #         local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-            
-    #         optimizer.zero_grad()
-    #         outputs = net(local_batch)
-    #         loss = loss_function(outputs, local_labels)
-    #         # print("here")
-    #         # print(loss)
-    #         loss.backward()
-    #         optimizer.step()
-    #         loss_train_e += loss.item()
-    #         train_correct += (torch.round(outputs) == local_labels).float().sum()
+                # # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
+                # fig = plt.figure(figsize=(20, 10))
+                # plt.imshow(net.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
+                # plt.savefig("weights_original")
+                # plt.close()
 
-    #     loss_train.append(loss_train_e/len(trainloader))
+                # index = 0
+                # spec_to_track = iter(testloader)[0][index].to(device)
+                # # label_to_track = local_labels[index]
+                # outputs = net(spec_to_track, return_spec=True)
+                # outputs = np.squeeze(outputs.to("cpu").numpy())
+                # # print("spec")
+                # # print(outputs)
+                # visualize_spec_bis(outputs, parameters.sr, "temp/test", title="epoch_{}".format(epoch))
 
-    #     # intermediary calculations
-    #     print("Average loss per batch (size {}): {} ".format(parameters.batch_size, loss_train[-1]))
-    #     new_wcos = net.spec_layer.wcos.cpu()
-    #     diff = abs(new_wcos - old_wcos)
-    #     visualize_spec_bis(np.squeeze(diff.detach().numpy()), parameters.sr, "temp/wcos_diff_epoch_{}".format(epoch))
-    #     old_wcos = new_wcos
+                index = 7
+                with torch.no_grad():
+                        for local_batch, local_labels in testloader:
+                            print(local_labels)
+                            # for i in range(len(local_labels)):
+                            #     if local_labels[i] == 1:
+                            #         index = i
+                            #         break
+                            spec_to_track = local_batch[index].to(device)
+                            label_to_track = local_labels[index]
+                            outputs, p = model(spec_to_track, return_spec=True)
+                            no_train_out = np.squeeze(outputs.to("cpu").numpy())
+                            visualize_spec_bis(p.cpu().numpy(), parameters.sr, "{}/orig_p_{}_".format(folder, threshold))
+                            visualize_spec_bis(no_train_out, parameters.sr, "{}/orig_outputs_{}_".format(folder, threshold), title="index_{}_label_{}".format(index, label_to_track))
+                            break
 
-    #     new_wsin = net.spec_layer.wsin.cpu()
-    #     diff = abs(new_wsin - old_wsin)
-    #     visualize_spec_bis(np.squeeze(diff.detach().numpy()), parameters.sr, "temp/wsin_diff_epoch_{}".format(epoch))
-    #     old_wsin = new_wsin
+                # original_basis_real = model.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
+                # original_basis_imag = model.spec_layer.wsin.cpu().detach().numpy().squeeze(1)
+                # original_weight = model.spec_layer.wsin.detach().cpu()
 
-    #     train_accuracy = 100 * train_correct / len(trainloader.dataset)
-    #     print("Train accuracy = {}".format(train_accuracy))
-        
-    #     ### VALIDATION ###
-    #     val_correct = 0
-    #     y_true = []
-    #     y_pred = []
-    #     viz_counter = 0
-    #     # with torch.set_grad_enabled(False):
-    #     with torch.no_grad():
-    #         for local_batch, local_labels in testloader:
-    #             if viz_counter == 0 and epoch % 10 == 0:
-    #                 trained_basis_real = net.spec_layer.wcos.cpu().detach().numpy().squeeze(1)
-    #                 trained_basis_imag = net.spec_layer.wsin.cpu().detach().numpy().squeeze(1)
-    #                 # visualize_spec_bis(outputs, parameters.sr, "test", title="epoch_{}".format(epoch))
-    #                 fig = plt.figure(figsize=(20, 10))
-    #                 plt.imshow(net.spec_layer.wsin.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-    #                 plt.savefig("kernels/weights_wsin_epoch_{}".format(epoch))
-    #                 plt.imshow(net.spec_layer.wcos.cpu().detach().numpy().squeeze(1), aspect='auto', origin='lower')
-    #                 plt.savefig("kernels/weights_wcos_epoch_{}".format(epoch))
-    #                 plt.close()
-                    
-    #                 fig, ax = plt.subplots(5,2, figsize=(12,18))
-    #                 cols = ['Original Fourier Kernels', 'Trained Fourier Kernels']
-    #                 rows = np.arange(1,6)
-    #                 for ax_idx, col in zip(ax[0], cols):
-    #                     ax_idx.set_title(col, size=16)
-    #                 for ax_idx, row in zip(ax[:,0], rows):
-    #                     ax_idx.set_ylabel(f'k={row}', size=16)    
-    #                 for i in range(5):
-    #                     ax[i,0].plot(original_basis_real[i+1], 'b')
-    #                     ax[i,1].plot(trained_basis_real[i+1], 'b')
-    #                     ax[i,0].tick_params(labelsize=12)
-    #                     ax[i,1].tick_params(labelsize=12)
-    #                 for i in range(5):
-    #                     ax[i,0].plot(original_basis_imag[i*2+1], 'g')
-    #                     ax[i,1].plot(trained_basis_imag[i*2+1], 'g')
-    #                     ax[i,0].tick_params(labelsize=12)
-    #                     ax[i,1].tick_params(labelsize=12)
-    #                     ax[i,1].legend(['real','imaginary'])
-    #                 plt.savefig("kernels/kernels_epoch_{}".format(epoch))
-    #                 plt.close()
+                logger = TensorBoardLogger(save_dir=parameters.job_dir, version=1, name="lightning_logs")
+                trainer = pl.Trainer(max_epochs=parameters.n_epochs, logger=logger, callbacks=[MetricTracker(folder)], gpus=1)
 
-    #                 # indexes = range(0, 10)
-    #                 # for index in indexes:
-    #                 spec_to_track = local_batch[index].to(device)
-    #                 label_to_track = local_labels[index]
-    #                 outputs = net(spec_to_track, return_spec=True)
-    #                 outputs = np.squeeze(outputs.to("cpu").numpy())
-    #                 visualize_spec_bis(outputs, parameters.sr, "temp/outputs", title="_{}_label_{}_epoch_{}".format(index, label_to_track, epoch))
-    #                 to_viz = outputs - old_outputs 
-    #                 # old_outputs = outputs
-    #                 visualize_spec_bis(to_viz, parameters.sr, "temp/diff", title="_{}_label_{}_epoch_{}".format(index, label_to_track, epoch))
+                trainer.fit(model, trainloader)
 
-    #             # Transfer to GPU
-    #             local_labels = local_labels.type(torch.FloatTensor)
-    #             local_labels = local_labels.unsqueeze(1)
-    #             local_batch, local_labels = local_batch.to(device), local_labels.to(device)
-                
-    #             # optimizer.zero_grad()
-    #             outputs = net(local_batch)
-    #             loss = loss_function(outputs, local_labels)
-    #             # loss.requires_grad = False
-    #             # print("val")
-    #             # print(loss)
-    #             # loss.backward()
-    #             # optimizer.step()
-    #             loss_test_e += loss.item()
-    #             outputs = torch.round(outputs)
-  
-    #             val_correct += (outputs == local_labels).float().sum()
-    #             y_pred.extend(outputs.detach().cpu().numpy())
-    #             y_true.extend(local_labels.detach().cpu().numpy())
-    #             viz_counter += 1
+                # changed_weight = model.spec_layer.wsin.detach().cpu()
 
-    #     loss_test.append(loss_test_e/len(testloader))
-    #     print(' '*100, end='\r')
-    #     print(f"{epoch}\t{loss_train[-1]:.6f}\t{loss_test[-1]:.6f}")
+                # check if bin 0-20 are still the same after training
+                # print(torch.equal(original_weight[:20],changed_weight[:20]))
+                # It should return False∂
 
-    #     # testloader_iter = iter(testloader)
-    #     # gradcam_batch, gradcam_labels = next(testloader_iter)
-    #     # l = [module for module in net.modules() if not isinstance(module, nn.Sequential)]
-    #     # target_layers = [l[-1]]
+                # check if bin 20-1025 are still the same after training
+                # print(torch.equal(original_weight[20:],changed_weight[20:]))
 
-    #     # cam = GradCAM(model=net, target_layers=target_layers, use_cuda=True)
-        
-    #     # n_elements = 5
-    #     # input_tensor = gradcam_batch[:5].to(device)
-    #     # input_tensor = torch.reshape(input_tensor, (5, -1))
-    #     # target_category = gradcam_labels[:5].to(device)
-    #     # print(input_tensor)
-    #     # print(input_tensor.size())
-    #     # print(target_category)
-    #     # print(len(target_category))
+                model = model.to(device)
 
-    #     # grayscale_cam = cam(input_tensor=input_tensor)
+                with torch.no_grad():
+                        for local_batch, local_labels in testloader:
+                            local_labels = local_labels.type(torch.FloatTensor)
+                            local_labels = local_labels.unsqueeze(1)
+                            local_batch, local_labels = local_batch.to(device), local_labels.to(device)
+                            spec_to_track = local_batch[index]
+                            label_to_track = local_labels[index]
+                            outputs, p = model(spec_to_track, return_spec=True)
+                            last_epoch_out = np.squeeze(outputs.to("cpu").numpy())
+                            visualize_spec_bis(p.cpu().numpy(), parameters.sr, "{}/end_p_{}_".format(folder, threshold))
+                            visualize_spec_bis(last_epoch_out, parameters.sr, "{}/end_outputs_{}_".format(folder, threshold), title="index_{}_label_{}".format(index, label_to_track))
+                            break
 
-    #     # # In this example grayscale_cam has only one image in the batch:
-    #     # rgb_img = None
-    #     # print(grayscale_cam.shape)
-    #     # grayscale_cam = grayscale_cam[0, :]
-    #     # print(grayscale_cam.shape)
-    #     # # visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
-    #     # exit()
+                to_viz = last_epoch_out - no_train_out 
+                visualize_spec_bis(to_viz, parameters.sr, "{}/diff_{}".format(folder, threshold))
 
-    #     val_accuracy =  100*val_correct / len(testloader.dataset)
-    #     cm = confusion_matrix(y_true, y_pred)
-    #     # print("Confusion matrix: {}".format(cm))
-    #     normalized_cm = confusion_matrix(y_true, y_pred, normalize='true')
-    #     # print("Normalized confusion matrix: {}".format(normalized_cm))
-    #     # print("Val accuracy for {} elements = {}".format(len(testloader.dataset), val_accuracy))
+                print(parameters.job_dir)
+
 
 def launch_job(datasets, model, spec_aug_params, audio_aug_params, parse_function):
     '''
@@ -637,15 +456,16 @@ if __name__ == "__main__":
 
     # general parametes
     parameters.lr = 1e-3
-    parameters.n_epochs = 25
+    parameters.n_epochs = 5
     parameters.batch_size = 8
     parameters.audio_length = 5
+    parameters.step_size  = 2.5
     parameters.weight_decay = 0
 
     # augm params
     spec_aug_params = []
     audio_aug_params = []
     
-    launch_job({"Bd": 0, "Jordan": 0, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
+    launch_job({"Bd": 0, "Jordan": 0, "Icbhi": 1, "Perch": 1, "Ant": 1, "SimAnt": 1,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
 
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!
