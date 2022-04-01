@@ -139,5 +139,5 @@ The template for cw is cw/train0, equivalent to main/train0.
 ### TODOs
 # Add Bangladesh for pneumonia
 # Augmentation and class weights for crackles wheezes
-# Details on Augmentation
-# Details on our audio library, modules
+# Documentation on Augmentation
+# Documentation on our audio library, modules
