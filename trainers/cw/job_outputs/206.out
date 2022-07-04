@@ -1,0 +1,1105 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train206
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+training parameters
+[('cache_root', '../cache/'), ('data_root', '../data/'), ('jordan_root', '../data/jwyy9np4gv-3/'), ('icbhi_root', '../data/raw_audios/icbhi_preprocessed_v2_8000/'), ('bd_root', '../data/PCV_SEGMENTED_Processed_Files/'), ('excel_path', '../data/Bangladesh_PCV_onlyStudyPatients.xlsx'), ('perch_root', '../data/raw_audios/perch_8000_10seconds'), ('ant_root', '../data/raw_audios/Antwerp_Clinical_Complete'), ('description', ' effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,'), ('job_id', 0), ('mode', 'cw'), ('n_classes', 2), ('shape', (80, 200, 3)), ('n_epochs', 110), ('lr', 0.005), ('batch_size', 64), ('ll2_reg', 0), ('weight_decay', 0.0001), ('label_smoothing', 0), ('epsilon', 1e-07), ('es_patience', 15), ('min_delta', 0), ('train_test_ratio', 0.8), ('kfold', False), ('clause', 0), ('epoch_start', 0), ('testing', 0), ('adaptive_lr', True), ('cuberooting', 1), ('normalizing', 1), ('class_weights', True), ('early_stopping', True), ('initial_channels', 1), ('factor', 0.5), ('lr_patience', 10), ('min_lr', 1e-05), ('sr', 8000), ('audio_length', 5), ('step_size', 2.5), ('n_fft', 2048), ('hop_length', 254), ('n_mels', 128), ('overlap_threshold', 0.3), ('trainable_fb', False), ('to_decibel', True), ('train_nn', False), ('train_mel', False), ('file_dir', '../cache/cw/train206'), ('n_sequences', 9), ('activate_spectral_loss', False), ('normalize', False), ('stacking', False), ('oversample', False), ('one_hot_encoding', False), ('activation', 'sigmoid'), ('n_filters', 80), ('code', -1), ('distillation', False), ('window_len', 100), ('window_stride', 25)]
+Job id is 1.
+Job dir: ../cache/cw/train206/1
+- Loading Icbhi.
+920 Icbhi audios have been loaded.
+- Preparing Icbhi.
+126 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+len(_all_samples)
+7857
+-----------------------
+--- Final training dataset went from 0 to 4769 elements, with 2299 none's, 1353 crakles, 554 wheezes and 563 both ---
+--- Final Validation dataset contains 3080 elements, with 1574 none, 860 crackles, 404 wheezes and 242 both ---
+GPUs
+['/device:GPU:0']
+Initializing weights...
+weights = {0: 0.518595041322314, 1: 0.881189948263119, 2: 2.152075812274368, 3: 2.1176731793960926}
+Model: "leaf_model9"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks (MelFilterbanks)                multiple                                    0                
+                                                                                                              
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 80, 200, 1)                          4                
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 80, 200, 16)                         2352             
+                                                                                                              
+ sequential_2 (Sequential)                       (None, 80, 200, 16)                         6448             
+                                                                                                              
+ sequential_3 (Sequential)                       (None, 80, 200, 16)                         32               
+                                                                                                              
+ concatenate (Concatenate)                       multiple                                    0                
+                                                                                                              
+ sequential_4 (Sequential)                       (None, 2)                                   6192322          
+                                                                                                              
+==============================================================================================================
+Total params: 6,201,320
+Trainable params: 6,159,814
+Non-trainable params: 41,506
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 1/110
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.7140689482162526
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+75/75 - 190s - loss: 0.0000e+00 - accuracy: 0.4812 - 190s/epoch - 3s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 2/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.7434013505260666
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 1 epochs
+75/75 - 181s - loss: 0.0000e+00 - accuracy: 0.4764 - 181s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 3/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.7830563968555494
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 2 epochs
+75/75 - 179s - loss: 0.0000e+00 - accuracy: 0.4823 - 179s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 4/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.830422475488929
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 3 epochs
+75/75 - 180s - loss: 0.0000e+00 - accuracy: 0.4754 - 180s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 5/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.8702374864418011
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 4 epochs
+75/75 - 181s - loss: 0.0000e+00 - accuracy: 0.4726 - 181s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 6/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.875008851038171
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 5 epochs
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4739 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 7/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.8379097069045166
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 6 epochs
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4741 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 8/110
+Validation cm: [[   0    0 1574    0]
+ [   0    0  860    0]
+ [   0    0  404    0]
+ [   0    0  242    0]]
+Validation val_loss: 0.813951857078385
+Validation normalized_cm: [[0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]
+ [0. 0. 1. 0.]]
+Validation acc: 0.13116883116883116
+Validation class_accuracies: [0.0, 0.0, 1.0, 0.0]
+Validation sensitivity: 0.2682602921646746
+Validation specificity: 0.0
+Validation icbhi_score: 0.1341301460823373
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 7 epochs
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4762 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 9/110
+Validation cm: [[   1    3 1561    9]
+ [   0    0  854    6]
+ [   0    3  400    1]
+ [   0    0  241    1]]
+Validation val_loss: 0.8156085391129766
+Validation normalized_cm: [[6.353e-04 1.906e-03 9.917e-01 5.718e-03]
+ [0.000e+00 0.000e+00 9.930e-01 6.977e-03]
+ [0.000e+00 7.426e-03 9.901e-01 2.475e-03]
+ [0.000e+00 0.000e+00 9.959e-01 4.132e-03]]
+Validation acc: 0.1305194805194805
+Validation class_accuracies: [0.0006353240152477764, 0.0, 0.9900990099009901, 0.004132231404958678]
+Validation sensitivity: 0.26626826029216466
+Validation specificity: 0.0006353240152477764
+Validation icbhi_score: 0.13345179215370623
+Validation roc_auc: None
+Validation avg_accuracy: 0.24871664133029914
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.1341301460823373 hasn't increased by 0 in 8 epochs
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4770 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 10/110
+Validation cm: [[ 110   99 1196  169]
+ [  59   39  688   74]
+ [  32   19  317   36]
+ [  15    9  176   42]]
+Validation val_loss: 0.7847693521964859
+Validation normalized_cm: [[0.07  0.063 0.76  0.107]
+ [0.069 0.045 0.8   0.086]
+ [0.079 0.047 0.785 0.089]
+ [0.062 0.037 0.727 0.174]]
+Validation acc: 0.16493506493506493
+Validation class_accuracies: [0.0698856416772554, 0.04534883720930233, 0.7846534653465347, 0.17355371900826447]
+Validation sensitivity: 0.2642762284196547
+Validation specificity: 0.0698856416772554
+Validation icbhi_score: 0.16708093504845506
+Validation roc_auc: None
+Validation avg_accuracy: 0.2683604158103392
+Validation one_indexed_epoch: 10
+-- New best results were achieved. --
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4737 - 185s/epoch - 2s/step
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 11/110
+Validation cm: [[415 157 858 144]
+ [173  67 529  91]
+ [123  39 205  37]
+ [ 50  19 141  32]]
+Validation val_loss: 0.7546421218615074
+Validation normalized_cm: [[0.264 0.1   0.545 0.091]
+ [0.201 0.078 0.615 0.106]
+ [0.304 0.097 0.507 0.092]
+ [0.207 0.079 0.583 0.132]]
+Validation acc: 0.23344155844155845
+Validation class_accuracies: [0.2636594663278272, 0.07790697674418605, 0.5074257425742574, 0.1322314049586777]
+Validation sensitivity: 0.20185922974767595
+Validation specificity: 0.2636594663278272
+Validation icbhi_score: 0.23275934803775158
+Validation roc_auc: None
+Validation avg_accuracy: 0.24530589765123711
+Validation one_indexed_epoch: 11
+-- New best results were achieved. --
+75/75 - 186s - loss: 0.0000e+00 - accuracy: 0.4775 - 186s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 12/110
+Validation cm: [[785 214 485  90]
+ [444  91 258  67]
+ [238  47  98  21]
+ [121  36  78   7]]
+Validation val_loss: 0.698828098814112
+Validation normalized_cm: [[0.499 0.136 0.308 0.057]
+ [0.516 0.106 0.3   0.078]
+ [0.589 0.116 0.243 0.052]
+ [0.5   0.149 0.322 0.029]]
+Validation acc: 0.3185064935064935
+Validation class_accuracies: [0.49872935196950446, 0.1058139534883721, 0.24257425742574257, 0.028925619834710745]
+Validation sensitivity: 0.1301460823373174
+Validation specificity: 0.49872935196950446
+Validation icbhi_score: 0.31443771715341096
+Validation roc_auc: None
+Validation avg_accuracy: 0.21901079567958248
+Validation one_indexed_epoch: 12
+-- New best results were achieved. --
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4787 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 13/110
+Validation cm: [[983 301 229  61]
+ [565 142 112  41]
+ [295  55  44  10]
+ [161  39  38   4]]
+Validation val_loss: 0.674630405025726
+Validation normalized_cm: [[0.625 0.191 0.145 0.039]
+ [0.657 0.165 0.13  0.048]
+ [0.73  0.136 0.109 0.025]
+ [0.665 0.161 0.157 0.017]]
+Validation acc: 0.3808441558441558
+Validation class_accuracies: [0.6245235069885642, 0.16511627906976745, 0.10891089108910891, 0.01652892561983471]
+Validation sensitivity: 0.12616201859229748
+Validation specificity: 0.6245235069885642
+Validation icbhi_score: 0.37534276279043083
+Validation roc_auc: None
+Validation avg_accuracy: 0.2287699006918188
+Validation one_indexed_epoch: 13
+-- New best results were achieved. --
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4720 - 185s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 14/110
+Validation cm: [[1017  370  145   42]
+ [ 594  165   67   34]
+ [ 309   68   21    6]
+ [ 168   48   22    4]]
+Validation val_loss: 0.6714544446110822
+Validation normalized_cm: [[0.646 0.235 0.092 0.027]
+ [0.691 0.192 0.078 0.04 ]
+ [0.765 0.168 0.052 0.015]
+ [0.694 0.198 0.091 0.017]]
+Validation acc: 0.3918831168831169
+Validation class_accuracies: [0.6461245235069886, 0.19186046511627908, 0.05198019801980198, 0.01652892561983471]
+Validation sensitivity: 0.12616201859229748
+Validation specificity: 0.6461245235069886
+Validation icbhi_score: 0.386143271049643
+Validation roc_auc: None
+Validation avg_accuracy: 0.2266235280657261
+Validation one_indexed_epoch: 14
+-- New best results were achieved. --
+75/75 - 186s - loss: 0.0000e+00 - accuracy: 0.4747 - 186s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 15/110
+Validation cm: [[1022  402  114   36]
+ [ 591  191   51   27]
+ [ 305   78   16    5]
+ [ 172   53   15    2]]
+Validation val_loss: 0.6729431452265904
+Validation normalized_cm: [[0.649 0.255 0.072 0.023]
+ [0.687 0.222 0.059 0.031]
+ [0.755 0.193 0.04  0.012]
+ [0.711 0.219 0.062 0.008]]
+Validation acc: 0.3996753246753247
+Validation class_accuracies: [0.6493011435832274, 0.22209302325581395, 0.039603960396039604, 0.008264462809917356]
+Validation sensitivity: 0.1387782204515272
+Validation specificity: 0.6493011435832274
+Validation icbhi_score: 0.3940396820173773
+Validation roc_auc: None
+Validation avg_accuracy: 0.22981564751124958
+Validation one_indexed_epoch: 15
+-- New best results were achieved. --
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4798 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 16/110
+Validation cm: [[1031  412   97   34]
+ [ 590  200   45   25]
+ [ 313   76   10    5]
+ [ 172   54   14    2]]
+Validation val_loss: 0.6741940533161744
+Validation normalized_cm: [[0.655 0.262 0.062 0.022]
+ [0.686 0.233 0.052 0.029]
+ [0.775 0.188 0.025 0.012]
+ [0.711 0.223 0.058 0.008]]
+Validation acc: 0.4035714285714286
+Validation class_accuracies: [0.6550190597204575, 0.23255813953488372, 0.024752475247524754, 0.008264462809917356]
+Validation sensitivity: 0.1407702523240372
+Validation specificity: 0.6550190597204575
+Validation icbhi_score: 0.39789465602224733
+Validation roc_auc: None
+Validation avg_accuracy: 0.23014853432819582
+Validation one_indexed_epoch: 16
+-- New best results were achieved. --
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4772 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 17/110
+Validation cm: [[1036  415   91   32]
+ [ 590  204   42   24]
+ [ 317   75    7    5]
+ [ 174   54   12    2]]
+Validation val_loss: 0.6752195835960182
+Validation normalized_cm: [[0.658 0.264 0.058 0.02 ]
+ [0.686 0.237 0.049 0.028]
+ [0.785 0.186 0.017 0.012]
+ [0.719 0.223 0.05  0.008]]
+Validation acc: 0.4055194805194805
+Validation class_accuracies: [0.6581956797966964, 0.2372093023255814, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14143426294820718
+Validation specificity: 0.6581956797966964
+Validation icbhi_score: 0.39981497137245176
+Validation roc_auc: None
+Validation avg_accuracy: 0.23024904440136562
+Validation one_indexed_epoch: 17
+-- New best results were achieved. --
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4697 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 18/110
+Validation cm: [[1035  418   88   33]
+ [ 591  203   42   24]
+ [ 316   76    7    5]
+ [ 174   54   12    2]]
+Validation val_loss: 0.6756803644361434
+Validation normalized_cm: [[0.658 0.266 0.056 0.021]
+ [0.687 0.236 0.049 0.028]
+ [0.782 0.188 0.017 0.012]
+ [0.719 0.223 0.05  0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.6575603557814486, 0.23604651162790696, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.1407702523240372
+Validation specificity: 0.6575603557814486
+Validation icbhi_score: 0.39916530405274286
+Validation roc_auc: None
+Validation avg_accuracy: 0.22979951572313506
+Validation one_indexed_epoch: 18
+The validation tracker metric at 0.39981497137245176 hasn't increased by 0 in 1 epochs
+75/75 - 187s - loss: 0.0000e+00 - accuracy: 0.4741 - 187s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 19/110
+Validation cm: [[1037  418   87   32]
+ [ 591  203   42   24]
+ [ 317   74    8    5]
+ [ 175   53   12    2]]
+Validation val_loss: 0.6754063849313209
+Validation normalized_cm: [[0.659 0.266 0.055 0.02 ]
+ [0.687 0.236 0.049 0.028]
+ [0.785 0.183 0.02  0.012]
+ [0.723 0.219 0.05  0.008]]
+Validation acc: 0.40584415584415584
+Validation class_accuracies: [0.658831003811944, 0.23604651162790696, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14143426294820718
+Validation specificity: 0.658831003811944
+Validation icbhi_score: 0.4001326333800756
+Validation roc_auc: None
+Validation avg_accuracy: 0.23073598961194702
+Validation one_indexed_epoch: 19
+-- New best results were achieved. --
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4798 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 20/110
+Validation cm: [[1037  418   87   32]
+ [ 593  202   41   24]
+ [ 318   74    7    5]
+ [ 176   53   11    2]]
+Validation val_loss: 0.6755967631645791
+Validation normalized_cm: [[0.659 0.266 0.055 0.02 ]
+ [0.69  0.235 0.048 0.028]
+ [0.787 0.183 0.017 0.012]
+ [0.727 0.219 0.045 0.008]]
+Validation acc: 0.4051948051948052
+Validation class_accuracies: [0.658831003811944, 0.23488372093023255, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14010624169986718
+Validation specificity: 0.658831003811944
+Validation icbhi_score: 0.3994686227559056
+Validation roc_auc: None
+Validation avg_accuracy: 0.22982648005634032
+Validation one_indexed_epoch: 20
+The validation tracker metric at 0.4001326333800756 hasn't increased by 0 in 1 epochs
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4789 - 185s/epoch - 2s/step
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 21/110
+Validation cm: [[1035  418   88   33]
+ [ 591  202   43   24]
+ [ 317   75    7    5]
+ [ 174   54   12    2]]
+Validation val_loss: 0.675664941891544
+Validation normalized_cm: [[0.658 0.266 0.056 0.021]
+ [0.687 0.235 0.05  0.028]
+ [0.785 0.186 0.017 0.012]
+ [0.719 0.223 0.05  0.008]]
+Validation acc: 0.40454545454545454
+Validation class_accuracies: [0.6575603557814486, 0.23488372093023255, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14010624169986718
+Validation specificity: 0.6575603557814486
+Validation icbhi_score: 0.39883329874065787
+Validation roc_auc: None
+Validation avg_accuracy: 0.22950881804871645
+Validation one_indexed_epoch: 21
+The validation tracker metric at 0.4001326333800756 hasn't increased by 0 in 2 epochs
+75/75 - 191s - loss: 0.0000e+00 - accuracy: 0.4743 - 191s/epoch - 3s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 22/110
+Validation cm: [[1036  417   88   33]
+ [ 592  202   42   24]
+ [ 314   78    7    5]
+ [ 175   54   11    2]]
+Validation val_loss: 0.6755071667119764
+Validation normalized_cm: [[0.658 0.265 0.056 0.021]
+ [0.688 0.235 0.049 0.028]
+ [0.777 0.193 0.017 0.012]
+ [0.723 0.223 0.045 0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.6581956797966964, 0.23488372093023255, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14010624169986718
+Validation specificity: 0.6581956797966964
+Validation icbhi_score: 0.39915096074828177
+Validation roc_auc: None
+Validation avg_accuracy: 0.2296676490525284
+Validation one_indexed_epoch: 22
+The validation tracker metric at 0.4001326333800756 hasn't increased by 0 in 3 epochs
+75/75 - 192s - loss: 0.0000e+00 - accuracy: 0.4726 - 192s/epoch - 3s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 23/110
+Validation cm: [[1044  411   87   32]
+ [ 598  198   40   24]
+ [ 318   74    7    5]
+ [ 177   53   10    2]]
+Validation val_loss: 0.6751176801437585
+Validation normalized_cm: [[0.663 0.261 0.055 0.02 ]
+ [0.695 0.23  0.047 0.028]
+ [0.787 0.183 0.017 0.012]
+ [0.731 0.219 0.041 0.008]]
+Validation acc: 0.4061688311688312
+Validation class_accuracies: [0.6632782719186785, 0.2302325581395349, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.13745019920318724
+Validation specificity: 0.6632782719186785
+Validation icbhi_score: 0.40036423556093287
+Validation roc_auc: None
+Validation avg_accuracy: 0.22977550638534952
+Validation one_indexed_epoch: 23
+-- New best results were achieved. --
+75/75 - 187s - loss: 0.0000e+00 - accuracy: 0.4817 - 187s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 24/110
+Validation cm: [[1036  418   88   32]
+ [ 592  202   42   24]
+ [ 318   74    7    5]
+ [ 175   54   11    2]]
+Validation val_loss: 0.675608886587252
+Validation normalized_cm: [[0.658 0.266 0.056 0.02 ]
+ [0.688 0.235 0.049 0.028]
+ [0.787 0.183 0.017 0.012]
+ [0.723 0.223 0.045 0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.6581956797966964, 0.23488372093023255, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14010624169986718
+Validation specificity: 0.6581956797966964
+Validation icbhi_score: 0.39915096074828177
+Validation roc_auc: None
+Validation avg_accuracy: 0.2296676490525284
+Validation one_indexed_epoch: 24
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 1 epochs
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4754 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 25/110
+Validation cm: [[1033  417   90   34]
+ [ 589  204   43   24]
+ [ 316   75    8    5]
+ [ 174   54   12    2]]
+Validation val_loss: 0.6759111478924751
+Validation normalized_cm: [[0.656 0.265 0.057 0.022]
+ [0.685 0.237 0.05  0.028]
+ [0.782 0.186 0.02  0.012]
+ [0.719 0.223 0.05  0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.656289707750953, 0.2372093023255814, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14209827357237717
+Validation specificity: 0.656289707750953
+Validation icbhi_score: 0.39919399066166505
+Validation roc_auc: None
+Validation avg_accuracy: 0.23039136327111787
+Validation one_indexed_epoch: 25
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 2 epochs
+75/75 - 182s - loss: 0.0000e+00 - accuracy: 0.4749 - 182s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 26/110
+Validation cm: [[1035  416   90   33]
+ [ 589  204   43   24]
+ [ 316   74    9    5]
+ [ 174   54   12    2]]
+Validation val_loss: 0.6757727304872657
+Validation normalized_cm: [[0.658 0.264 0.057 0.021]
+ [0.685 0.237 0.05  0.028]
+ [0.782 0.183 0.022 0.012]
+ [0.719 0.223 0.05  0.008]]
+Validation acc: 0.40584415584415584
+Validation class_accuracies: [0.6575603557814486, 0.2372093023255814, 0.022277227722772276, 0.008264462809917356]
+Validation sensitivity: 0.14276228419654716
+Validation specificity: 0.6575603557814486
+Validation icbhi_score: 0.40016131998899784
+Validation roc_auc: None
+Validation avg_accuracy: 0.23132783715992988
+Validation one_indexed_epoch: 26
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 3 epochs
+75/75 - 181s - loss: 0.0000e+00 - accuracy: 0.4810 - 181s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 27/110
+Validation cm: [[1033  414   94   33]
+ [ 587  206   43   24]
+ [ 315   75    9    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.675465270253987
+Validation normalized_cm: [[0.656 0.263 0.06  0.021]
+ [0.683 0.24  0.05  0.028]
+ [0.78  0.186 0.022 0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.40584415584415584
+Validation class_accuracies: [0.656289707750953, 0.23953488372093024, 0.022277227722772276, 0.008264462809917356]
+Validation sensitivity: 0.14409030544488713
+Validation specificity: 0.656289707750953
+Validation icbhi_score: 0.40019000659792003
+Validation roc_auc: None
+Validation avg_accuracy: 0.2315915705011432
+Validation one_indexed_epoch: 27
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 4 epochs
+75/75 - 181s - loss: 0.0000e+00 - accuracy: 0.4728 - 181s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 28/110
+Validation cm: [[1035  416   89   34]
+ [ 588  205   43   24]
+ [ 316   75    8    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6755300544734512
+Validation normalized_cm: [[0.658 0.264 0.057 0.022]
+ [0.684 0.238 0.05  0.028]
+ [0.782 0.186 0.02  0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.40584415584415584
+Validation class_accuracies: [0.6575603557814486, 0.23837209302325582, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14276228419654716
+Validation specificity: 0.6575603557814486
+Validation icbhi_score: 0.40016131998899784
+Validation roc_auc: None
+Validation avg_accuracy: 0.23099972295316037
+Validation one_indexed_epoch: 28
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 5 epochs
+75/75 - 180s - loss: 0.0000e+00 - accuracy: 0.4747 - 180s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 29/110
+Validation cm: [[1030  425   86   33]
+ [ 587  209   40   24]
+ [ 312   80    7    5]
+ [ 174   55   11    2]]
+Validation val_loss: 0.6752968746056031
+Validation normalized_cm: [[0.654 0.27  0.055 0.021]
+ [0.683 0.243 0.047 0.028]
+ [0.772 0.198 0.017 0.012]
+ [0.719 0.227 0.045 0.008]]
+Validation acc: 0.4051948051948052
+Validation class_accuracies: [0.6543837357052097, 0.24302325581395348, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14475431606905712
+Validation specificity: 0.6543837357052097
+Validation icbhi_score: 0.3995690258871334
+Validation roc_auc: None
+Validation avg_accuracy: 0.23074954675058695
+Validation one_indexed_epoch: 29
+The validation tracker metric at 0.40036423556093287 hasn't increased by 0 in 6 epochs
+75/75 - 182s - loss: 0.0000e+00 - accuracy: 0.4699 - 182s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 30/110
+Validation cm: [[1034  421   86   33]
+ [ 588  208   40   24]
+ [ 316   76    7    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6757507352364044
+Validation normalized_cm: [[0.657 0.267 0.055 0.021]
+ [0.684 0.242 0.047 0.028]
+ [0.782 0.188 0.017 0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4061688311688312
+Validation class_accuracies: [0.6569250317662008, 0.24186046511627907, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14409030544488713
+Validation specificity: 0.6569250317662008
+Validation icbhi_score: 0.40050766860554393
+Validation roc_auc: None
+Validation avg_accuracy: 0.2310941730914161
+Validation one_indexed_epoch: 30
+-- New best results were achieved. --
+75/75 - 187s - loss: 0.0000e+00 - accuracy: 0.4741 - 187s/epoch - 2s/step
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 31/110
+Validation cm: [[1034  420   86   34]
+ [ 589  206   41   24]
+ [ 316   75    8    5]
+ [ 174   55   11    2]]
+Validation val_loss: 0.6754482875045921
+Validation normalized_cm: [[0.657 0.267 0.055 0.022]
+ [0.685 0.24  0.048 0.028]
+ [0.782 0.186 0.02  0.012]
+ [0.719 0.227 0.045 0.008]]
+Validation acc: 0.40584415584415584
+Validation class_accuracies: [0.6569250317662008, 0.23953488372093024, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14342629482071714
+Validation specificity: 0.6569250317662008
+Validation icbhi_score: 0.40017566329345894
+Validation roc_auc: None
+Validation avg_accuracy: 0.23113158962376704
+Validation one_indexed_epoch: 31
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 1 epochs
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4716 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 32/110
+Validation cm: [[1036  421   84   33]
+ [ 590  206   40   24]
+ [ 318   74    7    5]
+ [ 175   55   10    2]]
+Validation val_loss: 0.6753607642679632
+Validation normalized_cm: [[0.658 0.267 0.053 0.021]
+ [0.686 0.24  0.047 0.028]
+ [0.787 0.183 0.017 0.012]
+ [0.723 0.227 0.041 0.008]]
+Validation acc: 0.4061688311688312
+Validation class_accuracies: [0.6581956797966964, 0.23953488372093024, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14276228419654716
+Validation specificity: 0.6581956797966964
+Validation icbhi_score: 0.40047898199662174
+Validation roc_auc: None
+Validation avg_accuracy: 0.23083043975020281
+Validation one_indexed_epoch: 32
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 2 epochs
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4754 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 33/110
+Validation cm: [[1031  417   93   33]
+ [ 587  206   43   24]
+ [ 315   76    8    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6755132113329388
+Validation normalized_cm: [[0.655 0.265 0.059 0.021]
+ [0.683 0.24  0.05  0.028]
+ [0.78  0.188 0.02  0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.6550190597204575, 0.23953488372093024, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14342629482071714
+Validation specificity: 0.6550190597204575
+Validation icbhi_score: 0.3992226772705873
+Validation roc_auc: None
+Validation avg_accuracy: 0.23065509661233122
+Validation one_indexed_epoch: 33
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 3 epochs
+75/75 - 186s - loss: 0.0000e+00 - accuracy: 0.4724 - 186s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 34/110
+Validation cm: [[1016  432   91   35]
+ [ 581  212   43   24]
+ [ 311   79    9    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6756191881434
+Validation normalized_cm: [[0.645 0.274 0.058 0.022]
+ [0.676 0.247 0.05  0.028]
+ [0.77  0.196 0.022 0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4022727272727273
+Validation class_accuracies: [0.6454891994917408, 0.24651162790697675, 0.022277227722772276, 0.008264462809917356]
+Validation sensitivity: 0.14807436918990705
+Validation specificity: 0.6454891994917408
+Validation icbhi_score: 0.3967817843408239
+Validation roc_auc: None
+Validation avg_accuracy: 0.2306356294828518
+Validation one_indexed_epoch: 34
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 4 epochs
+75/75 - 187s - loss: 0.0000e+00 - accuracy: 0.4756 - 187s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 35/110
+Validation cm: [[1016  438   87   33]
+ [ 581  212   43   24]
+ [ 312   80    7    5]
+ [ 174   55   11    2]]
+Validation val_loss: 0.6755358543246984
+Validation normalized_cm: [[0.645 0.278 0.055 0.021]
+ [0.676 0.247 0.05  0.028]
+ [0.772 0.198 0.017 0.012]
+ [0.719 0.227 0.045 0.008]]
+Validation acc: 0.4016233766233766
+Validation class_accuracies: [0.6454891994917408, 0.24651162790697675, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14674634794156707
+Validation specificity: 0.6454891994917408
+Validation icbhi_score: 0.3961177737166539
+Validation roc_auc: None
+Validation avg_accuracy: 0.22939800572047556
+Validation one_indexed_epoch: 35
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 5 epochs
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4741 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 36/110
+Validation cm: [[1027  427   87   33]
+ [ 585  210   41   24]
+ [ 315   76    8    5]
+ [ 174   55   11    2]]
+Validation val_loss: 0.6752279518631759
+Validation normalized_cm: [[0.652 0.271 0.055 0.021]
+ [0.68  0.244 0.048 0.028]
+ [0.78  0.188 0.02  0.012]
+ [0.719 0.227 0.045 0.008]]
+Validation acc: 0.4048701298701299
+Validation class_accuracies: [0.6524777636594663, 0.2441860465116279, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.1460823373173971
+Validation specificity: 0.6524777636594663
+Validation icbhi_score: 0.3992800504884317
+Validation roc_auc: None
+Validation avg_accuracy: 0.23118256329475784
+Validation one_indexed_epoch: 36
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 6 epochs
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4817 - 185s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 37/110
+Validation cm: [[1033  420   87   34]
+ [ 590  204   42   24]
+ [ 317   75    7    5]
+ [ 176   53   11    2]]
+Validation val_loss: 0.6756275280378758
+Validation normalized_cm: [[0.656 0.267 0.055 0.022]
+ [0.686 0.237 0.049 0.028]
+ [0.785 0.186 0.017 0.012]
+ [0.727 0.219 0.045 0.008]]
+Validation acc: 0.40454545454545454
+Validation class_accuracies: [0.656289707750953, 0.2372093023255814, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14143426294820718
+Validation specificity: 0.656289707750953
+Validation icbhi_score: 0.39886198534958006
+Validation roc_auc: None
+Validation avg_accuracy: 0.22977255138992975
+Validation one_indexed_epoch: 37
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 7 epochs
+75/75 - 186s - loss: 0.0000e+00 - accuracy: 0.4798 - 186s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 38/110
+Validation cm: [[1032  418   90   34]
+ [ 588  206   42   24]
+ [ 315   76    8    5]
+ [ 175   54   11    2]]
+Validation val_loss: 0.6752631875758918
+Validation normalized_cm: [[0.656 0.266 0.057 0.022]
+ [0.684 0.24  0.049 0.028]
+ [0.78  0.188 0.02  0.012]
+ [0.723 0.223 0.045 0.008]]
+Validation acc: 0.4051948051948052
+Validation class_accuracies: [0.6556543837357052, 0.23953488372093024, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14342629482071714
+Validation specificity: 0.6556543837357052
+Validation icbhi_score: 0.39954033927821114
+Validation roc_auc: None
+Validation avg_accuracy: 0.23081392761614314
+Validation one_indexed_epoch: 38
+The validation tracker metric at 0.40050766860554393 hasn't increased by 0 in 8 epochs
+75/75 - 184s - loss: 0.0000e+00 - accuracy: 0.4697 - 184s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 39/110
+Validation cm: [[1045  410   87   32]
+ [ 591  203   42   24]
+ [ 316   75    8    5]
+ [ 176   53   11    2]]
+Validation val_loss: 0.6753353060090116
+Validation normalized_cm: [[0.664 0.26  0.055 0.02 ]
+ [0.687 0.236 0.049 0.028]
+ [0.782 0.186 0.02  0.012]
+ [0.727 0.219 0.045 0.008]]
+Validation acc: 0.40844155844155844
+Validation class_accuracies: [0.6639135959339263, 0.23604651162790696, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14143426294820718
+Validation specificity: 0.6639135959339263
+Validation icbhi_score: 0.4026739294410667
+Validation roc_auc: None
+Validation avg_accuracy: 0.23200663764244261
+Validation one_indexed_epoch: 39
+-- New best results were achieved. --
+75/75 - 183s - loss: 0.0000e+00 - accuracy: 0.4735 - 183s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 40/110
+Validation cm: [[1027  426   88   33]
+ [ 586  208   42   24]
+ [ 316   75    8    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6755949110494225
+Validation normalized_cm: [[0.652 0.271 0.056 0.021]
+ [0.681 0.242 0.049 0.028]
+ [0.782 0.186 0.02  0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4042207792207792
+Validation class_accuracies: [0.6524777636594663, 0.24186046511627907, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14475431606905712
+Validation specificity: 0.6524777636594663
+Validation icbhi_score: 0.3986160398642617
+Validation roc_auc: None
+Validation avg_accuracy: 0.23060116794592062
+Validation one_indexed_epoch: 40
+The validation tracker metric at 0.4026739294410667 hasn't increased by 0 in 1 epochs
+75/75 - 187s - loss: 0.0000e+00 - accuracy: 0.4808 - 187s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 41/110
+Validation cm: [[1027  426   88   33]
+ [ 588  206   42   24]
+ [ 314   77    8    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6757176498326098
+Validation normalized_cm: [[0.652 0.271 0.056 0.021]
+ [0.684 0.24  0.049 0.028]
+ [0.777 0.191 0.02  0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4035714285714286
+Validation class_accuracies: [0.6524777636594663, 0.23953488372093024, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14342629482071714
+Validation specificity: 0.6524777636594663
+Validation icbhi_score: 0.3979520292400917
+Validation roc_auc: None
+Validation avg_accuracy: 0.23001977259708342
+Validation one_indexed_epoch: 41
+The validation tracker metric at 0.4026739294410667 hasn't increased by 0 in 2 epochs
+75/75 - 186s - loss: 0.0000e+00 - accuracy: 0.4764 - 186s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 42/110
+Validation cm: [[1021  431   88   34]
+ [ 582  213   41   24]
+ [ 314   78    7    5]
+ [ 173   55   12    2]]
+Validation val_loss: 0.6763120863163335
+Validation normalized_cm: [[0.649 0.274 0.056 0.022]
+ [0.677 0.248 0.048 0.028]
+ [0.777 0.193 0.017 0.012]
+ [0.715 0.227 0.05  0.008]]
+Validation acc: 0.4035714285714286
+Validation class_accuracies: [0.6486658195679796, 0.24767441860465117, 0.017326732673267328, 0.008264462809917356]
+Validation sensitivity: 0.14741035856573706
+Validation specificity: 0.6486658195679796
+Validation icbhi_score: 0.39803808906685834
+Validation roc_auc: None
+Validation avg_accuracy: 0.23048285841395388
+Validation one_indexed_epoch: 42
+The validation tracker metric at 0.4026739294410667 hasn't increased by 0 in 3 epochs
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4724 - 185s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 43/110
+Validation cm: [[1024  429   88   33]
+ [ 587  208   41   24]
+ [ 313   78    8    5]
+ [ 174   55   11    2]]
+Validation val_loss: 0.6755599969393247
+Validation normalized_cm: [[0.651 0.273 0.056 0.021]
+ [0.683 0.242 0.048 0.028]
+ [0.775 0.193 0.02  0.012]
+ [0.719 0.227 0.045 0.008]]
+Validation acc: 0.40324675324675324
+Validation class_accuracies: [0.650571791613723, 0.24186046511627907, 0.019801980198019802, 0.008264462809917356]
+Validation sensitivity: 0.14475431606905712
+Validation specificity: 0.650571791613723
+Validation icbhi_score: 0.39766305384139006
+Validation roc_auc: None
+Validation avg_accuracy: 0.2301246749344848
+Validation one_indexed_epoch: 43
+The validation tracker metric at 0.4026739294410667 hasn't increased by 0 in 4 epochs
+75/75 - 185s - loss: 0.0000e+00 - accuracy: 0.4808 - 185s/epoch - 2s/step
+here
+<class 'leaf_audio.frontend.MelFilterbanks'>
+There is no such attribute
+here2
+Epoch 44/110

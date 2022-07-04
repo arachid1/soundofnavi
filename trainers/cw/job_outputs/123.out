@@ -1,0 +1,104 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train123
+Description:  debugging, overlap threshold = 0.15, 4 one hot encoder, no weights, no spectral loss
+-----------------------
+Job id is 1.
+Job dir: ../cache/cw/train123/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+lengths
+4349
+1716
+-----------------------
+--- Final training dataset went from 0 to 4349 elements, with 0 none's, 0 crakles, 0 wheezes and 0 both ---
+--- Final Validation dataset contains 1716 elements, with 0 none, 0 crackles, 0 wheezes and 0 both ---
+Initializing weights...
+Model: "leaf_model9_model_bis"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ leaf (Leaf)                                     multiple                                    560              
+                                                                                                              
+ mel_filterbanks (MelFilterbanks)                multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 80, 250, 1)                          4                
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 80, 250, 16)                         2352             
+                                                                                                              
+ sequential_2 (Sequential)                       (None, 80, 250, 16)                         6448             
+                                                                                                              
+ sequential_3 (Sequential)                       (None, 80, 250, 16)                         32               
+                                                                                                              
+ concatenate (Concatenate)                       multiple                                    0                
+                                                                                                              
+ sequential_4 (Sequential)                       (None, 4)                                   6193348          
+                                                                                                              
+==============================================================================================================
+Total params: 6,202,906
+Trainable params: 6,161,400
+Non-trainable params: 41,506
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/60
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[891   0   0   0]
+ [589   0   0   0]
+ [ 80   0   0   0]
+ [156   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5192307692307693
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+68/68 - 306s - loss: 1.8520 - accuracy: 0.3755 - 306s/epoch - 4s/step
+Epoch 2/60
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+Traceback (most recent call last):
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train123.py", line 425, in <module>
+    launch_job({"Bd": 0, "Jordan": 0, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, leaf_model9_model_bis, spec_aug_params, audio_aug_params, None, [1,0])
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train123.py", line 377, in launch_job
+    train_model(datasets, model, spec_aug_params, audio_aug_params, parse_function, label_passed)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train123.py", line 357, in train_model
+    callbacks=[metrics_callback, viz_callback, tensorboard_callback]
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/keras/utils/traceback_utils.py", line 67, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/home/alirachidi/classification_algorithm/trainers/modules/callbacks/NewCallback.py", line 90, in on_epoch_end
+    cm, normalized_cm, cm_sum, acc, class_accuracies = self.return_base_metrics(y_true_all, rounded_preds_all)
+  File "/home/alirachidi/classification_algorithm/trainers/modules/callbacks/NewCallback.py", line 223, in return_base_metrics
+    cm = confusion_matrix(y_true_all, rounded_preds_all)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/sklearn/metrics/_classification.py", line 268, in confusion_matrix
+    y_type, y_true, y_pred = _check_targets(y_true, y_pred)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/sklearn/metrics/_classification.py", line 90, in _check_targets
+    "and {1} targets".format(type_true, type_pred))
+ValueError: Classification metrics can't handle a mix of multiclass and unknown targets

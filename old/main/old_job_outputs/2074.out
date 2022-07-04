@@ -1,0 +1,94 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+File:  conv.train2074
+Description:  tst
+2021-04-21 19:07:51.544267: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-04-21 19:07:53.751266: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-04-21 19:07:53.752278: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-04-21 19:07:53.769485: E tensorflow/stream_executor/cuda/cuda_driver.cc:328] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2021-04-21 19:07:53.769532: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:169] retrieving CUDA diagnostic information for host: classification
+2021-04-21 19:07:53.769540: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:176] hostname: classification
+2021-04-21 19:07:53.769651: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:200] libcuda reported version is: 460.32.3
+2021-04-21 19:07:53.769679: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:204] kernel reported version is: 460.32.3
+2021-04-21 19:07:53.769687: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:310] kernel version seems to match DSO: 460.32.3
+2021-04-21 19:07:53.771632: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-04-21 19:08:17.768878: I tensorflow/core/profiler/lib/profiler_session.cc:136] Profiler session initializing.
+2021-04-21 19:08:17.768926: I tensorflow/core/profiler/lib/profiler_session.cc:155] Profiler session started.
+2021-04-21 19:08:17.783419: I tensorflow/core/profiler/lib/profiler_session.cc:172] Profiler session tear down.
+2021-04-21 19:08:18.575554: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+2021-04-21 19:08:18.575983: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2299995000 Hz
+Tensorflow Version: 2.4.0
+Num GPUs Available:  0
+-----------------------
+Using module located at /main/models/conv/train2074.py
+Using train_file located at ../../data/datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+Using logs_path located at ../../cache/conv___04_1522___all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000___tst___2074/logs/
+-----------------------
+Collecting Variables...
+Model Parameters: {'N_CLASSES': 1, 'SR': 8000, 'BATCH_SIZE': 16, 'LR': 1e-05, 'SHAPE': (128, 1250, 3), 'WEIGHT_DECAY': 0.001, 'LL2_REG': 0, 'EPSILON': 1e-07, 'LABEL_SMOOTHING': 0.4}
+Learning Rate Parameters: {'factor': 0.75, 'patience': 6, 'min_lr': 1e-08}
+Early Stopping Patience and Delta: 15, 1.0%
+-----------------------
+Original number of folders: 453
+Initializing weights...
+weights = {0: 0.6346153846153846, 1: 2.357142857142857}
+Model: "conv2d"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 128, 1250, 3)]    0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 128, 1250, 8)      224       
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 128, 1250, 8)      162       
+_________________________________________________________________
+average_pooling2d (AveragePo (None, 64, 625, 8)        0         
+_________________________________________________________________
+batch_normalization (BatchNo (None, 64, 625, 8)        32        
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 64, 625, 16)       1168      
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 64, 625, 16)       414       
+_________________________________________________________________
+average_pooling2d_1 (Average (None, 32, 313, 16)       0         
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 32, 313, 16)       64        
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 32, 313, 32)       4640      
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 32, 313, 32)       828       
+_________________________________________________________________
+average_pooling2d_2 (Average (None, 16, 157, 32)       0         
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 16, 157, 32)       128       
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 16, 157, 64)       18496     
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 16, 157, 64)       1656      
+_________________________________________________________________
+average_pooling2d_3 (Average (None, 8, 79, 64)         0         
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 8, 79, 64)         256       
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 8, 79, 128)        73856     
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 8, 79, 128)        3402      
+_________________________________________________________________
+average_pooling2d_4 (Average (None, 4, 40, 128)        0         
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 4, 40, 128)        512       
+_________________________________________________________________
+global_average_pooling2d (Gl (None, 128)               0         
+_________________________________________________________________
+dense (Dense)                (None, 1)                 129       
+=================================================================
+Total params: 105,967
+Trainable params: 105,471
+Non-trainable params: 496
+_________________________________________________________________
+Starting...
+Accuracy (of 66 elements): 0.3181818181818182
+Ended. Saving the Excel Sheet /home/alirachidi/classification_algorithm/data/excel_spreadsheets/Bangladesh_pneumonia_patient_decision_val_only.xls...
+Done.
+
+ See logs at ../../cache/conv___04_1522___all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000___tst___2074/logs/

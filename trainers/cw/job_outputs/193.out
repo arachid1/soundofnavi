@@ -1,0 +1,253 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  0
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train193
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+training parameters
+[('cache_root', '../cache/'), ('data_root', '../data/'), ('jordan_root', '../data/jwyy9np4gv-3/'), ('icbhi_root', '../data/raw_audios/icbhi_preprocessed_v2_cleaned_8000/'), ('bd_root', '../data/PCV_SEGMENTED_Processed_Files/'), ('excel_path', '../data/Bangladesh_PCV_onlyStudyPatients.xlsx'), ('perch_root', '../data/raw_audios/perch_8000_10seconds'), ('ant_root', '../data/raw_audios/Antwerp_Clinical_Complete'), ('description', ' effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,'), ('job_id', 0), ('mode', 'cw'), ('n_classes', 2), ('shape', (80, 500, 3)), ('n_epochs', 110), ('lr', 0.005), ('batch_size', 16), ('ll2_reg', 0), ('weight_decay', 0.0001), ('label_smoothing', 0), ('epsilon', 1e-07), ('es_patience', 20), ('min_delta', 0), ('train_test_ratio', 0.8), ('kfold', False), ('clause', 0), ('epoch_start', 0), ('testing', 0), ('adaptive_lr', True), ('cuberooting', 1), ('normalizing', 1), ('class_weights', True), ('early_stopping', True), ('initial_channels', 1), ('factor', 0.5), ('lr_patience', 10), ('min_lr', 1e-05), ('sr', 4000), ('audio_length', 5), ('step_size', 2.5), ('n_fft', 1024), ('hop_length', 254), ('n_mels', 128), ('overlap_threshold', 0.3), ('trainable_fb', False), ('to_decibel', True), ('train_nn', False), ('train_mel', False), ('file_dir', '../cache/cw/train193'), ('n_sequences', 9), ('activate_spectral_loss', False), ('normalize', False), ('stacking', False), ('oversample', False), ('one_hot_encoding', False), ('activation', 'sigmoid'), ('n_filters', 80)]
+Job id is 1.
+Job dir: ../cache/cw/train193/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+turning the kfold from 90/10 to 80/20
+100
+12
+to
+90
+22
+-----------------------
+--- Final training dataset went from 0 to 3969 elements, with 1889 none's, 991 crakles, 597 wheezes and 492 both ---
+--- Final Validation dataset contains 2096 elements, with 989 none, 843 crackles, 120 wheezes and 144 both ---
+GPUs
+[]
+Initializing weights...
+weights = {0: 0.5252779248279513, 1: 1.0012613521695257, 2: 1.6620603015075377, 3: 2.0167682926829267}
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ efficientnetb1 (Functional)  (None, 3, 16, 1280)      6575239   
+                                                                 
+ global_average_pooling2d (G  (None, 1280)             0         
+ lobalAveragePooling2D)                                          
+                                                                 
+ dense (Dense)               (None, 100)               128100    
+                                                                 
+ dropout (Dropout)           (None, 100)               0         
+                                                                 
+ dense_1 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_1 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_2 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 6,708,491
+Trainable params: 6,646,436
+Non-trainable params: 62,055
+_________________________________________________________________
+There is no such attribute
+Model: "leaf_model9_model_efnet1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks (MelFilterbanks)                multiple                                    0                
+                                                                                                              
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 2)                                   6708491          
+                                                                                                              
+==============================================================================================================
+Total params: 6,708,653
+Trainable params: 6,646,598
+Non-trainable params: 62,055
+______________________________________________________________________________________________________________
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ efficientnetb1 (Functional)  (None, 3, 16, 1280)      6575239   
+                                                                 
+ global_average_pooling2d_1   (None, 1280)             0         
+ (GlobalAveragePooling2D)                                        
+                                                                 
+ dense_3 (Dense)             (None, 100)               128100    
+                                                                 
+ dropout_2 (Dropout)         (None, 100)               0         
+                                                                 
+ dense_4 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_3 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_5 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 6,708,491
+Trainable params: 6,646,436
+Non-trainable params: 62,055
+_________________________________________________________________
+Model: "leaf_model9_model_efnet1_1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ sincnet (SincNet)                               multiple                                    320              
+                                                                                                              
+ mel_filterbanks_2 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 2)                                   6708491          
+                                                                                                              
+==============================================================================================================
+Total params: 6,708,973
+Trainable params: 6,646,918
+Non-trainable params: 62,055
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/110
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[640 341   2   6]
+ [606 229   7   1]
+ [ 82  34   2   2]
+ [109  35   0   0]]
+Validation val_loss: 0.00030330858612788545
+Validation normalized_cm: [[0.647 0.345 0.002 0.006]
+ [0.719 0.272 0.008 0.001]
+ [0.683 0.283 0.017 0.017]
+ [0.757 0.243 0.    0.   ]]
+Validation acc: 0.4155534351145038
+Validation class_accuracies: [0.647118301314459, 0.27164887307236063, 0.016666666666666666, 0.0]
+Validation sensitivity: 0.2086720867208672
+Validation specificity: 0.647118301314459
+Validation icbhi_score: 0.4278951940176631
+Validation roc_auc: None
+Validation avg_accuracy: 0.2338584602633716
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+here
+here2
+249/249 - 987s - accuracy: 0.5931 - student_loss: 0.8357 - distillation_loss: 0.0239 - val_accuracy: 0.9170 - val_student_loss: 0.6357 - 987s/epoch - 4s/step
+Epoch 2/110
+Validation cm: [[644 177 103  65]
+ [641 100  77  25]
+ [ 86  17  12   5]
+ [111  17  10   6]]
+Validation val_loss: 0.0003355088579745693
+Validation normalized_cm: [[0.651 0.179 0.104 0.066]
+ [0.76  0.119 0.091 0.03 ]
+ [0.717 0.142 0.1   0.042]
+ [0.771 0.118 0.069 0.042]]
+Validation acc: 0.36354961832061067
+Validation class_accuracies: [0.6511627906976745, 0.11862396204033215, 0.1, 0.041666666666666664]
+Validation sensitivity: 0.10659439927732611
+Validation specificity: 0.6511627906976745
+Validation icbhi_score: 0.3788785949875003
+Validation roc_auc: None
+Validation avg_accuracy: 0.22786335485116832
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.4278951940176631 hasn't increased by 0 in 1 epochs
+here
+here2
+249/249 - 939s - accuracy: 0.6959 - student_loss: 0.5813 - distillation_loss: -8.9923e-03 - val_accuracy: 0.5873 - val_student_loss: 0.7032 - 939s/epoch - 4s/step
+Epoch 3/110
+Validation cm: [[195 532  30 232]
+ [118 532  13 180]
+ [ 16  64   1  39]
+ [ 19 105   1  19]]
+Validation val_loss: 0.00031144035454014785
+Validation normalized_cm: [[0.197 0.538 0.03  0.235]
+ [0.14  0.631 0.015 0.214]
+ [0.133 0.533 0.008 0.325]
+ [0.132 0.729 0.007 0.132]]
+Validation acc: 0.35639312977099236
+Validation class_accuracies: [0.19716885743174925, 0.631079478054567, 0.008333333333333333, 0.13194444444444445]
+Validation sensitivity: 0.4986449864498645
+Validation specificity: 0.19716885743174925
+Validation icbhi_score: 0.34790692194080686
+Validation roc_auc: None
+Validation avg_accuracy: 0.2421315283160235
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.4278951940176631 hasn't increased by 0 in 2 epochs
+here
+here2
+249/249 - 849s - accuracy: 0.7234 - student_loss: 0.8328 - distillation_loss: 0.0144 - val_accuracy: 0.8502 - val_student_loss: 0.6528 - 849s/epoch - 3s/step
+Epoch 4/110
+Validation cm: [[748 141  73  27]
+ [679 106  49   9]
+ [ 95  14   7   4]
+ [121  19   3   1]]
+Validation val_loss: 0.00031197361136210786
+Validation normalized_cm: [[0.756 0.143 0.074 0.027]
+ [0.805 0.126 0.058 0.011]
+ [0.792 0.117 0.058 0.033]
+ [0.84  0.132 0.021 0.007]]
+Validation acc: 0.4112595419847328
+Validation class_accuracies: [0.756319514661274, 0.1257413997627521, 0.058333333333333334, 0.006944444444444444]
+Validation sensitivity: 0.10298102981029811
+Validation specificity: 0.756319514661274
+Validation icbhi_score: 0.42965027223578606
+Validation roc_auc: None
+Validation avg_accuracy: 0.23683467305045097
+Validation one_indexed_epoch: 4
+-- New best results were achieved. --
+here
+here2
+249/249 - 847s - accuracy: 0.7337 - student_loss: 0.7532 - distillation_loss: 0.0058 - val_accuracy: 0.6694 - val_student_loss: 0.6539 - 847s/epoch - 3s/step
+Epoch 5/110
+Validation cm: [[370 225 172 222]
+ [255 199 165 224]
+ [ 19  33  16  52]
+ [ 34  56  16  38]]
+Validation val_loss: 0.0003300912621367069
+Validation normalized_cm: [[0.374 0.228 0.174 0.224]
+ [0.302 0.236 0.196 0.266]
+ [0.158 0.275 0.133 0.433]
+ [0.236 0.389 0.111 0.264]]
+Validation acc: 0.2972328244274809
+Validation class_accuracies: [0.3741152679474216, 0.23606168446026096, 0.13333333333333333, 0.2638888888888889]
+Validation sensitivity: 0.22854561878952123
+Validation specificity: 0.3741152679474216
+Validation icbhi_score: 0.3013304433684714
+Validation roc_auc: None
+Validation avg_accuracy: 0.2518497936574762
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.42965027223578606 hasn't increased by 0 in 1 epochs
+here
+here2
+249/249 - 841s - accuracy: 0.7468 - student_loss: 0.6218 - distillation_loss: -2.0964e-03 - val_accuracy: 0.5525 - val_student_loss: 0.6919 - 841s/epoch - 3s/step
+Epoch 6/110
+Validation cm: [[214  43 640  92]
+ [175  16 562  90]
+ [ 31   3  76  10]
+ [ 45   2  86  11]]
+Validation val_loss: 0.0003518662664271493
+Validation normalized_cm: [[0.216 0.043 0.647 0.093]
+ [0.208 0.019 0.667 0.107]
+ [0.258 0.025 0.633 0.083]
+ [0.312 0.014 0.597 0.076]]
+Validation acc: 0.15124045801526717
+Validation class_accuracies: [0.21638018200202225, 0.018979833926453145, 0.6333333333333333, 0.0763888888888889]
+Validation sensitivity: 0.0930442637759711
+Validation specificity: 0.21638018200202225
+Validation icbhi_score: 0.15471222288899666
+Validation roc_auc: None
+Validation avg_accuracy: 0.2362705595376744
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.42965027223578606 hasn't increased by 0 in 2 epochs
+here
+here2
+249/249 - 911s - accuracy: 0.7412 - student_loss: 0.7710 - distillation_loss: 0.0244 - val_accuracy: 0.1794 - val_student_loss: 0.7375 - 911s/epoch - 4s/step
+Epoch 7/110

@@ -1,0 +1,124 @@
+Tensorflow Version: 2.4.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+-----------------------
+Job id is 1.
+- Loading Perch.
+21 Perch audios have been loaded.
+- Loading Icbhi.
+17 Icbhi audios have been loaded.
+- Loading Antwerp.
+7 Antwerp audios have been loaded.
+- Preparing Perch.
+20 Perch groups of audio chunks (by filename or patients) have been prepared.
+- Preparing Icbhi.
+10 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+- Preparing Antwerp.
+4 Antwerp groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+--- Perch training dataset went from 0 to 30 elements, with 12 none's, 2 crakles, 2 wheezes and 4 both ---
+--- Perch Validation dataset contains 33 elements, with 12 none, 4 crackles, 4 wheezes and 2 both ---
+--- Icbhi training dataset went from 0 to 63 elements, with 37 none's, 22 crakles, 2 wheezes and 2 both ---
+--- Icbhi Validation dataset contains 56 elements, with 32 none, 11 crackles, 7 wheezes and 6 both ---
+--- Antwerp training dataset went from 0 to 56 elements, with 2 none's, 0 crakles, 54 wheezes and 0 both ---
+--- Antwerp Validation dataset contains 21 elements, with 1 none, 10 crackles, 0 wheezes and 10 both ---
+tensor([0.4077], device='cuda:0')
+cuda:0
+tensor([0.8687], device='cuda:0')
+STFT kernels created, time used = 0.0288 seconds
+Parameter containing:
+tensor([[ 0.0000e+00,  1.0410e+01,  2.0974e+01,  ...,  3.8633e+03,
+          3.9311e+03,  4.0000e+03],
+        [-1.5625e+01, -5.2153e+00,  5.3492e+00,  ...,  3.8476e+03,
+          3.9155e+03,  3.9844e+03],
+        [-3.1250e+01, -2.0840e+01, -1.0276e+01,  ...,  3.8320e+03,
+          3.8999e+03,  3.9687e+03],
+        ...,
+        [-3.9688e+03, -3.9583e+03, -3.9478e+03,  ..., -1.0548e+02,
+         -3.7621e+01,  3.1250e+01],
+        [-3.9844e+03, -3.9740e+03, -3.9634e+03,  ..., -1.2111e+02,
+         -5.3246e+01,  1.5625e+01],
+        [-4.0000e+03, -3.9896e+03, -3.9790e+03,  ..., -1.3673e+02,
+         -6.8871e+01, -2.4414e-04]], device='cuda:0', requires_grad=True)
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/torch/utils/data/dataloader.py:481: UserWarning: This DataLoader will create 16 worker processes in total. Our suggested max number of worker in current system is 8, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  cpuset_checked))
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+/home/alirachidi/classification_algorithm/trainers/modules/models_pytorch.py:126: UserWarning: Using padding='same' with even kernel lengths and odd dilation may require a zero-padded copy of the input be created (Triggered internally at  ../aten/src/ATen/native/Convolution.cpp:647.)
+  out.append(torch.nn.functional.conv2d(temp, weight=self.cwise_filters[i].cuda(), padding="same"))
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/connectors/callback_connector.py:91: LightningDeprecationWarning: Setting `Trainer(progress_bar_refresh_rate=1000)` is deprecated in v1.5 and will be removed in v1.7. Please pass `pytorch_lightning.callbacks.progress.TQDMProgressBar` with `refresh_rate` directly to the Trainer's `callbacks` argument instead. Or, to disable the progress bar pass `enable_progress_bar = False` to the Trainer.
+  f"Setting `Trainer(progress_bar_refresh_rate={progress_bar_refresh_rate})` is deprecated in v1.5 and"
+GPU available: True, used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+   | Name          | Type                | Params
+-------------------------------------------------------
+0  | spec_layer    | STFT                | 0     
+1  | mel_layer     | MelScaleBis         | 33.8 K
+2  | depth_layer_1 | InvertedResidual_nn | 73.2 K
+3  | AVGPOOL1      | AvgPool2d           | 0     
+4  | BN1           | BatchNorm2d         | 256   
+5  | DP1           | Dropout             | 0     
+6  | depth_layer_3 | InvertedResidual_nn | 73.2 K
+7  | AVGPOOL2      | AvgPool2d           | 0     
+8  | BN2           | BatchNorm2d         | 256   
+9  | DP2           | Dropout             | 0     
+10 | classifier    | Linear              | 258   
+-------------------------------------------------------
+180 K     Trainable params
+0         Non-trainable params
+180 K     Total params
+0.724     Total estimated model params size (MB)
+tensor([[0., 0.],
+        [0., 0.]])
+Validation sanity check: 0it [00:00, ?it/s]Validation sanity check:   0%|          | 0/2 [00:00<?, ?it/s]/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:631: UserWarning: Checkpoint directory /home/alirachidi/classification_algorithm/trainers/checkpoints exists and is not empty.
+  rank_zero_warn(f"Checkpoint directory {dirpath} exists and is not empty.")
+Validation sanity check: 100%|██████████| 2/2 [00:00<00:00,  3.31it/s]                                                                      Training: 0it [00:00, ?it/s]Training:   0%|          | 0/130 [00:00<?, ?it/s]Epoch 0:   0%|          | 0/130 [00:00<?, ?it/s] Epoch 0: 100%|██████████| 130/130 [00:08<00:00, 16.12it/s]
+Validating: 0it [00:00, ?it/s][A
+Validating:   0%|          | 0/55 [00:00<?, ?it/s][A
+Validating: 100%|██████████| 55/55 [00:02<00:00, 26.59it/s][AEpoch 0: 100%|██████████| 130/130 [00:10<00:00, 12.83it/s, loss=0.548]
+                                                           [ATraceback (most recent call last):
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train13.py", line 330, in <module>
+    launch_job({"Bd": 0, "Jordan": 0, "Icbhi": 1, "Perch": 1, "Ant": 1, "SimAnt": 1,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train13.py", line 286, in launch_job
+    train_model(datasets, model, spec_aug_params, audio_aug_params, parse_function)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train13.py", line 236, in train_model
+    trainer.fit(model, trainloader, val_dataloaders=valloader)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 741, in fit
+    self._fit_impl, model, train_dataloaders, val_dataloaders, datamodule, ckpt_path
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 685, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 777, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1199, in _run
+    self._dispatch()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1279, in _dispatch
+    self.training_type_plugin.start_training(self)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/plugins/training_type/training_type_plugin.py", line 202, in start_training
+    self._results = trainer.run_stage()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1289, in run_stage
+    return self._run_train()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1319, in _run_train
+    self.fit_loop.run()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/loops/base.py", line 145, in run
+    self.advance(*args, **kwargs)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/loops/fit_loop.py", line 234, in advance
+    self.epoch_loop.run(data_fetcher)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/loops/base.py", line 151, in run
+    output = self.on_run_end()
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/loops/epoch/training_epoch_loop.py", line 298, in on_run_end
+    self.trainer.call_hook("on_train_epoch_end")
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/trainer.py", line 1495, in call_hook
+    callback_fx(*args, **kwargs)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/pytorch_lightning/trainer/callback_hook.py", line 93, in on_train_epoch_end
+    callback.on_train_epoch_end(self, self.lightning_module)
+  File "/home/alirachidi/classification_algorithm/trainers/cw/models/train13.py", line 67, in on_train_epoch_end
+    self.train_losses.append(trainer.logged_metrics["train_loss"])
+KeyError: 'train_loss'

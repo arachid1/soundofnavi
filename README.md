@@ -1,3 +1,7 @@
+As of 11/23/2021, this is an OLD README. Only the section on cochlear preprocessing is relevant. Disregard the rest and refer to the README inside trainers folder
+
+________
+
 # Classification_algorithm
 
 classification_algorithm is a repository for classification of abnormal lung sounds by Sonavi Labs Inc.

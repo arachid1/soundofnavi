@@ -1,0 +1,923 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v40_augm_v0_cleaned_8000.pkl
+File:  conv.train2219
+Description:  icbhi_pneumonia_test
+2021-06-15 15:51:28.649438: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+WARNING:tensorflow:From /home/alirachidi/classification_algorithm/trainers/main/models/conv/modules/augmentation.py:19: experimental_run_functions_eagerly (from tensorflow.python.eager.def_function) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.config.run_functions_eagerly` instead of the experimental version.
+2021-06-15 15:51:30.916585: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-06-15 15:51:30.917525: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-06-15 15:51:30.930191: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:30.930930: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:00:05.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-06-15 15:51:30.930960: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-15 15:51:30.934238: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-15 15:51:30.934312: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-06-15 15:51:30.935362: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-06-15 15:51:30.935639: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-06-15 15:51:30.936583: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-06-15 15:51:30.937497: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-06-15 15:51:30.937657: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-15 15:51:30.937829: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:30.938624: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:30.939292: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+Tensorflow Version: 2.4.0
+Num GPUs Available:  1
+-----------------------
+Using module: nv/train2219.py
+Using train_file: ../../data/datasets/all_sw_coch_preprocessed_v2_param_v40_augm_v0_cleaned_8000.pkl
+Job directory: ../../new_cache/conv__2219__06_1551__v40__icbhi_pneumonia_test
+Parameters: {'N_CLASSES': 8, 'SR': 8000, 'BATCH_SIZE': 16, 'LR': 0.0001, 'SHAPE': [128, 1250], 'LL2_REG': 0, 'WEIGHT_DECAY': 0.001, 'N_EPOCHS': 120, 'FACTOR': 0.75, 'PATIENCE': 6, 'MIN_LR': 1e-07, 'LABEL_SMOOTHING': 0, 'EPSILON': 1e-07, 'ES_PATIENCE': 50, 'OVERSAMPLE': 0, 'MIN_DELTA': 0, 'PARAM': 'v40', 'EPOCH_START': 1, 'CLAUSE': 1, 'CUBEROOTING': 1, 'AUGMENTATION': 0, 'TARGET': 1, 'INITIAL_CHANNELS': 1, 'ADAPTIVE_LR': 1, 'CLASS_WEIGHTS': 1, 'SIX': 0, 'CONCAT': 0, 'TESTING': 0}
+Augmentation parameters for audio: {'ADD': 1, 'QUANTITY': 250, 'WAV_PATH': 'v36,v37'}
+Augmentation parameters for spectrograms: {'ADD': 1, 'QUANTITY': 150, 'TIME_MASKING': 1, 'FREQUENCY_MASKING': 1, 'LOUDNESS': 0}
+-----------------------
+Collecting Variables...
+All variables have been collected.
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow_addons/utils/ensure_tf_install.py:68: UserWarning: Tensorflow Addons supports using Python ops for all Tensorflow versions above or equal to 2.2.0 and strictly below 2.3.0 (nightly versions are not supported). 
+ The versions of TensorFlow you are currently using is 2.4.0 and is not supported. 
+Some things might work, some things might not.
+If you were to encounter a bug, do not file an issue.
+If you want to make sure you're using a tested and supported configuration, either change the TensorFlow version or the TensorFlow Addons's version. 
+You can find the compatibility matrix in TensorFlow Addon's readme:
+https://github.com/tensorflow/addons
+  UserWarning,
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+2021-06-15 15:51:35.986276: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-06-15 15:51:35.986515: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:35.987580: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:00:05.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-06-15 15:51:35.987637: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-15 15:51:35.987694: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-15 15:51:35.987727: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-06-15 15:51:35.987767: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-06-15 15:51:35.987796: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-06-15 15:51:35.987824: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-06-15 15:51:35.987855: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-06-15 15:51:35.987882: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-15 15:51:35.987998: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:35.988978: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:35.989828: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-06-15 15:51:35.989885: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-15 15:51:36.838299: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-06-15 15:51:36.838356: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2021-06-15 15:51:36.838375: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2021-06-15 15:51:36.838712: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:36.839784: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:36.840717: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-15 15:51:36.841586: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 13968 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:00:05.0, compute capability: 7.5)
+Label 0 has 135 samples
+Label 1 has 148 samples
+Label 2 has 36 samples
+Label 3 has 8 samples
+Label 4 has 60 samples
+Label 5 has 86 samples
+Label 6 has 4 samples
+Label 7 has 2544 samples
+The initial learning rate for this job is: 0.001
+Model: "conv2d"
+______________________________________________________________________________________________________________
+Layer (type)                        Output Shape            Param #      Connected to                         
+==============================================================================================================
+input_1 (InputLayer)                [(None, 128, 1250, 1)]  0                                                 
+______________________________________________________________________________________________________________
+batch_normalization (BatchNormaliza (None, 128, 1250, 1)    4            input_1[0][0]                        
+______________________________________________________________________________________________________________
+conv2d (Conv2D)                     (None, 128, 1250, 16)   32           batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+conv2d_2 (Conv2D)                   (None, 128, 1250, 16)   32           batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+max_pooling2d (MaxPooling2D)        (None, 128, 1250, 1)    0            batch_normalization[0][0]            
+______________________________________________________________________________________________________________
+conv2d_1 (Conv2D)                   (None, 128, 1250, 16)   2320         conv2d[0][0]                         
+______________________________________________________________________________________________________________
+conv2d_3 (Conv2D)                   (None, 128, 1250, 16)   6416         conv2d_2[0][0]                       
+______________________________________________________________________________________________________________
+conv2d_4 (Conv2D)                   (None, 128, 1250, 16)   32           max_pooling2d[0][0]                  
+______________________________________________________________________________________________________________
+concatenate (Concatenate)           (None, 128, 1250, 48)   0            conv2d_1[0][0]                       
+                                                                         conv2d_3[0][0]                       
+                                                                         conv2d_4[0][0]                       
+______________________________________________________________________________________________________________
+average_pooling2d (AveragePooling2D (None, 64, 625, 48)     0            concatenate[0][0]                    
+______________________________________________________________________________________________________________
+batch_normalization_1 (BatchNormali (None, 64, 625, 48)     192          average_pooling2d[0][0]              
+______________________________________________________________________________________________________________
+dropout (Dropout)                   (None, 64, 625, 48)     0            batch_normalization_1[0][0]          
+______________________________________________________________________________________________________________
+inverted_residual (InvertedResidual (None, 64, 625, 32)     35840        dropout[0][0]                        
+______________________________________________________________________________________________________________
+inverted_residual_1 (InvertedResidu (None, 64, 625, 32)     20864        inverted_residual[0][0]              
+______________________________________________________________________________________________________________
+average_pooling2d_1 (AveragePooling (None, 32, 312, 32)     0            inverted_residual_1[0][0]            
+______________________________________________________________________________________________________________
+batch_normalization_2 (BatchNormali (None, 32, 312, 32)     128          average_pooling2d_1[0][0]            
+______________________________________________________________________________________________________________
+dropout_1 (Dropout)                 (None, 32, 312, 32)     0            batch_normalization_2[0][0]          
+______________________________________________________________________________________________________________
+inverted_residual_2 (InvertedResidu (None, 32, 312, 64)     27136        dropout_1[0][0]                      
+______________________________________________________________________________________________________________
+inverted_residual_3 (InvertedResidu (None, 32, 312, 64)     66304        inverted_residual_2[0][0]            
+______________________________________________________________________________________________________________
+average_pooling2d_2 (AveragePooling (None, 16, 156, 64)     0            inverted_residual_3[0][0]            
+______________________________________________________________________________________________________________
+batch_normalization_3 (BatchNormali (None, 16, 156, 64)     256          average_pooling2d_2[0][0]            
+______________________________________________________________________________________________________________
+dropout_2 (Dropout)                 (None, 16, 156, 64)     0            batch_normalization_3[0][0]          
+______________________________________________________________________________________________________________
+inverted_residual_4 (InvertedResidu (None, 16, 156, 128)    91136        dropout_2[0][0]                      
+______________________________________________________________________________________________________________
+inverted_residual_5 (InvertedResidu (None, 16, 156, 128)    230912       inverted_residual_4[0][0]            
+______________________________________________________________________________________________________________
+average_pooling2d_3 (AveragePooling (None, 8, 78, 128)      0            inverted_residual_5[0][0]            
+______________________________________________________________________________________________________________
+batch_normalization_4 (BatchNormali (None, 8, 78, 128)      512          average_pooling2d_3[0][0]            
+______________________________________________________________________________________________________________
+dropout_3 (Dropout)                 (None, 8, 78, 128)      0            batch_normalization_4[0][0]          
+______________________________________________________________________________________________________________
+inverted_residual_6 (InvertedResidu (None, 8, 78, 256)      329728       dropout_3[0][0]                      
+______________________________________________________________________________________________________________
+inverted_residual_7 (InvertedResidu (None, 8, 78, 256)      855040       inverted_residual_6[0][0]            
+______________________________________________________________________________________________________________
+average_pooling2d_4 (AveragePooling (None, 4, 39, 256)      0            inverted_residual_7[0][0]            
+______________________________________________________________________________________________________________
+batch_normalization_5 (BatchNormali (None, 4, 39, 256)      1024         average_pooling2d_4[0][0]            
+______________________________________________________________________________________________________________
+dropout_4 (Dropout)                 (None, 4, 39, 256)      0            batch_normalization_5[0][0]          
+______________________________________________________________________________________________________________
+inverted_residual_8 (InvertedResidu (None, 4, 39, 512)      1249280      dropout_4[0][0]                      
+______________________________________________________________________________________________________________
+inverted_residual_9 (InvertedResidu (None, 4, 39, 512)      3282944      inverted_residual_8[0][0]            
+______________________________________________________________________________________________________________
+global_average_pooling2d (GlobalAve (None, 512)             0            inverted_residual_9[0][0]            
+______________________________________________________________________________________________________________
+dense (Dense)                       (None, 8)               4104         global_average_pooling2d[0][0]       
+==============================================================================================================
+Total params: 6,204,236
+Trainable params: 6,162,730
+Non-trainable params: 41,506
+______________________________________________________________________________________________________________
+2021-06-15 15:51:38.519684: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+2021-06-15 15:51:38.521227: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2299995000 Hz
+2021-06-15 15:51:38.871091: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-15 15:51:40.872302: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-15 15:51:41.412876: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+Epoch 1/120
+151/151 - 213s - loss: 0.6199 - accuracy: 0.5724 - val_loss: 0.6670 - val_accuracy: 0.0116
+Confusion matrix: 
+ [[  0   0   0   0  26   0]
+ [  0   0   0   0  32   0]
+ [  0   0   0   0   4   0]
+ [  0   0   0   0   8   0]
+ [  0   0   0   0   7   0]
+ [  0   0   0   0 528   0]]
+Normalized Confusion matrix: 
+ [[0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]]
+Validation f1: 1.16
+Validation accuracy: 1.16
+Validation recall: 1.16
+Validation precision: 1.16
+Validation class accuracies: [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 2/120
+151/151 - 217s - loss: 0.4297 - accuracy: 0.8079 - val_loss: 0.4681 - val_accuracy: 0.8727
+Confusion matrix: 
+ [[  0   0   0   0  26   0]
+ [  0   0   0   0  32   0]
+ [  0   0   0   0   4   0]
+ [  0   0   0   0   8   0]
+ [  0   0   0   0   7   0]
+ [  0   0   0   0 528   0]]
+Normalized Confusion matrix: 
+ [[0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]
+ [0. 0. 0. 0. 1. 0.]]
+Validation f1: 1.16
+Validation accuracy: 1.16
+Validation recall: 1.16
+Validation precision: 1.16
+Validation class accuracies: [0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.011570247933884297 hasn't increased by 0 in 1 epochs
+Epoch 3/120
+151/151 - 218s - loss: 0.2613 - accuracy: 0.8642 - val_loss: 0.2875 - val_accuracy: 0.8727
+Confusion matrix: 
+ [[  0   0   0   0   0  26]
+ [  0   0   0   0   0  32]
+ [  0   0   0   0   0   4]
+ [  0   0   0   0   0   8]
+ [  0   0   0   0   0   7]
+ [  0   0   0   0   0 528]]
+Normalized Confusion matrix: 
+ [[0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]]
+Validation f1: 87.27
+Validation accuracy: 87.27
+Validation recall: 87.27
+Validation precision: 87.27
+Validation class accuracies: [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 4/120
+151/151 - 218s - loss: 0.1699 - accuracy: 0.8853 - val_loss: 0.1937 - val_accuracy: 0.8727
+Confusion matrix: 
+ [[  0   0   0   0   0  26]
+ [  0   0   0   0   0  32]
+ [  0   0   0   0   0   4]
+ [  0   0   0   0   0   8]
+ [  0   0   0   0   0   7]
+ [  0   0   0   0   0 528]]
+Normalized Confusion matrix: 
+ [[0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]
+ [0. 0. 0. 0. 0. 1.]]
+Validation f1: 87.27
+Validation accuracy: 87.27
+Validation recall: 87.27
+Validation precision: 87.27
+Validation class accuracies: [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 1 epochs
+Epoch 5/120
+151/151 - 218s - loss: 0.1217 - accuracy: 0.8986 - val_loss: 0.1392 - val_accuracy: 0.8727
+Confusion matrix: 
+ [[  0   0   0   0   0  26]
+ [  2   0   0   1   0  29]
+ [  0   0   0   0   0   4]
+ [  0   0   0   0   0   8]
+ [  1   0   0   0   0   6]
+ [  2   0   0   0   0 526]]
+Normalized Confusion matrix: 
+ [[0.    0.    0.    0.    0.    1.   ]
+ [0.062 0.    0.    0.031 0.    0.906]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.143 0.    0.    0.    0.    0.857]
+ [0.004 0.    0.    0.    0.    0.996]]
+Validation f1: 86.94
+Validation accuracy: 86.94
+Validation recall: 86.94
+Validation precision: 86.94
+Validation class accuracies: [0.0, 0.0, 0.0, 0.0, 0.0, 0.9962121212121212]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 2 epochs
+Epoch 6/120
+151/151 - 218s - loss: 0.0972 - accuracy: 0.9118 - val_loss: 0.7512 - val_accuracy: 0.2413
+Confusion matrix: 
+ [[ 21   4   0   1   0   0]
+ [  8  20   0   3   0   1]
+ [  1   0   0   3   0   0]
+ [  1   1   0   3   0   3]
+ [  7   0   0   0   0   0]
+ [198  78   1 199   0  52]]
+Normalized Confusion matrix: 
+ [[0.808 0.154 0.    0.038 0.    0.   ]
+ [0.25  0.625 0.    0.094 0.    0.031]
+ [0.25  0.    0.    0.75  0.    0.   ]
+ [0.125 0.125 0.    0.375 0.    0.375]
+ [1.    0.    0.    0.    0.    0.   ]
+ [0.375 0.148 0.002 0.377 0.    0.098]]
+Validation f1: 15.87
+Validation accuracy: 15.87
+Validation recall: 15.87
+Validation precision: 15.87
+Validation class accuracies: [0.8076923076923077, 0.625, 0.0, 0.375, 0.0, 0.09848484848484848]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 3 epochs
+Epoch 7/120
+151/151 - 218s - loss: 0.0785 - accuracy: 0.9185 - val_loss: 0.2276 - val_accuracy: 0.7818
+Confusion matrix: 
+ [[ 14   8   0   0   0   4]
+ [  5  27   0   0   0   0]
+ [  4   0   0   0   0   0]
+ [  0   0   0   0   0   8]
+ [  5   2   0   0   0   0]
+ [ 29  96   0   2   0 401]]
+Normalized Confusion matrix: 
+ [[0.538 0.308 0.    0.    0.    0.154]
+ [0.156 0.844 0.    0.    0.    0.   ]
+ [1.    0.    0.    0.    0.    0.   ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.286 0.    0.    0.    0.   ]
+ [0.055 0.182 0.    0.004 0.    0.759]]
+Validation f1: 73.06
+Validation accuracy: 73.06
+Validation recall: 73.06
+Validation precision: 73.06
+Validation class accuracies: [0.5384615384615384, 0.84375, 0.0, 0.0, 0.0, 0.759469696969697]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 4 epochs
+Epoch 8/120
+151/151 - 218s - loss: 0.0686 - accuracy: 0.9329 - val_loss: 0.4095 - val_accuracy: 0.4512
+Confusion matrix: 
+ [[  2  20   0   0   0   4]
+ [  0  31   0   0   0   1]
+ [  3   1   0   0   0   0]
+ [  0   5   0   0   0   3]
+ [  4   3   0   0   0   0]
+ [ 25 301   0   2   0 200]]
+Normalized Confusion matrix: 
+ [[0.077 0.769 0.    0.    0.    0.154]
+ [0.    0.969 0.    0.    0.    0.031]
+ [0.75  0.25  0.    0.    0.    0.   ]
+ [0.    0.625 0.    0.    0.    0.375]
+ [0.571 0.429 0.    0.    0.    0.   ]
+ [0.047 0.57  0.    0.004 0.    0.379]]
+Validation f1: 38.51
+Validation accuracy: 38.51
+Validation recall: 38.51
+Validation precision: 38.51
+Validation class accuracies: [0.07692307692307693, 0.96875, 0.0, 0.0, 0.0, 0.3787878787878788]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 5 epochs
+Epoch 9/120
+151/151 - 218s - loss: 0.0561 - accuracy: 0.9470 - val_loss: 0.1214 - val_accuracy: 0.8512
+Confusion matrix: 
+ [[ 20   0   0   0   1   0   5]
+ [  3  17   0   3   3   1   5]
+ [  3   0   0   0   1   0   0]
+ [  0   0   0   0   0   0   8]
+ [  2   0   0   0   5   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 22  16   0  22   1   0 467]]
+/home/alirachidi/classification_algorithm/trainers/main/models/conv/train2219.py:226: RuntimeWarning: invalid value encountered in long_scalars
+  accs.append(row[i] / sum(row))
+Normalized Confusion matrix: 
+ [[0.769 0.    0.    0.    0.038 0.    0.192]
+ [0.094 0.531 0.    0.094 0.094 0.031 0.156]
+ [0.75  0.    0.    0.    0.25  0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.286 0.    0.    0.    0.714 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.042 0.03  0.    0.042 0.002 0.    0.884]]
+Validation f1: 84.13
+Validation accuracy: 84.13
+Validation recall: 84.13
+Validation precision: 84.13
+Validation class accuracies: [0.7692307692307693, 0.53125, 0.0, 0.0, 0.7142857142857143, nan, 0.884469696969697]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 6 epochs
+Lr has been adjusted to 7.499999628635123e-05
+Epoch 10/120
+151/151 - 218s - loss: 0.0452 - accuracy: 0.9623 - val_loss: 0.1184 - val_accuracy: 0.8595
+Confusion matrix: 
+ [[ 11   1   0   0   0   0  14]
+ [  6  18   0   0   0   1   7]
+ [  3   0   0   1   0   0   0]
+ [  0   0   0   0   0   0   8]
+ [  7   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 21  19   0   9   0   0 479]]
+Normalized Confusion matrix: 
+ [[0.423 0.038 0.    0.    0.    0.    0.538]
+ [0.188 0.562 0.    0.    0.    0.031 0.219]
+ [0.75  0.    0.    0.25  0.    0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [1.    0.    0.    0.    0.    0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.04  0.036 0.    0.017 0.    0.    0.907]]
+Validation f1: 83.97
+Validation accuracy: 83.97
+Validation recall: 83.97
+Validation precision: 83.97
+Validation class accuracies: [0.4230769230769231, 0.5625, 0.0, 0.0, 0.0, nan, 0.9071969696969697]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 7 epochs
+Epoch 11/120
+151/151 - 218s - loss: 0.0376 - accuracy: 0.9735 - val_loss: 0.4723 - val_accuracy: 0.5719
+Confusion matrix: 
+ [[ 24   1   0   0   0   0   1]
+ [  8  20   0   1   3   0   0]
+ [  2   0   0   1   1   0   0]
+ [  2   1   0   0   0   0   5]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [171  85   0  32   5   3 232]]
+Normalized Confusion matrix: 
+ [[0.923 0.038 0.    0.    0.    0.    0.038]
+ [0.25  0.625 0.    0.031 0.094 0.    0.   ]
+ [0.5   0.    0.    0.25  0.25  0.    0.   ]
+ [0.25  0.125 0.    0.    0.    0.    0.625]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.324 0.161 0.    0.061 0.009 0.006 0.439]]
+Validation f1: 45.95
+Validation accuracy: 45.95
+Validation recall: 45.95
+Validation precision: 45.95
+Validation class accuracies: [0.9230769230769231, 0.625, 0.0, 0.0, 0.2857142857142857, nan, 0.4393939393939394]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 8 epochs
+Epoch 12/120
+151/151 - 218s - loss: 0.0337 - accuracy: 0.9764 - val_loss: 0.2021 - val_accuracy: 0.7983
+Confusion matrix: 
+ [[ 12   3   0   0   3   8]
+ [  5  20   0   0   7   0]
+ [  0   0   0   0   3   1]
+ [  0   0   0   0   0   8]
+ [  1   0   0   0   6   0]
+ [ 63  35   0   6   4 420]]
+Normalized Confusion matrix: 
+ [[0.462 0.115 0.    0.    0.115 0.308]
+ [0.156 0.625 0.    0.    0.219 0.   ]
+ [0.    0.    0.    0.    0.75  0.25 ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.143 0.    0.    0.    0.857 0.   ]
+ [0.119 0.066 0.    0.011 0.008 0.795]]
+Validation f1: 75.70
+Validation accuracy: 75.70
+Validation recall: 75.70
+Validation precision: 75.70
+Validation class accuracies: [0.46153846153846156, 0.625, 0.0, 0.0, 0.8571428571428571, 0.7954545454545454]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 9 epochs
+Epoch 13/120
+151/151 - 218s - loss: 0.0270 - accuracy: 0.9847 - val_loss: 0.1214 - val_accuracy: 0.8694
+Confusion matrix: 
+ [[ 17   1   0   0   1   0   7]
+ [ 10  18   0   0   3   1   0]
+ [  2   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   8]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 32  17   0   6   0   0 473]]
+Normalized Confusion matrix: 
+ [[0.654 0.038 0.    0.    0.038 0.    0.269]
+ [0.312 0.562 0.    0.    0.094 0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.061 0.032 0.    0.011 0.    0.    0.896]]
+Validation f1: 84.30
+Validation accuracy: 84.30
+Validation recall: 84.30
+Validation precision: 84.30
+Validation class accuracies: [0.6538461538461539, 0.5625, 0.0, 0.0, 0.2857142857142857, nan, 0.8958333333333334]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 10 epochs
+Epoch 14/120
+151/151 - 218s - loss: 0.0242 - accuracy: 0.9859 - val_loss: 0.1557 - val_accuracy: 0.8165
+Confusion matrix: 
+ [[ 16   1   0   0   4   5]
+ [  8  18   0   0   5   1]
+ [  2   0   0   0   2   0]
+ [  0   0   0   0   1   7]
+ [  5   0   0   0   2   0]
+ [ 47  16   0   3  35 427]]
+Normalized Confusion matrix: 
+ [[0.615 0.038 0.    0.    0.154 0.192]
+ [0.25  0.562 0.    0.    0.156 0.031]
+ [0.5   0.    0.    0.    0.5   0.   ]
+ [0.    0.    0.    0.    0.125 0.875]
+ [0.714 0.    0.    0.    0.286 0.   ]
+ [0.089 0.03  0.    0.006 0.066 0.809]]
+Validation f1: 76.53
+Validation accuracy: 76.53
+Validation recall: 76.53
+Validation precision: 76.53
+Validation class accuracies: [0.6153846153846154, 0.5625, 0.0, 0.0, 0.2857142857142857, 0.8087121212121212]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 11 epochs
+Epoch 15/120
+151/151 - 218s - loss: 0.0210 - accuracy: 0.9913 - val_loss: 0.1986 - val_accuracy: 0.7967
+Confusion matrix: 
+ [[ 11   3   0   0   2  10]
+ [  3  20   0   0   1   8]
+ [  1   0   0   0   0   3]
+ [  0   0   0   0   0   8]
+ [  4   0   0   0   3   0]
+ [ 43  23   0  27   4 431]]
+Normalized Confusion matrix: 
+ [[0.423 0.115 0.    0.    0.077 0.385]
+ [0.094 0.625 0.    0.    0.031 0.25 ]
+ [0.25  0.    0.    0.    0.    0.75 ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.571 0.    0.    0.    0.429 0.   ]
+ [0.081 0.044 0.    0.051 0.008 0.816]]
+Validation f1: 76.86
+Validation accuracy: 76.86
+Validation recall: 76.86
+Validation precision: 76.86
+Validation class accuracies: [0.4230769230769231, 0.625, 0.0, 0.0, 0.42857142857142855, 0.8162878787878788]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 12 epochs
+Lr has been adjusted to 5.624999903375283e-05
+Epoch 16/120
+151/151 - 218s - loss: 0.0188 - accuracy: 0.9934 - val_loss: 0.3829 - val_accuracy: 0.7223
+Confusion matrix: 
+ [[ 26   0   0   0   0   0]
+ [ 10  21   0   0   1   0]
+ [  2   0   0   0   2   0]
+ [  0   0   0   0   0   8]
+ [  6   0   0   0   1   0]
+ [134  48   0   5   5 336]]
+Normalized Confusion matrix: 
+ [[1.    0.    0.    0.    0.    0.   ]
+ [0.312 0.656 0.    0.    0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.   ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.857 0.    0.    0.    0.143 0.   ]
+ [0.254 0.091 0.    0.009 0.009 0.636]]
+Validation f1: 63.47
+Validation accuracy: 63.47
+Validation recall: 63.47
+Validation precision: 63.47
+Validation class accuracies: [1.0, 0.65625, 0.0, 0.0, 0.14285714285714285, 0.6363636363636364]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 13 epochs
+Epoch 17/120
+151/151 - 218s - loss: 0.0162 - accuracy: 0.9954 - val_loss: 0.1580 - val_accuracy: 0.8645
+Confusion matrix: 
+ [[ 15   4   0   0   2   5]
+ [  6  20   0   0   4   2]
+ [  2   0   0   0   2   0]
+ [  0   0   0   0   0   8]
+ [  4   0   0   0   3   0]
+ [ 14  27   0   3  11 473]]
+Normalized Confusion matrix: 
+ [[0.577 0.154 0.    0.    0.077 0.192]
+ [0.188 0.625 0.    0.    0.125 0.062]
+ [0.5   0.    0.    0.    0.5   0.   ]
+ [0.    0.    0.    0.    0.    1.   ]
+ [0.571 0.    0.    0.    0.429 0.   ]
+ [0.027 0.051 0.    0.006 0.021 0.896]]
+Validation f1: 84.46
+Validation accuracy: 84.46
+Validation recall: 84.46
+Validation precision: 84.46
+Validation class accuracies: [0.5769230769230769, 0.625, 0.0, 0.0, 0.42857142857142855, 0.8958333333333334]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 14 epochs
+Epoch 18/120
+151/151 - 218s - loss: 0.0139 - accuracy: 0.9959 - val_loss: 0.1886 - val_accuracy: 0.8430
+Confusion matrix: 
+ [[ 23   2   0   0   0   0   1]
+ [ 11  19   0   0   1   1   0]
+ [  2   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   8]
+ [  6   0   0   0   1   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 43  30   0   1   5   0 449]]
+Normalized Confusion matrix: 
+ [[0.885 0.077 0.    0.    0.    0.    0.038]
+ [0.344 0.594 0.    0.    0.031 0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.857 0.    0.    0.    0.143 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.081 0.057 0.    0.002 0.009 0.    0.85 ]]
+Validation f1: 81.32
+Validation accuracy: 81.32
+Validation recall: 81.32
+Validation precision: 81.32
+Validation class accuracies: [0.8846153846153846, 0.59375, 0.0, 0.0, 0.14285714285714285, nan, 0.8503787878787878]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 15 epochs
+Epoch 19/120
+151/151 - 218s - loss: 0.0140 - accuracy: 0.9946 - val_loss: 0.2093 - val_accuracy: 0.8099
+Confusion matrix: 
+ [[ 19   2   0   0   2   0   3]
+ [  7  19   0   0   5   1   0]
+ [  2   0   0   2   0   0   0]
+ [  0   0   0   0   0   0   8]
+ [  4   0   0   0   3   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 54  27   0  20   6   0 421]]
+Normalized Confusion matrix: 
+ [[0.731 0.077 0.    0.    0.077 0.    0.115]
+ [0.219 0.594 0.    0.    0.156 0.031 0.   ]
+ [0.5   0.    0.    0.5   0.    0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.571 0.    0.    0.    0.429 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.102 0.051 0.    0.038 0.011 0.    0.797]]
+Validation f1: 76.36
+Validation accuracy: 76.36
+Validation recall: 76.36
+Validation precision: 76.36
+Validation class accuracies: [0.7307692307692307, 0.59375, 0.0, 0.0, 0.42857142857142855, nan, 0.7973484848484849]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 16 epochs
+Epoch 20/120
+151/151 - 218s - loss: 0.0138 - accuracy: 0.9950 - val_loss: 0.6118 - val_accuracy: 0.5438
+Confusion matrix: 
+ [[ 11   5   0   0   8   2]
+ [  1  26   0   0   5   0]
+ [  1   0   0   1   2   0]
+ [  4   0   0   0   1   3]
+ [  2   1   0   0   4   0]
+ [ 73 115   0  11  59 270]]
+Normalized Confusion matrix: 
+ [[0.423 0.192 0.    0.    0.308 0.077]
+ [0.031 0.812 0.    0.    0.156 0.   ]
+ [0.25  0.    0.    0.25  0.5   0.   ]
+ [0.5   0.    0.    0.    0.125 0.375]
+ [0.286 0.143 0.    0.    0.571 0.   ]
+ [0.138 0.218 0.    0.021 0.112 0.511]]
+Validation f1: 51.40
+Validation accuracy: 51.40
+Validation recall: 51.40
+Validation precision: 51.40
+Validation class accuracies: [0.4230769230769231, 0.8125, 0.0, 0.0, 0.5714285714285714, 0.5113636363636364]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 17 epochs
+Epoch 21/120
+151/151 - 218s - loss: 0.0121 - accuracy: 0.9971 - val_loss: 0.3246 - val_accuracy: 0.7636
+Confusion matrix: 
+ [[ 23   3   0   0   0   0   0]
+ [  8  19   1   0   3   1   0]
+ [  2   0   0   1   1   0   0]
+ [  0   0   0   0   0   0   8]
+ [  6   0   0   0   1   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 98  40   1  13   7   0 369]]
+Normalized Confusion matrix: 
+ [[0.885 0.115 0.    0.    0.    0.    0.   ]
+ [0.25  0.594 0.031 0.    0.094 0.031 0.   ]
+ [0.5   0.    0.    0.25  0.25  0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.857 0.    0.    0.    0.143 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.186 0.076 0.002 0.025 0.013 0.    0.699]]
+Validation f1: 68.10
+Validation accuracy: 68.10
+Validation recall: 68.10
+Validation precision: 68.10
+Validation class accuracies: [0.8846153846153846, 0.59375, 0.0, 0.0, 0.14285714285714285, nan, 0.6988636363636364]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 18 epochs
+Lr has been adjusted to 4.2187501094304025e-05
+Epoch 22/120
+151/151 - 218s - loss: 0.0101 - accuracy: 0.9988 - val_loss: 0.2387 - val_accuracy: 0.7868
+Confusion matrix: 
+ [[ 22   2   0   0   1   0   1]
+ [  8  19   0   0   4   1   0]
+ [  1   0   0   1   2   0   0]
+ [  1   0   0   0   0   0   7]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 94  23   0  14   8   0 389]]
+Normalized Confusion matrix: 
+ [[0.846 0.077 0.    0.    0.038 0.    0.038]
+ [0.25  0.594 0.    0.    0.125 0.031 0.   ]
+ [0.25  0.    0.    0.25  0.5   0.    0.   ]
+ [0.125 0.    0.    0.    0.    0.    0.875]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.178 0.044 0.    0.027 0.015 0.    0.737]]
+Validation f1: 71.40
+Validation accuracy: 71.40
+Validation recall: 71.40
+Validation precision: 71.40
+Validation class accuracies: [0.8461538461538461, 0.59375, 0.0, 0.0, 0.2857142857142857, nan, 0.7367424242424242]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 19 epochs
+Epoch 23/120
+151/151 - 218s - loss: 0.0094 - accuracy: 0.9979 - val_loss: 0.1835 - val_accuracy: 0.8331
+Confusion matrix: 
+ [[ 20   2   0   0   1   0   3]
+ [  9  18   0   0   4   1   0]
+ [  2   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   8]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 62  22   0   6   9   0 429]]
+Normalized Confusion matrix: 
+ [[0.769 0.077 0.    0.    0.038 0.    0.115]
+ [0.281 0.562 0.    0.    0.125 0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.117 0.042 0.    0.011 0.017 0.    0.812]]
+Validation f1: 77.52
+Validation accuracy: 77.52
+Validation recall: 77.52
+Validation precision: 77.52
+Validation class accuracies: [0.7692307692307693, 0.5625, 0.0, 0.0, 0.2857142857142857, nan, 0.8125]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 20 epochs
+Epoch 24/120
+151/151 - 218s - loss: 0.0095 - accuracy: 0.9975 - val_loss: 0.1860 - val_accuracy: 0.8264
+Confusion matrix: 
+ [[ 21   0   0   0   1   0   4]
+ [  8  19   0   0   4   1   0]
+ [  2   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   8]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 68  20   0  13   7   0 420]]
+Normalized Confusion matrix: 
+ [[0.808 0.    0.    0.    0.038 0.    0.154]
+ [0.25  0.594 0.    0.    0.125 0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.129 0.038 0.    0.025 0.013 0.    0.795]]
+Validation f1: 76.36
+Validation accuracy: 76.36
+Validation recall: 76.36
+Validation precision: 76.36
+Validation class accuracies: [0.8076923076923077, 0.59375, 0.0, 0.0, 0.2857142857142857, nan, 0.7954545454545454]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 21 epochs
+Epoch 25/120
+151/151 - 218s - loss: 0.0083 - accuracy: 0.9988 - val_loss: 0.2155 - val_accuracy: 0.8066
+Confusion matrix: 
+ [[ 22   2   0   0   1   0   1]
+ [ 10  18   0   0   3   1   0]
+ [  2   0   0   1   1   0   0]
+ [  0   0   0   0   0   0   8]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 69  19   0  17   9   0 414]]
+Normalized Confusion matrix: 
+ [[0.846 0.077 0.    0.    0.038 0.    0.038]
+ [0.312 0.562 0.    0.    0.094 0.031 0.   ]
+ [0.5   0.    0.    0.25  0.25  0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.131 0.036 0.    0.032 0.017 0.    0.784]]
+Validation f1: 75.37
+Validation accuracy: 75.37
+Validation recall: 75.37
+Validation precision: 75.37
+Validation class accuracies: [0.8461538461538461, 0.5625, 0.0, 0.0, 0.2857142857142857, nan, 0.7840909090909091]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 22 epochs
+Epoch 26/120
+151/151 - 218s - loss: 0.0078 - accuracy: 0.9996 - val_loss: 0.3658 - val_accuracy: 0.7091
+Confusion matrix: 
+ [[ 16   4   0   0   3   3]
+ [  4  20   0   0   8   0]
+ [  1   0   0   1   2   0]
+ [  2   0   0   0   0   6]
+ [  3   0   0   0   4   0]
+ [111  40   0  18  13 346]]
+Normalized Confusion matrix: 
+ [[0.615 0.154 0.    0.    0.115 0.115]
+ [0.125 0.625 0.    0.    0.25  0.   ]
+ [0.25  0.    0.    0.25  0.5   0.   ]
+ [0.25  0.    0.    0.    0.    0.75 ]
+ [0.429 0.    0.    0.    0.571 0.   ]
+ [0.21  0.076 0.    0.034 0.025 0.655]]
+Validation f1: 63.80
+Validation accuracy: 63.80
+Validation recall: 63.80
+Validation precision: 63.80
+Validation class accuracies: [0.6153846153846154, 0.625, 0.0, 0.0, 0.5714285714285714, 0.6553030303030303]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 23 epochs
+Epoch 27/120
+151/151 - 218s - loss: 0.0081 - accuracy: 0.9983 - val_loss: 0.2510 - val_accuracy: 0.8033
+Confusion matrix: 
+ [[ 19   4   0   0   2   1]
+ [  6  20   0   0   6   0]
+ [  1   0   0   0   3   0]
+ [  1   0   0   0   0   7]
+ [  3   0   0   0   4   0]
+ [ 45  38   0   7  16 422]]
+Normalized Confusion matrix: 
+ [[0.731 0.154 0.    0.    0.077 0.038]
+ [0.188 0.625 0.    0.    0.188 0.   ]
+ [0.25  0.    0.    0.    0.75  0.   ]
+ [0.125 0.    0.    0.    0.    0.875]
+ [0.429 0.    0.    0.    0.571 0.   ]
+ [0.085 0.072 0.    0.013 0.03  0.799]]
+Validation f1: 76.86
+Validation accuracy: 76.86
+Validation recall: 76.86
+Validation precision: 76.86
+Validation class accuracies: [0.7307692307692307, 0.625, 0.0, 0.0, 0.5714285714285714, 0.7992424242424242]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 24 epochs
+Lr has been adjusted to 3.164062582072802e-05
+Epoch 28/120
+151/151 - 218s - loss: 0.0069 - accuracy: 0.9996 - val_loss: 0.1922 - val_accuracy: 0.8331
+Confusion matrix: 
+ [[ 23   1   0   0   1   0   1]
+ [  8  19   0   0   4   1   0]
+ [  1   0   0   0   3   0   0]
+ [  0   0   0   0   0   0   8]
+ [  4   0   0   0   3   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 42  21   0   8  10   0 447]]
+Normalized Confusion matrix: 
+ [[0.885 0.038 0.    0.    0.038 0.    0.038]
+ [0.25  0.594 0.    0.    0.125 0.031 0.   ]
+ [0.25  0.    0.    0.    0.75  0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.571 0.    0.    0.    0.429 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.08  0.04  0.    0.015 0.019 0.    0.847]]
+Validation f1: 81.32
+Validation accuracy: 81.32
+Validation recall: 81.32
+Validation precision: 81.32
+Validation class accuracies: [0.8846153846153846, 0.59375, 0.0, 0.0, 0.42857142857142855, nan, 0.8465909090909091]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 25 epochs
+Epoch 29/120
+151/151 - 218s - loss: 0.0076 - accuracy: 0.9988 - val_loss: 0.2582 - val_accuracy: 0.7818
+Confusion matrix: 
+ [[ 19   2   0   0   4   0   1]
+ [  7  19   0   0   5   1   0]
+ [  1   0   0   0   3   0   0]
+ [  0   0   0   0   0   0   8]
+ [  3   0   0   0   4   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 65  35   0  12  11   0 405]]
+Normalized Confusion matrix: 
+ [[0.731 0.077 0.    0.    0.154 0.    0.038]
+ [0.219 0.594 0.    0.    0.156 0.031 0.   ]
+ [0.25  0.    0.    0.    0.75  0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.429 0.    0.    0.    0.571 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.123 0.066 0.    0.023 0.021 0.    0.767]]
+Validation f1: 73.88
+Validation accuracy: 73.88
+Validation recall: 73.88
+Validation precision: 73.88
+Validation class accuracies: [0.7307692307692307, 0.59375, 0.0, 0.0, 0.5714285714285714, nan, 0.7670454545454546]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.8727272727272727 hasn't increased by 0 in 26 epochs
+Epoch 30/120
+151/151 - 218s - loss: 0.0062 - accuracy: 0.9996 - val_loss: 0.2045 - val_accuracy: 0.8331
+Confusion matrix: 
+ [[ 23   2   0   0   1   0   0]
+ [  9  19   0   0   3   1   0]
+ [  2   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   8]
+ [  5   0   0   0   2   0   0]
+ [  0   0   0   0   0   0   0]
+ [ 49  28   0   8   6   0 437]]
+Normalized Confusion matrix: 
+ [[0.885 0.077 0.    0.    0.038 0.    0.   ]
+ [0.281 0.594 0.    0.    0.094 0.031 0.   ]
+ [0.5   0.    0.    0.    0.5   0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    1.   ]
+ [0.714 0.    0.    0.    0.286 0.    0.   ]
+ [0.    0.    0.    0.    0.    0.    0.   ]
+ [0.093 0.053 0.    0.015 0.011 0.    0.828]]
+Validation f1: 79.50
+Validation accuracy: 79.50
+Validation recall: 79.50
+Validation precision: 79.50
+Validation class accuracies: [0.8846153846153846, 0.59375, 0.0, 0.0, 0.2857142857142857, nan, 0.8276515151515151]
+local_gc_exec.sh: line 6: 19162 Killed                  python -m models.$MODULE_NAME --train-file $LOCAL_TRAIN_FILE --job-dir $LOCAL_JOB_DIR --params "$PARAMS" --wav-params "$WAV_PARAMS" --spec-params "$SPEC_PARAMS"
+
+ See logs at ../../new_cache/conv__2219__06_1551__v40__icbhi_pneumonia_test/logs//home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/multiprocessing/semaphore_tracker.py:144: UserWarning: semaphore_tracker: There appear to be 6 leaked semaphores to clean up at shutdown
+  len(cache))

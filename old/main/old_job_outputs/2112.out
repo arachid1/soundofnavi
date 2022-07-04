@@ -1,0 +1,270 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+File:  conv.train2112
+Description:  mixednet
+Tensorflow Version: 2.4.0
+Num GPUs Available:  1
+-----------------------
+Using module located at /main/models/conv/train2112.py
+Using train_file located at ../../data/datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+Using logs_path located at ../../new_cache/conv__2112__05_0529__v29__mixednet/logs/
+-----------------------
+Collecting Variables...
+Model Parameters: {'N_CLASSES': 1, 'SR': 8000, 'BATCH_SIZE': 64, 'LR': 0.001, 'SHAPE': (128, 1250, 1), 'WEIGHT_DECAY': 0.001, 'LL2_REG': 0, 'EPSILON': 1e-07, 'LABEL_SMOOTHING': 0}
+Learning Rate Parameters: {'factor': 0.5, 'patience': 5, 'min_lr': 1e-10}
+Early Stopping Patience and Delta: 20, 1.0%
+Six: False and Concat: False
+-----------------------
+
+Original number of folders: 453
+here
+With concat = False and six = False, size of training set: 4196...
+...and size of validation set: 1088
+Initializing weights...
+weights = {0: 0.7018518518518518, 1: 1.738532110091743}
+Model: "conv2d"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 128, 1250, 1)]    0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 128, 1250, 8)      80        
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 128, 1250, 8)      162       
+_________________________________________________________________
+average_pooling2d (AveragePo (None, 64, 625, 8)        0         
+_________________________________________________________________
+batch_normalization (BatchNo (None, 64, 625, 8)        32        
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 64, 625, 16)       1168      
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 64, 625, 16)       414       
+_________________________________________________________________
+average_pooling2d_1 (Average (None, 32, 313, 16)       0         
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 32, 313, 16)       64        
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 32, 313, 32)       4640      
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 32, 313, 32)       828       
+_________________________________________________________________
+average_pooling2d_2 (Average (None, 16, 157, 32)       0         
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 16, 157, 32)       128       
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 16, 157, 64)       18496     
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 16, 157, 64)       1656      
+_________________________________________________________________
+average_pooling2d_3 (Average (None, 8, 79, 64)         0         
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 8, 79, 64)         256       
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 8, 79, 128)        73856     
+_________________________________________________________________
+mix_depth_group_convolution2 (None, 8, 79, 128)        3402      
+_________________________________________________________________
+average_pooling2d_4 (Average (None, 4, 40, 128)        0         
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 4, 40, 128)        512       
+_________________________________________________________________
+global_average_pooling2d (Gl (None, 128)               0         
+_________________________________________________________________
+dense (Dense)                (None, 1)                 129       
+=================================================================
+Total params: 105,823
+Trainable params: 105,327
+Non-trainable params: 496
+_________________________________________________________________
+Epoch 1/40
+66/66 - 168s - loss: 0.6730 - accuracy: 0.6182 - val_loss: 0.6611 - val_accuracy: 0.7996
+Epoch 2/40
+66/66 - 149s - loss: 0.6595 - accuracy: 0.6404 - val_loss: 0.6475 - val_accuracy: 0.7996
+Epoch 3/40
+66/66 - 148s - loss: 0.6441 - accuracy: 0.6566 - val_loss: 0.6218 - val_accuracy: 0.7996
+Epoch 4/40
+66/66 - 148s - loss: 0.6271 - accuracy: 0.6654 - val_loss: 0.6087 - val_accuracy: 0.7996
+Epoch 5/40
+66/66 - 149s - loss: 0.6074 - accuracy: 0.7054 - val_loss: 0.5922 - val_accuracy: 0.7996
+The validation tracker metric at 0 hasn't increased by 0.01 in 1 epochs
+Epoch 6/40
+66/66 - 148s - loss: 0.5847 - accuracy: 0.7090 - val_loss: 0.5659 - val_accuracy: 0.7996
+The validation tracker metric at 0 hasn't increased by 0.01 in 2 epochs
+Epoch 7/40
+66/66 - 148s - loss: 0.5446 - accuracy: 0.7545 - val_loss: 0.5398 - val_accuracy: 0.7996
+The validation tracker metric at 0 hasn't increased by 0.01 in 3 epochs
+Epoch 8/40
+66/66 - 147s - loss: 0.4945 - accuracy: 0.7807 - val_loss: 0.5241 - val_accuracy: 0.7996
+The validation tracker metric at 0 hasn't increased by 0.01 in 4 epochs
+Epoch 9/40
+66/66 - 147s - loss: 0.4308 - accuracy: 0.8248 - val_loss: 0.5525 - val_accuracy: 0.7868
+Saving model...
+Epoch 10/40
+66/66 - 149s - loss: 0.3809 - accuracy: 0.8506 - val_loss: 0.5868 - val_accuracy: 0.7730
+Saving model...
+Epoch 11/40
+66/66 - 147s - loss: 0.3226 - accuracy: 0.8835 - val_loss: 0.7281 - val_accuracy: 0.6728
+Saving model...
+Epoch 12/40
+66/66 - 148s - loss: 0.2753 - accuracy: 0.8956 - val_loss: 0.7378 - val_accuracy: 0.7436
+The validation tracker metric at 0.2192982456140351 hasn't increased by 0.01 in 1 epochs
+Epoch 13/40
+66/66 - 146s - loss: 0.2015 - accuracy: 0.9399 - val_loss: 0.8080 - val_accuracy: 0.6820
+Saving model...
+Epoch 14/40
+66/66 - 147s - loss: 0.1579 - accuracy: 0.9540 - val_loss: 0.8303 - val_accuracy: 0.6443
+Saving model...
+Epoch 15/40
+66/66 - 146s - loss: 0.1152 - accuracy: 0.9747 - val_loss: 0.9187 - val_accuracy: 0.7564
+The validation tracker metric at 0.24561403508771928 hasn't increased by 0.01 in 1 epochs
+Epoch 16/40
+66/66 - 147s - loss: 0.0930 - accuracy: 0.9769 - val_loss: 1.1714 - val_accuracy: 0.5781
+Saving model...
+Epoch 17/40
+66/66 - 146s - loss: 0.0745 - accuracy: 0.9843 - val_loss: 1.0773 - val_accuracy: 0.7702
+The validation tracker metric at 0.29493087557603687 hasn't increased by 0.01 in 1 epochs
+Epoch 18/40
+66/66 - 146s - loss: 0.0583 - accuracy: 0.9893 - val_loss: 2.2297 - val_accuracy: 0.4154
+Saving model...
+Epoch 19/40
+66/66 - 146s - loss: 0.0439 - accuracy: 0.9940 - val_loss: 1.1792 - val_accuracy: 0.6140
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 1 epochs
+Epoch 20/40
+66/66 - 146s - loss: 0.0484 - accuracy: 0.9895 - val_loss: 1.4272 - val_accuracy: 0.5790
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 2 epochs
+Epoch 21/40
+66/66 - 146s - loss: 0.0442 - accuracy: 0.9919 - val_loss: 1.2585 - val_accuracy: 0.6121
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 3 epochs
+Epoch 22/40
+66/66 - 148s - loss: 0.0293 - accuracy: 0.9967 - val_loss: 1.1751 - val_accuracy: 0.7353
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 4 epochs
+Epoch 23/40
+66/66 - 148s - loss: 0.0348 - accuracy: 0.9921 - val_loss: 2.4420 - val_accuracy: 0.4706
+Lr has been adjusted to 0.0005000000237487257
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 5 epochs
+Saving model...
+Epoch 24/40
+66/66 - 148s - loss: 0.0245 - accuracy: 0.9957 - val_loss: 1.1414 - val_accuracy: 0.7151
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 6 epochs
+Epoch 25/40
+66/66 - 146s - loss: 0.0158 - accuracy: 0.9981 - val_loss: 1.1421 - val_accuracy: 0.7096
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 7 epochs
+Epoch 26/40
+66/66 - 146s - loss: 0.0136 - accuracy: 0.9993 - val_loss: 1.2291 - val_accuracy: 0.7546
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 8 epochs
+Epoch 27/40
+66/66 - 146s - loss: 0.0138 - accuracy: 0.9990 - val_loss: 1.3741 - val_accuracy: 0.7757
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 9 epochs
+Epoch 28/40
+66/66 - 147s - loss: 0.0147 - accuracy: 0.9979 - val_loss: 1.2100 - val_accuracy: 0.7022
+Lr has been adjusted to 0.0002500000118743628
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 10 epochs
+Epoch 29/40
+66/66 - 146s - loss: 0.0118 - accuracy: 0.9986 - val_loss: 1.2184 - val_accuracy: 0.6829
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 11 epochs
+Epoch 30/40
+66/66 - 146s - loss: 0.0114 - accuracy: 0.9983 - val_loss: 1.3720 - val_accuracy: 0.6250
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 12 epochs
+Epoch 31/40
+66/66 - 145s - loss: 0.0097 - accuracy: 0.9993 - val_loss: 1.3818 - val_accuracy: 0.6158
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 13 epochs
+Epoch 32/40
+66/66 - 146s - loss: 0.0128 - accuracy: 0.9988 - val_loss: 1.2611 - val_accuracy: 0.6893
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 14 epochs
+Epoch 33/40
+66/66 - 145s - loss: 0.0097 - accuracy: 0.9993 - val_loss: 1.2477 - val_accuracy: 0.7123
+Lr has been adjusted to 0.0001250000059371814
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 15 epochs
+Epoch 34/40
+66/66 - 146s - loss: 0.0086 - accuracy: 0.9988 - val_loss: 1.3173 - val_accuracy: 0.6425
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 16 epochs
+Epoch 35/40
+66/66 - 145s - loss: 0.0093 - accuracy: 0.9993 - val_loss: 1.2465 - val_accuracy: 0.6930
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 17 epochs
+Epoch 36/40
+66/66 - 145s - loss: 0.0090 - accuracy: 0.9998 - val_loss: 1.2560 - val_accuracy: 0.7040
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 18 epochs
+Epoch 37/40
+66/66 - 145s - loss: 0.0085 - accuracy: 0.9988 - val_loss: 1.2528 - val_accuracy: 0.7114
+The validation tracker metric at 0.3190578158458244 hasn't increased by 0.01 in 19 epochs
+Epoch 38/40
+66/66 - 145s - loss: 0.0077 - accuracy: 0.9990 - val_loss: 1.2572 - val_accuracy: 0.6811
+Lr has been adjusted to 6.25000029685907e-05
+The number of epochs since last 1% equals the patience
+
+Starting the Bangladesh analysis...
+Epoch: 10
+Starting...
+F1: 0.40579710144927533
+Accuracy: 0.4533333333333333
+Precision: 0.25925925925925924
+Recall: 0.9333333333333333
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_10.xls...
+Done.
+Epoch: 15
+Starting...
+F1: 0.37037037037037035
+Accuracy: 0.32
+Precision: 0.22727272727272727
+Recall: 1.0
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_15.xls...
+Done.
+Epoch: 8
+Starting...
+F1: 0.08
+Accuracy: 0.6933333333333334
+Precision: 0.1
+Recall: 0.06666666666666667
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_8.xls...
+Done.
+Epoch: 9
+Starting...
+F1: 0.25641025641025644
+Accuracy: 0.6133333333333333
+Precision: 0.20833333333333334
+Recall: 0.3333333333333333
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_9.xls...
+Done.
+Epoch: 40
+Starting...
+F1: 0.3384615384615385
+Accuracy: 0.4266666666666667
+Precision: 0.22
+Recall: 0.7333333333333333
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_40.xls...
+Done.
+Epoch: 12
+Starting...
+F1: 0.3582089552238806
+Accuracy: 0.4266666666666667
+Precision: 0.23076923076923078
+Recall: 0.8
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_12.xls...
+Done.
+Epoch: 22
+Starting...
+F1: 0.33333333333333337
+Accuracy: 0.2
+Precision: 0.2
+Recall: 1.0
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_22.xls...
+Done.
+Epoch: 13
+Starting...
+F1: 0.379746835443038
+Accuracy: 0.3466666666666667
+Precision: 0.234375
+Recall: 1.0
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_13.xls...
+Done.
+Epoch: 17
+Starting...
+F1: 0.33333333333333337
+Accuracy: 0.2
+Precision: 0.2
+Recall: 1.0
+Ended. Saving the Excel Sheet ../../new_cache/conv__2112__05_0529__v29__mixednet/validation_sheet_17.xls...
+Done.
+
+
+ See logs at ../../new_cache/conv__2112__05_0529__v29__mixednet/logs/

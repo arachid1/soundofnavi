@@ -1,0 +1,1329 @@
+Category:  coch
+Dataset:  all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+File:  conv.train2212
+Description:  mixednet_wlstms
+2021-06-11 15:10:07.324986: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+WARNING:tensorflow:From /home/alirachidi/classification_algorithm/trainers/main/models/conv/modules/augmentation.py:19: experimental_run_functions_eagerly (from tensorflow.python.eager.def_function) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.config.run_functions_eagerly` instead of the experimental version.
+2021-06-11 15:10:10.281481: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-06-11 15:10:10.282797: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-06-11 15:10:10.344383: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:10:10.345203: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:00:04.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-06-11 15:10:10.345238: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-11 15:10:10.349333: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-11 15:10:10.349455: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-06-11 15:10:10.350706: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-06-11 15:10:10.351048: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-06-11 15:10:10.352086: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-06-11 15:10:10.353036: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-06-11 15:10:10.353213: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-11 15:10:10.353357: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:10:10.354110: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:10:10.354751: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+Tensorflow Version: 2.4.0
+Num GPUs Available:  1
+-----------------------
+Using module: nv/train2212.py
+Using train_file: ../../data/datasets/all_sw_coch_preprocessed_v2_param_v29_augm_v0_cleaned_8000.pkl
+Job directory: ../../new_cache/conv__2212__06_1343__v29__mixednet_wlstms
+Parameters: {'N_CLASSES': 1, 'SR': 8000, 'BATCH_SIZE': 16, 'LR': 0.001, 'SHAPE': [128, 1250], 'LL2_REG': 0, 'WEIGHT_DECAY': 0.001, 'N_EPOCHS': 80, 'FACTOR': 0.75, 'PATIENCE': 6, 'MIN_LR': 1e-07, 'LABEL_SMOOTHING': 0, 'EPSILON': 1e-07, 'ES_PATIENCE': 40, 'OVERSAMPLE': 0, 'MIN_DELTA': 0, 'PARAM': 'v29', 'EPOCH_START': 1, 'CLAUSE': 1, 'CUBEROOTING': 1, 'AUGMENTATION': 0, 'TARGET': 1, 'INITIAL_CHANNELS': 1, 'ADAPTIVE_LR': 1, 'CLASS_WEIGHTS': 1, 'SIX': 0, 'CONCAT': 0, 'TESTING': 0}
+Augmentation parameters for audio: {'ADD': 1, 'QUANTITY': 250, 'WAV_PATH': 'v36,v37'}
+Augmentation parameters for spectrograms: {'ADD': 1, 'QUANTITY': 150, 'TIME_MASKING': 1, 'FREQUENCY_MASKING': 1, 'LOUDNESS': 0}
+-----------------------
+Collecting Variables...
+All variables have been collected.
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow_addons/utils/ensure_tf_install.py:68: UserWarning: Tensorflow Addons supports using Python ops for all Tensorflow versions above or equal to 2.2.0 and strictly below 2.3.0 (nightly versions are not supported). 
+ The versions of TensorFlow you are currently using is 2.4.0 and is not supported. 
+Some things might work, some things might not.
+If you were to encounter a bug, do not file an issue.
+If you want to make sure you're using a tested and supported configuration, either change the TensorFlow version or the TensorFlow Addons's version. 
+You can find the compatibility matrix in TensorFlow Addon's readme:
+https://github.com/tensorflow/addons
+  UserWarning,
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+2021-06-11 15:11:00.835470: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-06-11 15:11:00.835804: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:00.836543: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:00:04.0 name: Tesla T4 computeCapability: 7.5
+coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
+2021-06-11 15:11:00.836617: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-11 15:11:00.836707: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-11 15:11:00.836741: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+2021-06-11 15:11:00.836773: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-06-11 15:11:00.836805: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-06-11 15:11:00.836837: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-06-11 15:11:00.836868: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.11
+2021-06-11 15:11:00.836897: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-11 15:11:00.837006: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:00.837717: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:00.838344: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-06-11 15:11:00.838420: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.11.0
+2021-06-11 15:11:01.649032: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-06-11 15:11:01.649097: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2021-06-11 15:11:01.649118: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2021-06-11 15:11:01.649508: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:01.650802: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:01.651974: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:941] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2021-06-11 15:11:01.653039: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 13968 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:00:04.0, compute capability: 7.5)
+2021-06-11 15:11:03.408662: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+2021-06-11 15:11:03.410695: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2299995000 Hz
+2021-06-11 15:11:03.923810: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.8
+2021-06-11 15:11:06.574725: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.11
+2021-06-11 15:11:07.148526: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.11
+Original number of folders: 453
+Pneumonia patients: 109, Non-pneumonia patients: 270
+-----------------------
+Number of train recordings: 4212 with pneumonia: 1080 and non-pneumonia: 3132
+Number of val recordings: 1072 with pneumonia: 288 and non-pneumonia: 784
+-----------------------
+The initial learning rate for this job is: 0.001
+Initializing weights...
+weights = {0: 0.6724137931034483, 1: 1.95}
+Model: "conv2d"
+______________________________________________________________________________________________________________
+Layer (type)                                     Output Shape                                Param #          
+==============================================================================================================
+input_1 (InputLayer)                             [(None, 5, 250, 128, 1)]                    0                
+______________________________________________________________________________________________________________
+time_distributed (TimeDistributed)               (None, 5, 250, 128, 16)                     160              
+______________________________________________________________________________________________________________
+time_distributed_1 (TimeDistributed)             (None, 5, 250, 128, 16)                     414              
+______________________________________________________________________________________________________________
+time_distributed_2 (TimeDistributed)             (None, 5, 125, 64, 16)                      0                
+______________________________________________________________________________________________________________
+time_distributed_3 (TimeDistributed)             (None, 5, 125, 64, 16)                      64               
+______________________________________________________________________________________________________________
+time_distributed_4 (TimeDistributed)             (None, 5, 125, 64, 32)                      4640             
+______________________________________________________________________________________________________________
+time_distributed_5 (TimeDistributed)             (None, 5, 125, 64, 32)                      828              
+______________________________________________________________________________________________________________
+time_distributed_6 (TimeDistributed)             (None, 5, 63, 32, 32)                       0                
+______________________________________________________________________________________________________________
+time_distributed_7 (TimeDistributed)             (None, 5, 63, 32, 32)                       128              
+______________________________________________________________________________________________________________
+time_distributed_8 (TimeDistributed)             (None, 5, 32)                               0                
+______________________________________________________________________________________________________________
+bidirectional (Bidirectional)                    (None, 512)                                 591872           
+______________________________________________________________________________________________________________
+dense (Dense)                                    (None, 1)                                   513              
+______________________________________________________________________________________________________________
+flatten (Flatten)                                (None, 1)                                   0                
+______________________________________________________________________________________________________________
+dense_1 (Dense)                                  (None, 1)                                   2                
+==============================================================================================================
+Total params: 598,621
+Trainable params: 598,525
+Non-trainable params: 96
+______________________________________________________________________________________________________________
+Epoch 1/80
+264/264 - 197s - loss: 0.6928 - accuracy: 0.4582 - val_loss: 0.6879 - val_accuracy: 0.7313
+Confusion matrix: 
+ [[784   0]
+ [288   0]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/sklearn/metrics/_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+Normalized Confusion matrix: 
+ [[1. 0.]
+ [1. 0.]]
+Validation f1: 0.00
+Validation accuracy: 73.13
+Validation recall: 0.00
+Validation precision: 0.00
+Validation AUC: 0.3509786878582696
+Validation class accuracies: [1.0, 0.0]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 2/80
+264/264 - 190s - loss: 0.6908 - accuracy: 0.6094 - val_loss: 0.6871 - val_accuracy: 0.7304
+Confusion matrix: 
+ [[782   2]
+ [287   1]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.997 0.003]
+ [0.997 0.003]]
+Validation f1: 0.69
+Validation accuracy: 73.04
+Validation recall: 0.35
+Validation precision: 33.33
+Validation AUC: 0.28574482697204895
+Validation class accuracies: [0.9974489795918368, 0.003472222222222222]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 3/80
+264/264 - 192s - loss: 0.6907 - accuracy: 0.6636 - val_loss: 0.6863 - val_accuracy: 0.7239
+Confusion matrix: 
+ [[762  22]
+ [274  14]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.972 0.028]
+ [0.951 0.049]]
+Validation f1: 8.64
+Validation accuracy: 72.39
+Validation recall: 4.86
+Validation precision: 38.89
+Validation AUC: 0.3068446911713878
+Validation class accuracies: [0.9719387755102041, 0.04861111111111111]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 4/80
+264/264 - 193s - loss: 0.6912 - accuracy: 0.6446 - val_loss: 0.6959 - val_accuracy: 0.6418
+Confusion matrix: 
+ [[605 179]
+ [205  83]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.772 0.228]
+ [0.712 0.288]]
+Validation f1: 30.18
+Validation accuracy: 64.18
+Validation recall: 28.82
+Validation precision: 31.68
+Validation AUC: 0.31339655389956916
+Validation class accuracies: [0.7716836734693877, 0.2881944444444444]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 5/80
+264/264 - 192s - loss: 0.6905 - accuracy: 0.6776 - val_loss: 0.6922 - val_accuracy: 0.6670
+Confusion matrix: 
+ [[643 141]
+ [216  72]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.82 0.18]
+ [0.75 0.25]]
+Validation f1: 28.74
+Validation accuracy: 66.70
+Validation recall: 25.00
+Validation precision: 33.80
+Validation AUC: 0.311036870976434
+Validation class accuracies: [0.8201530612244898, 0.25]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 1 epochs
+Epoch 6/80
+264/264 - 192s - loss: 0.6912 - accuracy: 0.6940 - val_loss: 0.6929 - val_accuracy: 0.6642
+Confusion matrix: 
+ [[648 136]
+ [224  64]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.827 0.173]
+ [0.778 0.222]]
+Validation f1: 26.23
+Validation accuracy: 66.42
+Validation recall: 22.22
+Validation precision: 32.00
+Validation AUC: 0.2862768576473305
+Validation class accuracies: [0.826530612244898, 0.2222222222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 2 epochs
+Epoch 7/80
+264/264 - 192s - loss: 0.6906 - accuracy: 0.6914 - val_loss: 0.6852 - val_accuracy: 0.7239
+Confusion matrix: 
+ [[765  19]
+ [277  11]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.976 0.024]
+ [0.962 0.038]]
+Validation f1: 6.92
+Validation accuracy: 72.39
+Validation recall: 3.82
+Validation precision: 36.67
+Validation AUC: 0.2989964252250488
+Validation class accuracies: [0.9757653061224489, 0.03819444444444445]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 8/80
+264/264 - 193s - loss: 0.6906 - accuracy: 0.6859 - val_loss: 0.6958 - val_accuracy: 0.6474
+Confusion matrix: 
+ [[621 163]
+ [215  73]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.792 0.208]
+ [0.747 0.253]]
+Validation f1: 27.86
+Validation accuracy: 64.74
+Validation recall: 25.35
+Validation precision: 30.93
+Validation AUC: 0.30247756594779307
+Validation class accuracies: [0.7920918367346939, 0.2534722222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 3 epochs
+Epoch 9/80
+264/264 - 188s - loss: 0.6901 - accuracy: 0.6826 - val_loss: 0.6853 - val_accuracy: 0.7220
+Confusion matrix: 
+ [[742  42]
+ [256  32]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.946 0.054]
+ [0.889 0.111]]
+Validation f1: 17.68
+Validation accuracy: 72.20
+Validation recall: 11.11
+Validation precision: 43.24
+Validation AUC: 0.3232544733058422
+Validation class accuracies: [0.9464285714285714, 0.1111111111111111]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 10/80
+264/264 - 189s - loss: 0.6897 - accuracy: 0.7004 - val_loss: 0.6865 - val_accuracy: 0.7090
+Confusion matrix: 
+ [[714  70]
+ [242  46]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.911 0.089]
+ [0.84  0.16 ]]
+Validation f1: 22.77
+Validation accuracy: 70.90
+Validation recall: 15.97
+Validation precision: 39.66
+Validation AUC: 0.31471808667198664
+Validation class accuracies: [0.9107142857142857, 0.1597222222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 4 epochs
+Epoch 11/80
+264/264 - 189s - loss: 0.6893 - accuracy: 0.6992 - val_loss: 0.7075 - val_accuracy: 0.5793
+Confusion matrix: 
+ [[533 251]
+ [200  88]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.68  0.32 ]
+ [0.694 0.306]]
+Validation f1: 28.07
+Validation accuracy: 57.93
+Validation recall: 30.56
+Validation precision: 25.96
+Validation AUC: 0.2703252153082739
+Validation class accuracies: [0.6798469387755102, 0.3055555555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 5 epochs
+Epoch 12/80
+264/264 - 193s - loss: 0.6902 - accuracy: 0.6667 - val_loss: 0.6849 - val_accuracy: 0.7239
+Confusion matrix: 
+ [[760  24]
+ [272  16]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.969 0.031]
+ [0.944 0.056]]
+Validation f1: 9.76
+Validation accuracy: 72.39
+Validation recall: 5.56
+Validation precision: 40.00
+Validation AUC: 0.30478875349782353
+Validation class accuracies: [0.9693877551020408, 0.05555555555555555]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 13/80
+264/264 - 189s - loss: 0.6892 - accuracy: 0.6947 - val_loss: 0.6921 - val_accuracy: 0.6763
+Confusion matrix: 
+ [[652 132]
+ [215  73]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.832 0.168]
+ [0.747 0.253]]
+Validation f1: 29.61
+Validation accuracy: 67.63
+Validation recall: 25.35
+Validation precision: 35.61
+Validation AUC: 0.316639241093436
+Validation class accuracies: [0.8316326530612245, 0.2534722222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.3018181818181818 hasn't increased by 0 in 6 epochs
+Lr has been adjusted to 0.000750000006519258
+Epoch 14/80
+264/264 - 190s - loss: 0.6884 - accuracy: 0.6842 - val_loss: 0.6927 - val_accuracy: 0.6642
+Confusion matrix: 
+ [[627 157]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.8   0.2  ]
+ [0.705 0.295]]
+Validation f1: 32.08
+Validation accuracy: 66.42
+Validation recall: 29.51
+Validation precision: 35.12
+Validation AUC: 0.3249850368158107
+Validation class accuracies: [0.7997448979591837, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 15/80
+264/264 - 190s - loss: 0.6877 - accuracy: 0.6524 - val_loss: 0.6847 - val_accuracy: 0.7201
+Confusion matrix: 
+ [[734  50]
+ [250  38]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.936 0.064]
+ [0.868 0.132]]
+Validation f1: 20.21
+Validation accuracy: 72.01
+Validation recall: 13.19
+Validation precision: 43.18
+Validation AUC: 0.3056679722052861
+Validation class accuracies: [0.9362244897959183, 0.13194444444444445]
+The clause is activated.
+The training is defaulting to either class.
+Epoch 16/80
+264/264 - 188s - loss: 0.6870 - accuracy: 0.6795 - val_loss: 0.6847 - val_accuracy: 0.7211
+Confusion matrix: 
+ [[724  60]
+ [239  49]]
+Normalized Confusion matrix: 
+ [[0.923 0.077]
+ [0.83  0.17 ]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Validation f1: 24.69
+Validation accuracy: 72.11
+Validation recall: 17.01
+Validation precision: 44.95
+Validation AUC: 0.3086087983046728
+Validation class accuracies: [0.923469387755102, 0.1701388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.32075471698113206 hasn't increased by 0 in 1 epochs
+Epoch 17/80
+264/264 - 188s - loss: 0.6858 - accuracy: 0.6909 - val_loss: 0.7038 - val_accuracy: 0.6082
+Confusion matrix: 
+ [[525 259]
+ [161 127]]
+Normalized Confusion matrix: 
+ [[0.67  0.33 ]
+ [0.559 0.441]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Validation f1: 37.69
+Validation accuracy: 60.82
+Validation recall: 44.10
+Validation precision: 32.90
+Validation AUC: 0.3209177543252565
+Validation class accuracies: [0.6696428571428571, 0.4409722222222222]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 18/80
+264/264 - 187s - loss: 0.6858 - accuracy: 0.6838 - val_loss: 0.6963 - val_accuracy: 0.6511
+Confusion matrix: 
+ [[597 187]
+ [187 101]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.761 0.239]
+ [0.649 0.351]]
+Validation f1: 35.07
+Validation accuracy: 65.11
+Validation recall: 35.07
+Validation precision: 35.07
+Validation AUC: 0.32490844429268667
+Validation class accuracies: [0.7614795918367347, 0.3506944444444444]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.37685459940652816 hasn't increased by 0 in 1 epochs
+Epoch 19/80
+264/264 - 189s - loss: 0.6852 - accuracy: 0.6579 - val_loss: 0.6857 - val_accuracy: 0.7034
+Confusion matrix: 
+ [[689  95]
+ [223  65]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.879 0.121]
+ [0.774 0.226]]
+Validation f1: 29.02
+Validation accuracy: 70.34
+Validation recall: 22.57
+Validation precision: 40.62
+Validation AUC: 0.31668626953987444
+Validation class accuracies: [0.8788265306122449, 0.22569444444444445]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.37685459940652816 hasn't increased by 0 in 2 epochs
+Epoch 20/80
+264/264 - 189s - loss: 0.6842 - accuracy: 0.6821 - val_loss: 0.7088 - val_accuracy: 0.5784
+Confusion matrix: 
+ [[480 304]
+ [148 140]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.612 0.388]
+ [0.514 0.486]]
+Validation f1: 38.25
+Validation accuracy: 57.84
+Validation recall: 48.61
+Validation precision: 31.53
+Validation AUC: 0.31636025425929076
+Validation class accuracies: [0.6122448979591837, 0.4861111111111111]
+The clause is activated.
+Not defaulting.
+Saving model...
+Epoch 21/80
+264/264 - 190s - loss: 0.6848 - accuracy: 0.6664 - val_loss: 0.6897 - val_accuracy: 0.6838
+Confusion matrix: 
+ [[650 134]
+ [205  83]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.829 0.171]
+ [0.712 0.288]]
+Validation f1: 32.87
+Validation accuracy: 68.38
+Validation recall: 28.82
+Validation precision: 38.25
+Validation AUC: 0.3151819342769536
+Validation class accuracies: [0.8290816326530612, 0.2881944444444444]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 1 epochs
+Epoch 22/80
+264/264 - 189s - loss: 0.6858 - accuracy: 0.6709 - val_loss: 0.6886 - val_accuracy: 0.6838
+Confusion matrix: 
+ [[652 132]
+ [207  81]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.832 0.168]
+ [0.719 0.281]]
+Validation f1: 32.34
+Validation accuracy: 68.38
+Validation recall: 28.12
+Validation precision: 38.03
+Validation AUC: 0.3123065448150295
+Validation class accuracies: [0.8316326530612245, 0.28125]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 2 epochs
+Epoch 23/80
+264/264 - 189s - loss: 0.6837 - accuracy: 0.6536 - val_loss: 0.6941 - val_accuracy: 0.6493
+Confusion matrix: 
+ [[610 174]
+ [202  86]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.778 0.222]
+ [0.701 0.299]]
+Validation f1: 31.39
+Validation accuracy: 64.93
+Validation recall: 29.86
+Validation precision: 33.08
+Validation AUC: 0.30856216337302445
+Validation class accuracies: [0.7780612244897959, 0.2986111111111111]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 3 epochs
+Epoch 24/80
+264/264 - 188s - loss: 0.6852 - accuracy: 0.6503 - val_loss: 0.6827 - val_accuracy: 0.7090
+Confusion matrix: 
+ [[712  72]
+ [240  48]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.908 0.092]
+ [0.833 0.167]]
+Validation f1: 23.53
+Validation accuracy: 70.90
+Validation recall: 16.67
+Validation precision: 40.00
+Validation AUC: 0.2964254454864248
+Validation class accuracies: [0.9081632653061225, 0.16666666666666666]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 4 epochs
+Epoch 25/80
+264/264 - 188s - loss: 0.6846 - accuracy: 0.6714 - val_loss: 0.6845 - val_accuracy: 0.7006
+Confusion matrix: 
+ [[692  92]
+ [229  59]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.883 0.117]
+ [0.795 0.205]]
+Validation f1: 26.88
+Validation accuracy: 70.06
+Validation recall: 20.49
+Validation precision: 39.07
+Validation AUC: 0.3038279198995007
+Validation class accuracies: [0.8826530612244898, 0.2048611111111111]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 5 epochs
+Epoch 26/80
+264/264 - 190s - loss: 0.6833 - accuracy: 0.6776 - val_loss: 0.6865 - val_accuracy: 0.6875
+Confusion matrix: 
+ [[662 122]
+ [213  75]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.844 0.156]
+ [0.74  0.26 ]]
+Validation f1: 30.93
+Validation accuracy: 68.75
+Validation recall: 26.04
+Validation precision: 38.07
+Validation AUC: 0.3079643224075123
+Validation class accuracies: [0.8443877551020408, 0.2604166666666667]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 6 epochs
+Lr has been adjusted to 0.0005624999757856131
+Epoch 27/80
+264/264 - 188s - loss: 0.6836 - accuracy: 0.6804 - val_loss: 0.6909 - val_accuracy: 0.6614
+Confusion matrix: 
+ [[621 163]
+ [200  88]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.792 0.208]
+ [0.694 0.306]]
+Validation f1: 32.65
+Validation accuracy: 66.14
+Validation recall: 30.56
+Validation precision: 35.06
+Validation AUC: 0.31103040170213087
+Validation class accuracies: [0.7920918367346939, 0.3055555555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 7 epochs
+Epoch 28/80
+264/264 - 190s - loss: 0.6833 - accuracy: 0.6636 - val_loss: 0.6855 - val_accuracy: 0.6931
+Confusion matrix: 
+ [[668 116]
+ [213  75]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.852 0.148]
+ [0.74  0.26 ]]
+Validation f1: 31.32
+Validation accuracy: 69.31
+Validation recall: 26.04
+Validation precision: 39.27
+Validation AUC: 0.3121826939779003
+Validation class accuracies: [0.8520408163265306, 0.2604166666666667]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 8 epochs
+Epoch 29/80
+264/264 - 184s - loss: 0.6834 - accuracy: 0.6764 - val_loss: 0.6860 - val_accuracy: 0.6884
+Confusion matrix: 
+ [[662 122]
+ [212  76]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.844 0.156]
+ [0.736 0.264]]
+Validation f1: 31.28
+Validation accuracy: 68.84
+Validation recall: 26.39
+Validation precision: 38.38
+Validation AUC: 0.3123285071455363
+Validation class accuracies: [0.8443877551020408, 0.2638888888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 9 epochs
+Epoch 30/80
+264/264 - 176s - loss: 0.6836 - accuracy: 0.6669 - val_loss: 0.6845 - val_accuracy: 0.6940
+Confusion matrix: 
+ [[670 114]
+ [214  74]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.855 0.145]
+ [0.743 0.257]]
+Validation f1: 31.09
+Validation accuracy: 69.40
+Validation recall: 25.69
+Validation precision: 39.36
+Validation AUC: 0.3113864885163786
+Validation class accuracies: [0.8545918367346939, 0.2569444444444444]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 10 epochs
+Epoch 31/80
+264/264 - 176s - loss: 0.6832 - accuracy: 0.6688 - val_loss: 0.6999 - val_accuracy: 0.6269
+Confusion matrix: 
+ [[566 218]
+ [182 106]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.722 0.278]
+ [0.632 0.368]]
+Validation f1: 34.64
+Validation accuracy: 62.69
+Validation recall: 36.81
+Validation precision: 32.72
+Validation AUC: 0.31072727277869044
+Validation class accuracies: [0.7219387755102041, 0.3680555555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 11 epochs
+Epoch 32/80
+264/264 - 177s - loss: 0.6830 - accuracy: 0.6624 - val_loss: 0.6874 - val_accuracy: 0.6772
+Confusion matrix: 
+ [[646 138]
+ [208  80]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.824 0.176]
+ [0.722 0.278]]
+Validation f1: 31.62
+Validation accuracy: 67.72
+Validation recall: 27.78
+Validation precision: 36.70
+Validation AUC: 0.3139048767544431
+Validation class accuracies: [0.8239795918367347, 0.2777777777777778]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 12 epochs
+Lr has been adjusted to 0.0004218749818392098
+Epoch 33/80
+264/264 - 177s - loss: 0.6837 - accuracy: 0.6681 - val_loss: 0.6839 - val_accuracy: 0.6940
+Confusion matrix: 
+ [[673 111]
+ [217  71]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.858 0.142]
+ [0.753 0.247]]
+Validation f1: 30.21
+Validation accuracy: 69.40
+Validation recall: 24.65
+Validation precision: 39.01
+Validation AUC: 0.313843429292199
+Validation class accuracies: [0.8584183673469388, 0.2465277777777778]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 13 epochs
+Epoch 34/80
+264/264 - 178s - loss: 0.6830 - accuracy: 0.6747 - val_loss: 0.6861 - val_accuracy: 0.6866
+Confusion matrix: 
+ [[657 127]
+ [209  79]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.838 0.162]
+ [0.726 0.274]]
+Validation f1: 31.98
+Validation accuracy: 68.66
+Validation recall: 27.43
+Validation precision: 38.35
+Validation AUC: 0.3122019079785475
+Validation class accuracies: [0.8380102040816326, 0.2743055555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 14 epochs
+Epoch 35/80
+264/264 - 177s - loss: 0.6816 - accuracy: 0.6740 - val_loss: 0.6970 - val_accuracy: 0.6269
+Confusion matrix: 
+ [[574 210]
+ [190  98]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.732 0.268]
+ [0.66  0.34 ]]
+Validation f1: 32.89
+Validation accuracy: 62.69
+Validation recall: 34.03
+Validation precision: 31.82
+Validation AUC: 0.3087588443399362
+Validation class accuracies: [0.7321428571428571, 0.3402777777777778]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 15 epochs
+Epoch 36/80
+264/264 - 178s - loss: 0.6823 - accuracy: 0.6662 - val_loss: 0.6913 - val_accuracy: 0.6595
+Confusion matrix: 
+ [[619 165]
+ [200  88]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.79  0.21 ]
+ [0.694 0.306]]
+Validation f1: 32.53
+Validation accuracy: 65.95
+Validation recall: 30.56
+Validation precision: 34.78
+Validation AUC: 0.3115140279256471
+Validation class accuracies: [0.7895408163265306, 0.3055555555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 16 epochs
+Epoch 37/80
+264/264 - 176s - loss: 0.6832 - accuracy: 0.6698 - val_loss: 0.6903 - val_accuracy: 0.6595
+Confusion matrix: 
+ [[620 164]
+ [201  87]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.791 0.209]
+ [0.698 0.302]]
+Validation f1: 32.28
+Validation accuracy: 65.95
+Validation recall: 30.21
+Validation precision: 34.66
+Validation AUC: 0.3131537155896595
+Validation class accuracies: [0.7908163265306123, 0.3020833333333333]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 17 epochs
+Epoch 38/80
+264/264 - 176s - loss: 0.6842 - accuracy: 0.6562 - val_loss: 0.6924 - val_accuracy: 0.6493
+Confusion matrix: 
+ [[607 177]
+ [199  89]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.774 0.226]
+ [0.691 0.309]]
+Validation f1: 32.13
+Validation accuracy: 64.93
+Validation recall: 30.90
+Validation precision: 33.46
+Validation AUC: 0.30971722645372224
+Validation class accuracies: [0.7742346938775511, 0.3090277777777778]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 18 epochs
+Lr has been adjusted to 0.0003164062509313226
+Epoch 39/80
+264/264 - 177s - loss: 0.6839 - accuracy: 0.6645 - val_loss: 0.6858 - val_accuracy: 0.6856
+Confusion matrix: 
+ [[658 126]
+ [211  77]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.839 0.161]
+ [0.733 0.267]]
+Validation f1: 31.36
+Validation accuracy: 68.56
+Validation recall: 26.74
+Validation precision: 37.93
+Validation AUC: 0.3121460505323924
+Validation class accuracies: [0.8392857142857143, 0.2673611111111111]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 19 epochs
+Epoch 40/80
+264/264 - 178s - loss: 0.6835 - accuracy: 0.6669 - val_loss: 0.6951 - val_accuracy: 0.6381
+Confusion matrix: 
+ [[591 193]
+ [195  93]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.754 0.246]
+ [0.677 0.323]]
+Validation f1: 32.40
+Validation accuracy: 63.81
+Validation recall: 32.29
+Validation precision: 32.52
+Validation AUC: 0.3076944455862808
+Validation class accuracies: [0.7538265306122449, 0.3229166666666667]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 20 epochs
+Epoch 41/80
+264/264 - 178s - loss: 0.6832 - accuracy: 0.6631 - val_loss: 0.6888 - val_accuracy: 0.6716
+Confusion matrix: 
+ [[635 149]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.81  0.19 ]
+ [0.705 0.295]]
+Validation f1: 32.57
+Validation accuracy: 67.16
+Validation recall: 29.51
+Validation precision: 36.32
+Validation AUC: 0.3105347206940813
+Validation class accuracies: [0.8099489795918368, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 21 epochs
+Epoch 42/80
+264/264 - 177s - loss: 0.6821 - accuracy: 0.6693 - val_loss: 0.6906 - val_accuracy: 0.6614
+Confusion matrix: 
+ [[621 163]
+ [200  88]]
+Normalized Confusion matrix: 
+ [[0.792 0.208]
+ [0.694 0.306]]
+Validation f1: 32.65
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Validation accuracy: 66.14
+Validation recall: 30.56
+Validation precision: 35.06
+Validation AUC: 0.30953217127572885
+Validation class accuracies: [0.7920918367346939, 0.3055555555555556]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 22 epochs
+Epoch 43/80
+264/264 - 176s - loss: 0.6823 - accuracy: 0.6674 - val_loss: 0.6838 - val_accuracy: 0.6903
+Confusion matrix: 
+ [[667 117]
+ [215  73]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.851 0.149]
+ [0.747 0.253]]
+Validation f1: 30.54
+Validation accuracy: 69.03
+Validation recall: 25.35
+Validation precision: 38.42
+Validation AUC: 0.3109364101362727
+Validation class accuracies: [0.8507653061224489, 0.2534722222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 23 epochs
+Epoch 44/80
+264/264 - 178s - loss: 0.6821 - accuracy: 0.6726 - val_loss: 0.6896 - val_accuracy: 0.6632
+Confusion matrix: 
+ [[624 160]
+ [201  87]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.796 0.204]
+ [0.698 0.302]]
+Validation f1: 32.52
+Validation accuracy: 66.32
+Validation recall: 30.21
+Validation precision: 35.22
+Validation AUC: 0.3105776261109777
+Validation class accuracies: [0.7959183673469388, 0.3020833333333333]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 24 epochs
+Lr has been adjusted to 0.00023730468819849193
+Epoch 45/80
+264/264 - 178s - loss: 0.6821 - accuracy: 0.6679 - val_loss: 0.6900 - val_accuracy: 0.6614
+Confusion matrix: 
+ [[623 161]
+ [202  86]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.795 0.205]
+ [0.701 0.299]]
+Validation f1: 32.15
+Validation accuracy: 66.14
+Validation recall: 29.86
+Validation precision: 34.82
+Validation AUC: 0.31066993411887367
+Validation class accuracies: [0.7946428571428571, 0.2986111111111111]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 25 epochs
+Epoch 46/80
+264/264 - 178s - loss: 0.6823 - accuracy: 0.6686 - val_loss: 0.6854 - val_accuracy: 0.6856
+Confusion matrix: 
+ [[654 130]
+ [207  81]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.834 0.166]
+ [0.719 0.281]]
+Validation f1: 32.46
+Validation accuracy: 68.56
+Validation recall: 28.12
+Validation precision: 38.39
+Validation AUC: 0.31219670689883094
+Validation class accuracies: [0.8341836734693877, 0.28125]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 26 epochs
+Epoch 47/80
+264/264 - 177s - loss: 0.6816 - accuracy: 0.6750 - val_loss: 0.6875 - val_accuracy: 0.6735
+Confusion matrix: 
+ [[640 144]
+ [206  82]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.816 0.184]
+ [0.715 0.285]]
+Validation f1: 31.91
+Validation accuracy: 67.35
+Validation recall: 28.47
+Validation precision: 36.28
+Validation AUC: 0.3123276329017098
+Validation class accuracies: [0.8163265306122449, 0.2847222222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 27 epochs
+Epoch 48/80
+264/264 - 177s - loss: 0.6813 - accuracy: 0.6726 - val_loss: 0.6875 - val_accuracy: 0.6726
+Confusion matrix: 
+ [[639 145]
+ [206  82]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.815 0.185]
+ [0.715 0.285]]
+Validation f1: 31.84
+Validation accuracy: 67.26
+Validation recall: 28.47
+Validation precision: 36.12
+Validation AUC: 0.3120825133632016
+Validation class accuracies: [0.8150510204081632, 0.2847222222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 28 epochs
+Epoch 49/80
+264/264 - 177s - loss: 0.6826 - accuracy: 0.6683 - val_loss: 0.6904 - val_accuracy: 0.6576
+Confusion matrix: 
+ [[614 170]
+ [197  91]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.783 0.217]
+ [0.684 0.316]]
+Validation f1: 33.15
+Validation accuracy: 65.76
+Validation recall: 31.60
+Validation precision: 34.87
+Validation AUC: 0.31173153227432415
+Validation class accuracies: [0.7831632653061225, 0.3159722222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 29 epochs
+Epoch 50/80
+264/264 - 177s - loss: 0.6820 - accuracy: 0.6709 - val_loss: 0.6860 - val_accuracy: 0.6828
+Confusion matrix: 
+ [[650 134]
+ [206  82]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.829 0.171]
+ [0.715 0.285]]
+Validation f1: 32.54
+Validation accuracy: 68.28
+Validation recall: 28.47
+Validation precision: 37.96
+Validation AUC: 0.31233717597266525
+Validation class accuracies: [0.8290816326530612, 0.2847222222222222]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 30 epochs
+Lr has been adjusted to 0.00017797850887291133
+Epoch 51/80
+264/264 - 177s - loss: 0.6814 - accuracy: 0.6733 - val_loss: 0.6874 - val_accuracy: 0.6726
+Confusion matrix: 
+ [[638 146]
+ [205  83]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.814 0.186]
+ [0.712 0.288]]
+Validation f1: 32.11
+Validation accuracy: 67.26
+Validation recall: 28.82
+Validation precision: 36.24
+Validation AUC: 0.3122294948487716
+Validation class accuracies: [0.8137755102040817, 0.2881944444444444]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 31 epochs
+Epoch 52/80
+264/264 - 178s - loss: 0.6808 - accuracy: 0.6762 - val_loss: 0.6882 - val_accuracy: 0.6679
+Confusion matrix: 
+ [[632 152]
+ [204  84]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.806 0.194]
+ [0.708 0.292]]
+Validation f1: 32.06
+Validation accuracy: 66.79
+Validation recall: 29.17
+Validation precision: 35.59
+Validation AUC: 0.3121570584999921
+Validation class accuracies: [0.8061224489795918, 0.2916666666666667]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 32 epochs
+Epoch 53/80
+264/264 - 177s - loss: 0.6824 - accuracy: 0.6702 - val_loss: 0.6886 - val_accuracy: 0.6670
+Confusion matrix: 
+ [[630 154]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.804 0.196]
+ [0.705 0.295]]
+Validation f1: 32.26
+Validation accuracy: 66.70
+Validation recall: 29.51
+Validation precision: 35.56
+Validation AUC: 0.31227013746180304
+Validation class accuracies: [0.8035714285714286, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 33 epochs
+Epoch 54/80
+264/264 - 177s - loss: 0.6818 - accuracy: 0.6714 - val_loss: 0.6880 - val_accuracy: 0.6726
+Confusion matrix: 
+ [[636 148]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.811 0.189]
+ [0.705 0.295]]
+Validation f1: 32.63
+Validation accuracy: 67.26
+Validation recall: 29.51
+Validation precision: 36.48
+Validation AUC: 0.31276721210264535
+Validation class accuracies: [0.8112244897959183, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 34 epochs
+Epoch 55/80
+264/264 - 177s - loss: 0.6814 - accuracy: 0.6700 - val_loss: 0.6888 - val_accuracy: 0.6651
+Confusion matrix: 
+ [[628 156]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.801 0.199]
+ [0.705 0.295]]
+Validation f1: 32.14
+Validation accuracy: 66.51
+Validation recall: 29.51
+Validation precision: 35.27
+Validation AUC: 0.3131121704947539
+Validation class accuracies: [0.8010204081632653, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 35 epochs
+Epoch 56/80
+264/264 - 178s - loss: 0.6825 - accuracy: 0.6652 - val_loss: 0.6883 - val_accuracy: 0.6660
+Confusion matrix: 
+ [[629 155]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.802 0.198]
+ [0.705 0.295]]
+Validation f1: 32.20
+Validation accuracy: 66.60
+Validation recall: 29.51
+Validation precision: 35.42
+Validation AUC: 0.31245093115749645
+Validation class accuracies: [0.8022959183673469, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 36 epochs
+Lr has been adjusted to 0.00013348387437872589
+Epoch 57/80
+264/264 - 177s - loss: 0.6829 - accuracy: 0.6622 - val_loss: 0.6919 - val_accuracy: 0.6465
+Confusion matrix: 
+ [[601 183]
+ [196  92]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.767 0.233]
+ [0.681 0.319]]
+Validation f1: 32.68
+Validation accuracy: 64.65
+Validation recall: 31.94
+Validation precision: 33.45
+Validation AUC: 0.3120427369358795
+Validation class accuracies: [0.7665816326530612, 0.3194444444444444]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 37 epochs
+Epoch 58/80
+264/264 - 177s - loss: 0.6822 - accuracy: 0.6650 - val_loss: 0.6889 - val_accuracy: 0.6623
+Confusion matrix: 
+ [[625 159]
+ [203  85]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.797 0.203]
+ [0.705 0.295]]
+Validation f1: 31.95
+Validation accuracy: 66.23
+Validation recall: 29.51
+Validation precision: 34.84
+Validation AUC: 0.3117772056729703
+Validation class accuracies: [0.7971938775510204, 0.2951388888888889]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 38 epochs
+Epoch 59/80
+264/264 - 178s - loss: 0.6822 - accuracy: 0.6631 - val_loss: 0.6919 - val_accuracy: 0.6465
+Confusion matrix: 
+ [[600 184]
+ [195  93]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.765 0.235]
+ [0.677 0.323]]
+Validation f1: 32.92
+Validation accuracy: 64.65
+Validation recall: 32.29
+Validation precision: 33.57
+Validation AUC: 0.3112703452534016
+Validation class accuracies: [0.7653061224489796, 0.3229166666666667]
+The clause is activated.
+Not defaulting.
+The validation tracker metric at 0.38251366120218583 hasn't increased by 0 in 39 epochs
+Epoch 60/80
+264/264 - 177s - loss: 0.6813 - accuracy: 0.6712 - val_loss: 0.6896 - val_accuracy: 0.6623
+Confusion matrix: 
+ [[622 162]
+ [200  88]]
+/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/tensorflow/python/data/ops/dataset_ops.py:3504: UserWarning: Even though the tf.config.experimental_run_functions_eagerly option is set, this option does not apply to tf.data functions. tf.data functions are still traced and executed as graphs.
+  "Even though the tf.config.experimental_run_functions_eagerly "
+Normalized Confusion matrix: 
+ [[0.793 0.207]
+ [0.694 0.306]]
+Validation f1: 32.71
+Validation accuracy: 66.23
+Validation recall: 30.56
+Validation precision: 35.20
+Validation AUC: 0.3118754200367811
+Validation class accuracies: [0.7933673469387755, 0.3055555555555556]
+
+The metrics for job 0 with the best target metric are: 
+Best cm: [[480 304]
+ [148 140]]
+Best normalized cm: [[0.612 0.388]
+ [0.514 0.486]]
+Best f1: 0.38
+Best accuracy: 0.58
+Best recall: 0.49
+Best precision: 0.32
+Best AUC: 0.32
+Best class accuracies: [0.6122448979591837, 0.4861111111111111]
+Best epoch: 20
+The clause is activated.
+Not defaulting.
+The number of epochs since last 1% equals the patience
+
+Starting the Bangladesh analysis...
+Traceback (most recent call last):
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/alirachidi/classification_algorithm/trainers/main/models/conv/train2212.py", line 428, in <module>
+    train_model(train_file, job_dir, params, wav_params, spec_params)
+  File "/home/alirachidi/classification_algorithm/trainers/main/models/conv/train2212.py", line 347, in train_model
+    model = conv2d(**model_params)
+NameError: name 'conv2d' is not defined
+wandb: Waiting for W&B process to finish, PID 28436
+wandb: Program failed with code 1. 
+wandb: Find user logs for this run at: /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210611_151010-2o3lkpng/logs/debug.log
+wandb: Find internal logs for this run at: /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210611_151010-2o3lkpng/logs/debug-internal.log
+wandb: Run summary:
+wandb:       train_accuracy 0.67118
+wandb:         val_accuracy 0.66231
+wandb:             _runtime 12106
+wandb:           _timestamp 1623436317
+wandb:                _step 431
+wandb:           train_loss 0.6813
+wandb:             val_loss 0.68957
+wandb:           val_recall 0.30556
+wandb:        val_precision 0.352
+wandb:               val_f1 0.32714
+wandb:              val_auc 0.31188
+wandb:                   lr 0.00013
+wandb:          best_val_f1 0.38251
+wandb:    best_val_accuracy 0.57836
+wandb:   best_val_precision 0.31532
+wandb:      best_val_recall 0.48611
+wandb:             best_auc 0.31636
+wandb:           best_epoch 20
+wandb: Run history:
+wandb:   train_accuracy ▁▅▆▇██████▇█▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇
+wandb:     val_accuracy ██▄▅█▄▇▁▅▅█▂▇▁▆▄▇▆▆▆▃▆▆▃▅▄▄▅▆▅▆▅▅▆▅▅▅▅▅▅
+wandb:         _runtime ▁▁▁▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       _timestamp ▁▁▁▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:            _step ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:       train_loss █▇▇▇▇▇▆▆▆▅▅▄▄▃▄▃▃▂▂▃▂▂▂▂▂▃▃▂▂▂▂▂▂▂▁▂▁▂▂▁
+wandb:         val_loss ▂▂▄▃▁▄▂█▃▃▁▇▂█▂▄▁▂▁▂▆▂▂▅▃▃▄▂▁▃▁▂▃▂▂▂▂▂▂▃
+wandb:       val_recall ▁▁▅▅▂▅▃▅▅▅▃▇▄█▅▅▄▅▅▅▆▅▅▆▅▅▆▅▅▅▅▅▆▅▅▅▅▅▅▅
+wandb:    val_precision ▁▆▆▆▇▆▇▅▇▆█▆▇▆▇▆▇▇▇▇▆▇▇▆▆▆▆▇▇▆▇▇▆▇▇▇▆▇▆▆
+wandb:           val_f1 ▁▁▇▆▂▆▅▆▆▇▆█▆█▇▇▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇
+wandb:          val_auc █▂▅▅▃▄▅▁▅▆▄▅▅▅▅▄▄▄▅▅▅▅▅▄▅▄▄▄▅▄▅▅▅▅▅▅▅▅▅▅
+wandb:               lr █████████▆▆▆▆▆▆▆▆▆▄▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▁▁▁▁▁▁
+wandb: 
+wandb: You can sync this run to the cloud by running:
+wandb: wandb sync /home/alirachidi/classification_algorithm/trainers/main/wandb/offline-run-20210611_151010-2o3lkpng
+
+
+ See logs at ../../new_cache/conv__2212__06_1343__v29__mixednet_wlstms/logs/
