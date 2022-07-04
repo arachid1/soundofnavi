@@ -10,7 +10,7 @@
 | BD  | - (available but not implemented yet) |  |
 
 
-NOTE: As of 11/23, only Pneumonia problem for Icbhi/Jordan has been implemented. To be extended by adding training on BD for pneumonia + other datasets in CW.
+NOTE: As of 11/23/21, only Pneumonia problem for Icbhi/Jordan has been implemented. To be extended by adding training on BD for pneumonia + other datasets in CW.
 
 NOTE: as of 01/22, you can train models inside the crackles/wheezes trainer (e.g., trainers/cw) with all of its datasets. I still need to add BD to the pneumonida data
 
