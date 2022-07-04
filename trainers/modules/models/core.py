@@ -6,8 +6,8 @@ from tensorflow.keras.initializers import RandomUniform, RandomNormal
 import numpy as np
 from tensorflow.python.keras import backend
 from tensorflow.keras import backend as K
-from keras.utils import conv_utils
-
+from tensorflow.python.keras.utils import conv_utils
+from ..main import parameters
 
 class Distiller(Model):
     def __init__(self, student, teacher):
@@ -42,41 +42,49 @@ class Distiller(Model):
         self.distillation_loss_fn = distillation_loss_fn
         self.alpha = alpha
         self.temperature = temperature
+    
+    def call(self, inputs: tf.Tensor, training: bool = True):
+        # teacher_predictions = self.teacher(inputs, training=False)
+        student_predictions = self.student(inputs, training=training)
+        return student_predictions
 
-    def train_step(self, data):
+    def train_step(self, inputs):
         # Unpack data
-        x, y = data
+        x, y = inputs
 
         # Forward pass of teacher
         teacher_predictions = self.teacher(x, training=False)
+        # teacher_predictions = self(x)
 
         with tf.GradientTape() as tape:
             # Forward pass of student
-            student_predictions = self.student(x, training=True)
+            student_predictions = self(x, training=True)
 
             # Compute losses
             student_loss = self.student_loss_fn(y, student_predictions)
-            # tf.print("student_loss")
-            # tf.print(student_loss)
-            # distillation_loss = self.distillation_loss_fn(
-            #     tf.nn.softmax(teacher_predictions / self.temperature, axis=1),
-            #     tf.nn.softmax(student_predictions / self.temperature, axis=1),
-            # )
+
             distillation_loss = self.distillation_loss_fn(
-                tf.nn.sigmoid(teacher_predictions / self.temperature,),
-                tf.nn.sigmoid(student_predictions / self.temperature,),
+                tf.nn.sigmoid(teacher_predictions / self.temperature),
+                tf.nn.sigmoid(student_predictions / self.temperature),
             )
-            # tf.print("labels, then teacher/student prediction")
-            # tf.print(y)
+            # distillation_loss = self.distillation_loss_fn(
+            #     teacher_predictions,
+            #     student_predictions,
+            # )
+            # tf.print("here")
+            # tf.print(student_loss)
+            # tf.print(distillation_loss)
             # tf.print(teacher_predictions)
             # tf.print(student_predictions)
-            # tf.print("softmaxes")
-            # tf.print(tf.nn.sigmoid(teacher_predictions / self.temperature))
-            # tf.print(tf.nn.sigmoid(student_predictions / self.temperature))
-            # tf.print(tf.nn.softmax(teacher_predictions / self.temperature, axis=1))
-            # tf.print(tf.nn.softmax(student_predictions / self.temperature, axis=1))
-            # tf.print("distillation_loss")
-            # tf.print(distillation_loss)
+            # tf.print(tf.nn.sigmoid(teacher_predictions))
+            # tf.print(tf.nn.sigmoid(student_predictions))
+
+            if parameters.distill_features:
+                mel_spec = self.teacher(x, training=False, return_spec=True)
+                leaf_spec = self.student(x, training=False, return_spec=True)
+                features_loss = tf.reduce_mean(tf.math.square(mel_spec-leaf_spec))
+                distillation_loss = distillation_loss + features_loss
+
             loss = self.alpha * student_loss + (1 - self.alpha) * distillation_loss
 
         # Compute gradients
@@ -695,7 +703,7 @@ class MixDepthGroupConvolution2D(tf.keras.layers.Layer):
         
 
 class InvertedResidual(Layer):
-    def __init__(self, filters, strides, activation=ReLU(), kernel_size=3, expansion_factor=6,
+    def __init__(self, filters, strides, activation=ReLU(), kernel_size=3, expansion_factor=6, padding="valid",
                  regularizer=None, trainable=True, name=None, **kwargs):
         super(InvertedResidual, self).__init__(
             trainable=trainable, name=name, **kwargs)
@@ -705,17 +713,18 @@ class InvertedResidual(Layer):
         self.expansion_factor = expansion_factor
         self.activation = activation
         self.regularizer = regularizer
+        self.padding = padding
         self.channel_axis = 1 if backend.image_data_format() == 'channels_first' else -1
 
     def build(self, input_shape):
         input_channels = int(input_shape[self.channel_axis])  # C
         # tf.print("self.regularizer")
         # tf.print(self.regularizer)
-        self.ptwise_conv1 = Conv2D(filters=int(input_channels*self.expansion_factor),
+        self.ptwise_conv1 = Conv2D(filters=int(input_channels*self.expansion_factor), padding=self.padding,
                                    kernel_size=1, kernel_regularizer=None, use_bias=False)
-        self.dwise = DepthwiseConv2D(kernel_size=self.kernel_size, strides=self.strides,
-                                     kernel_regularizer=None, padding='same', use_bias=False)
-        self.ptwise_conv2 = Conv2D(filters=self.filters, kernel_size=1,
+        self.dwise = DepthwiseConv2D(kernel_size=self.kernel_size, strides=self.strides, padding='same',
+                                     kernel_regularizer=None, use_bias=False)
+        self.ptwise_conv2 = Conv2D(filters=self.filters, kernel_size=1, padding=self.padding,
                                    kernel_regularizer=None, use_bias=False)
         self.bn1 = BatchNormalization()
         self.bn2 = BatchNormalization()
@@ -746,6 +755,7 @@ class InvertedResidual(Layer):
         cfg = super(InvertedResidual, self).get_config()
         cfg.update({'filters': self.filters,
                     'strides': self.strides,
+                    'padding': self.padding,
                     'regularizer': self.strides,
                     'expansion_factor': self.expansion_factor,
                     'activation': self.activation})

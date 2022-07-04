@@ -1,0 +1,457 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train196
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+training parameters
+[('cache_root', '../cache/'), ('data_root', '../data/'), ('jordan_root', '../data/jwyy9np4gv-3/'), ('icbhi_root', '../data/raw_audios/icbhi_preprocessed_v2_cleaned_8000/'), ('bd_root', '../data/PCV_SEGMENTED_Processed_Files/'), ('excel_path', '../data/Bangladesh_PCV_onlyStudyPatients.xlsx'), ('perch_root', '../data/raw_audios/perch_8000_10seconds'), ('ant_root', '../data/raw_audios/Antwerp_Clinical_Complete'), ('description', ' effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,'), ('job_id', 0), ('mode', 'cw'), ('n_classes', 2), ('shape', (80, 500, 3)), ('n_epochs', 110), ('lr', 0.0001), ('batch_size', 16), ('ll2_reg', 0), ('weight_decay', 0.0001), ('label_smoothing', 0), ('epsilon', 1e-07), ('es_patience', 20), ('min_delta', 0), ('train_test_ratio', 0.8), ('kfold', False), ('clause', 0), ('epoch_start', 0), ('testing', 0), ('adaptive_lr', False), ('cuberooting', 1), ('normalizing', 1), ('class_weights', True), ('early_stopping', True), ('initial_channels', 1), ('factor', 0.5), ('lr_patience', 10), ('min_lr', 1e-05), ('sr', 4000), ('audio_length', 5), ('step_size', 2.5), ('n_fft', 1024), ('hop_length', 254), ('n_mels', 128), ('overlap_threshold', 0.3), ('trainable_fb', False), ('to_decibel', True), ('train_nn', False), ('train_mel', False), ('file_dir', '../cache/cw/train196'), ('n_sequences', 9), ('activate_spectral_loss', False), ('normalize', False), ('stacking', False), ('oversample', False), ('one_hot_encoding', False), ('activation', 'sigmoid'), ('n_filters', 80)]
+Job id is 1.
+Job dir: ../cache/cw/train196/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+turning the kfold from 90/10 to 80/20
+100
+12
+to
+90
+22
+-----------------------
+--- Final training dataset went from 0 to 3969 elements, with 1889 none's, 991 crakles, 597 wheezes and 492 both ---
+--- Final Validation dataset contains 2096 elements, with 989 none, 843 crackles, 120 wheezes and 144 both ---
+GPUs
+['/device:GPU:0']
+Initializing weights...
+weights = {0: 0.5252779248279513, 1: 1.0012613521695257, 2: 1.6620603015075377, 3: 2.0167682926829267}
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ efficientnetb1 (Functional)  (None, 3, 16, 1280)      6575239   
+                                                                 
+ global_average_pooling2d (G  (None, 1280)             0         
+ lobalAveragePooling2D)                                          
+                                                                 
+ dense (Dense)               (None, 100)               128100    
+                                                                 
+ dropout (Dropout)           (None, 100)               0         
+                                                                 
+ dense_1 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_1 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_2 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 6,708,491
+Trainable params: 6,646,436
+Non-trainable params: 62,055
+_________________________________________________________________
+There is no such attribute
+Model: "leaf_model9_model_efnet1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks (MelFilterbanks)                multiple                                    0                
+                                                                                                              
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 2)                                   6708491          
+                                                                                                              
+==============================================================================================================
+Total params: 6,708,653
+Trainable params: 6,646,598
+Non-trainable params: 62,055
+______________________________________________________________________________________________________________
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ efficientnetb1 (Functional)  (None, 3, 16, 1280)      6575239   
+                                                                 
+ global_average_pooling2d_1   (None, 1280)             0         
+ (GlobalAveragePooling2D)                                        
+                                                                 
+ dense_3 (Dense)             (None, 100)               128100    
+                                                                 
+ dropout_2 (Dropout)         (None, 100)               0         
+                                                                 
+ dense_4 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_3 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_5 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 6,708,491
+Trainable params: 6,646,436
+Non-trainable params: 62,055
+_________________________________________________________________
+Model: "leaf_model9_model_efnet1_1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ leaf (Leaf)                                     multiple                                    562              
+                                                                                                              
+ mel_filterbanks_2 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 2)                                   6708491          
+                                                                                                              
+==============================================================================================================
+Total params: 6,709,215
+Trainable params: 6,647,160
+Non-trainable params: 62,055
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+here
+here2
+Epoch 1/110
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[988   1   0   0]
+ [837   6   0   0]
+ [119   1   0   0]
+ [144   0   0   0]]
+Validation val_loss: 0.00034559356006047195
+Validation normalized_cm: [[0.999 0.001 0.    0.   ]
+ [0.993 0.007 0.    0.   ]
+ [0.992 0.008 0.    0.   ]
+ [1.    0.    0.    0.   ]]
+Validation acc: 0.47423664122137404
+Validation class_accuracies: [0.9989888776541962, 0.0071174377224199285, 0.0, 0.0]
+Validation sensitivity: 0.005420054200542005
+Validation specificity: 0.9989888776541962
+Validation icbhi_score: 0.5022044659273691
+Validation roc_auc: None
+Validation avg_accuracy: 0.251526578844154
+Validation one_indexed_epoch: 1
+Tensor("kl_divergence/weighted_loss/value:0", shape=(), dtype=float32)
+Tensor("kl_divergence/weighted_loss/value:0", shape=(), dtype=float32)
+-- New best results were achieved. --
+249/249 - 982s - accuracy: 0.4528 - student_loss: 0.6607 - distillation_loss: 0.0222 - val_accuracy: 0.6140 - val_student_loss: 0.7244 - 982s/epoch - 4s/step
+here
+here2
+Epoch 2/110
+Validation cm: [[518 406  56   9]
+ [531 259  49   4]
+ [ 59  54   6   1]
+ [ 86  52   6   0]]
+Validation val_loss: 0.0002612423521416788
+Validation normalized_cm: [[0.524 0.411 0.057 0.009]
+ [0.63  0.307 0.058 0.005]
+ [0.492 0.45  0.05  0.008]
+ [0.597 0.361 0.042 0.   ]]
+Validation acc: 0.3735687022900763
+Validation class_accuracies: [0.5237613751263903, 0.30723606168446027, 0.05, 0.0]
+Validation sensitivity: 0.23938572719060525
+Validation specificity: 0.5237613751263903
+Validation icbhi_score: 0.3815735511584978
+Validation roc_auc: None
+Validation avg_accuracy: 0.22024935920271266
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 1 epochs
+249/249 - 961s - accuracy: 0.4641 - student_loss: 0.5721 - distillation_loss: -8.7454e-03 - val_accuracy: 0.7481 - val_student_loss: 0.5476 - 961s/epoch - 4s/step
+here
+here2
+Epoch 3/110
+Validation cm: [[389 298 177 125]
+ [229 267 204 143]
+ [ 22  56  18  24]
+ [ 32  59  28  25]]
+Validation val_loss: 0.0003695380482964843
+Validation normalized_cm: [[0.393 0.301 0.179 0.126]
+ [0.272 0.317 0.242 0.17 ]
+ [0.183 0.467 0.15  0.2  ]
+ [0.222 0.41  0.194 0.174]]
+Validation acc: 0.33349236641221375
+Validation class_accuracies: [0.39332659251769464, 0.3167259786476868, 0.15, 0.1736111111111111]
+Validation sensitivity: 0.2800361336946703
+Validation specificity: 0.39332659251769464
+Validation icbhi_score: 0.33668136310618246
+Validation roc_auc: None
+Validation avg_accuracy: 0.25841592056912316
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 2 epochs
+249/249 - 968s - accuracy: 0.4593 - student_loss: 0.8319 - distillation_loss: 0.0145 - val_accuracy: 0.5224 - val_student_loss: 0.7746 - 968s/epoch - 4s/step
+here
+here2
+Epoch 4/110
+Validation cm: [[152 246 309 282]
+ [ 93 147 270 333]
+ [ 18  27  40  35]
+ [ 10  26  50  58]]
+Validation val_loss: 0.00032358582465703253
+Validation normalized_cm: [[0.154 0.249 0.312 0.285]
+ [0.11  0.174 0.32  0.395]
+ [0.15  0.225 0.333 0.292]
+ [0.069 0.181 0.347 0.403]]
+Validation acc: 0.1894083969465649
+Validation class_accuracies: [0.15369059656218403, 0.17437722419928825, 0.3333333333333333, 0.4027777777777778]
+Validation sensitivity: 0.22131887985546522
+Validation specificity: 0.15369059656218403
+Validation icbhi_score: 0.18750473820882463
+Validation roc_auc: None
+Validation avg_accuracy: 0.26604473296814585
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 3 epochs
+249/249 - 969s - accuracy: 0.4795 - student_loss: 0.6894 - distillation_loss: 0.0036 - val_accuracy: 0.4227 - val_student_loss: 0.6782 - 969s/epoch - 4s/step
+here
+here2
+Epoch 5/110
+Validation cm: [[230 295 325 139]
+ [175 147 382 139]
+ [ 13  31  41  35]
+ [ 23  24  70  27]]
+Validation val_loss: 0.00032788458216281337
+Validation normalized_cm: [[0.233 0.298 0.329 0.141]
+ [0.208 0.174 0.453 0.165]
+ [0.108 0.258 0.342 0.292]
+ [0.16  0.167 0.486 0.188]]
+Validation acc: 0.21230916030534353
+Validation class_accuracies: [0.23255813953488372, 0.17437722419928825, 0.3416666666666667, 0.1875]
+Validation sensitivity: 0.1942186088527552
+Validation specificity: 0.23255813953488372
+Validation icbhi_score: 0.21338837419381945
+Validation roc_auc: None
+Validation avg_accuracy: 0.23402550760020965
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 4 epochs
+249/249 - 966s - accuracy: 0.4956 - student_loss: 0.6380 - distillation_loss: -4.6086e-03 - val_accuracy: 0.4156 - val_student_loss: 0.6872 - 966s/epoch - 4s/step
+here
+here2
+Epoch 6/110
+Validation cm: [[212 203 329 245]
+ [ 80 101 340 322]
+ [ 15  20  40  45]
+ [ 16  16  54  58]]
+Validation val_loss: 0.0002856705309325502
+Validation normalized_cm: [[0.214 0.205 0.333 0.248]
+ [0.095 0.12  0.403 0.382]
+ [0.125 0.167 0.333 0.375]
+ [0.111 0.111 0.375 0.403]]
+Validation acc: 0.19608778625954199
+Validation class_accuracies: [0.21435793731041455, 0.11981020166073547, 0.3333333333333333, 0.4027777777777778]
+Validation sensitivity: 0.17976513098464317
+Validation specificity: 0.21435793731041455
+Validation icbhi_score: 0.19706153414752886
+Validation roc_auc: None
+Validation avg_accuracy: 0.26756981252056533
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 5 epochs
+249/249 - 1037s - accuracy: 0.4981 - student_loss: 0.6879 - distillation_loss: 0.0224 - val_accuracy: 0.3788 - val_student_loss: 0.5988 - 1037s/epoch - 4s/step
+here
+here2
+Epoch 7/110
+Validation cm: [[430 173 317  69]
+ [372 136 275  60]
+ [ 57  17  39   7]
+ [ 65  23  43  13]]
+Validation val_loss: 0.00030236267520271186
+Validation normalized_cm: [[0.435 0.175 0.321 0.07 ]
+ [0.441 0.161 0.326 0.071]
+ [0.475 0.142 0.325 0.058]
+ [0.451 0.16  0.299 0.09 ]]
+Validation acc: 0.2948473282442748
+Validation class_accuracies: [0.43478260869565216, 0.16132858837485173, 0.325, 0.09027777777777778]
+Validation sensitivity: 0.16982836495031617
+Validation specificity: 0.43478260869565216
+Validation icbhi_score: 0.3023054868229842
+Validation roc_auc: None
+Validation avg_accuracy: 0.2528472437120704
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 6 epochs
+249/249 - 1034s - accuracy: 0.5062 - student_loss: 0.6869 - distillation_loss: -1.7824e-02 - val_accuracy: 0.3769 - val_student_loss: 0.6338 - 1034s/epoch - 4s/step
+here
+here2
+Epoch 8/110
+Validation cm: [[275 229 295 190]
+ [174 259 181 229]
+ [ 22  41  25  32]
+ [ 26  49  34  35]]
+Validation val_loss: 0.00031362200966318144
+Validation normalized_cm: [[0.278 0.232 0.298 0.192]
+ [0.206 0.307 0.215 0.272]
+ [0.183 0.342 0.208 0.267]
+ [0.181 0.34  0.236 0.243]]
+Validation acc: 0.2833969465648855
+Validation class_accuracies: [0.2780586450960566, 0.30723606168446027, 0.20833333333333334, 0.24305555555555555]
+Validation sensitivity: 0.2881662149954833
+Validation specificity: 0.2780586450960566
+Validation icbhi_score: 0.2831124300457699
+Validation roc_auc: None
+Validation avg_accuracy: 0.25917089891735146
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 7 epochs
+249/249 - 1043s - accuracy: 0.5321 - student_loss: 0.6928 - distillation_loss: -1.9117e-02 - val_accuracy: 0.5172 - val_student_loss: 0.6574 - 1043s/epoch - 4s/step
+here
+here2
+Epoch 9/110
+Validation cm: [[588 196 162  43]
+ [504 162 140  37]
+ [ 71  15  26   8]
+ [ 80  23  30  11]]
+Validation val_loss: 0.0002846972632954139
+Validation normalized_cm: [[0.595 0.198 0.164 0.043]
+ [0.598 0.192 0.166 0.044]
+ [0.592 0.125 0.217 0.067]
+ [0.556 0.16  0.208 0.076]]
+Validation acc: 0.37547709923664124
+Validation class_accuracies: [0.5945399393326593, 0.19217081850533807, 0.21666666666666667, 0.0763888888888889]
+Validation sensitivity: 0.17976513098464317
+Validation specificity: 0.5945399393326593
+Validation icbhi_score: 0.3871525351586512
+Validation roc_auc: None
+Validation avg_accuracy: 0.26994157834838817
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 8 epochs
+249/249 - 1041s - accuracy: 0.5173 - student_loss: 0.6616 - distillation_loss: -1.7746e-02 - val_accuracy: 0.5200 - val_student_loss: 0.5967 - 1041s/epoch - 4s/step
+here
+here2
+Epoch 10/110
+Validation cm: [[468 188 270  63]
+ [353 101 326  63]
+ [ 47  23  44   6]
+ [ 56  14  66   8]]
+Validation val_loss: 0.00034175352513335133
+Validation normalized_cm: [[0.473 0.19  0.273 0.064]
+ [0.419 0.12  0.387 0.075]
+ [0.392 0.192 0.367 0.05 ]
+ [0.389 0.097 0.458 0.056]]
+Validation acc: 0.29627862595419846
+Validation class_accuracies: [0.47320525783619816, 0.11981020166073547, 0.36666666666666664, 0.05555555555555555]
+Validation sensitivity: 0.13821138211382114
+Validation specificity: 0.47320525783619816
+Validation icbhi_score: 0.30570831997500963
+Validation roc_auc: None
+Validation avg_accuracy: 0.253809420429789
+Validation one_indexed_epoch: 10
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 9 epochs
+249/249 - 1058s - accuracy: 0.5266 - student_loss: 0.6209 - distillation_loss: -1.7993e-02 - val_accuracy: 0.4060 - val_student_loss: 0.7163 - 1058s/epoch - 4s/step
+here
+here2
+Epoch 11/110
+Validation cm: [[609 230 124  26]
+ [556 121 148  18]
+ [ 67  37  12   4]
+ [ 94  17  24   9]]
+Validation val_loss: 0.00033423696992961505
+Validation normalized_cm: [[0.616 0.233 0.125 0.026]
+ [0.66  0.144 0.176 0.021]
+ [0.558 0.308 0.1   0.033]
+ [0.653 0.118 0.167 0.062]]
+Validation acc: 0.3583015267175573
+Validation class_accuracies: [0.6157735085945399, 0.1435349940688019, 0.1, 0.0625]
+Validation sensitivity: 0.12827461607949414
+Validation specificity: 0.6157735085945399
+Validation icbhi_score: 0.372024062337017
+Validation roc_auc: None
+Validation avg_accuracy: 0.23045212566583545
+Validation one_indexed_epoch: 11
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 10 epochs
+249/249 - 1046s - accuracy: 0.5462 - student_loss: 0.5820 - distillation_loss: -1.4057e-02 - val_accuracy: 0.5229 - val_student_loss: 0.7006 - 1046s/epoch - 4s/step
+here
+here2
+Epoch 12/110
+Validation cm: [[620 246 102  21]
+ [532 189 101  21]
+ [ 67  39  12   2]
+ [ 84  47  11   2]]
+Validation val_loss: 0.00035694480397319064
+Validation normalized_cm: [[0.627 0.249 0.103 0.021]
+ [0.631 0.224 0.12  0.025]
+ [0.558 0.325 0.1   0.017]
+ [0.583 0.326 0.076 0.014]]
+Validation acc: 0.3926526717557252
+Validation class_accuracies: [0.6268958543983822, 0.22419928825622776, 0.1, 0.013888888888888888]
+Validation sensitivity: 0.18337850045167117
+Validation specificity: 0.6268958543983822
+Validation icbhi_score: 0.4051371774250267
+Validation roc_auc: None
+Validation avg_accuracy: 0.24124600788587472
+Validation one_indexed_epoch: 12
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 11 epochs
+249/249 - 1033s - accuracy: 0.5513 - student_loss: 0.8397 - distillation_loss: -1.5667e-02 - val_accuracy: 0.5921 - val_student_loss: 0.7482 - 1033s/epoch - 4s/step
+here
+here2
+Epoch 13/110
+Validation cm: [[548 253 127  61]
+ [435 216 139  53]
+ [ 67  32  18   3]
+ [ 67  51  20   6]]
+Validation val_loss: 0.0003236449174298585
+Validation normalized_cm: [[0.554 0.256 0.128 0.062]
+ [0.516 0.256 0.165 0.063]
+ [0.558 0.267 0.15  0.025]
+ [0.465 0.354 0.139 0.042]]
+Validation acc: 0.37595419847328243
+Validation class_accuracies: [0.5540950455005056, 0.25622775800711745, 0.15, 0.041666666666666664]
+Validation sensitivity: 0.21680216802168023
+Validation specificity: 0.5540950455005056
+Validation icbhi_score: 0.38544860676109294
+Validation roc_auc: None
+Validation avg_accuracy: 0.25049736754357244
+Validation one_indexed_epoch: 13
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 12 epochs
+249/249 - 1037s - accuracy: 0.5598 - student_loss: 0.6992 - distillation_loss: -1.6411e-02 - val_accuracy: 0.6016 - val_student_loss: 0.6784 - 1037s/epoch - 4s/step
+here
+here2
+Epoch 14/110
+Validation cm: [[495 222 214  58]
+ [379 167 231  66]
+ [ 52  30  20  18]
+ [ 52  41  34  17]]
+Validation val_loss: 0.0003989913877640062
+Validation normalized_cm: [[0.501 0.224 0.216 0.059]
+ [0.45  0.198 0.274 0.078]
+ [0.433 0.25  0.167 0.15 ]
+ [0.361 0.285 0.236 0.118]]
+Validation acc: 0.33349236641221375
+Validation class_accuracies: [0.5005055611729019, 0.1981020166073547, 0.16666666666666666, 0.11805555555555555]
+Validation sensitivity: 0.1842818428184282
+Validation specificity: 0.5005055611729019
+Validation icbhi_score: 0.34239370199566505
+Validation roc_auc: None
+Validation avg_accuracy: 0.2458324500006197
+Validation one_indexed_epoch: 14
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 13 epochs
+249/249 - 1070s - accuracy: 0.5684 - student_loss: 0.6324 - distillation_loss: -1.7903e-02 - val_accuracy: 0.4962 - val_student_loss: 0.8363 - 1070s/epoch - 4s/step
+here
+here2
+Epoch 15/110
+Validation cm: [[665 182 121  21]
+ [488 239 100  16]
+ [ 70  35  11   4]
+ [ 84  48  12   0]]
+Validation val_loss: 0.00032715254840050035
+Validation normalized_cm: [[0.672 0.184 0.122 0.021]
+ [0.579 0.284 0.119 0.019]
+ [0.583 0.292 0.092 0.033]
+ [0.583 0.333 0.083 0.   ]]
+Validation acc: 0.43654580152671757
+Validation class_accuracies: [0.6723963599595552, 0.2835112692763938, 0.09166666666666666, 0.0]
+Validation sensitivity: 0.22583559168925021
+Validation specificity: 0.6723963599595552
+Validation icbhi_score: 0.44911597582440266
+Validation roc_auc: None
+Validation avg_accuracy: 0.2618935739756539
+Validation one_indexed_epoch: 15
+The validation tracker metric at 0.5022044659273691 hasn't increased by 0 in 14 epochs
+249/249 - 1036s - accuracy: 0.5535 - student_loss: 0.7031 - distillation_loss: 0.0222 - val_accuracy: 0.5821 - val_student_loss: 0.6857 - 1036s/epoch - 4s/step
+here
+here2
+Epoch 16/110

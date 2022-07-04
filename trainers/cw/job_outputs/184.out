@@ -1,0 +1,180 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train184
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+training parameters
+[('cache_root', '../cache/'), ('data_root', '../data/'), ('jordan_root', '../data/jwyy9np4gv-3/'), ('icbhi_root', '../data/raw_audios/icbhi_preprocessed_v2_cleaned_8000/'), ('bd_root', '../data/PCV_SEGMENTED_Processed_Files/'), ('excel_path', '../data/Bangladesh_PCV_onlyStudyPatients.xlsx'), ('perch_root', '../data/raw_audios/perch_8000_10seconds'), ('ant_root', '../data/raw_audios/Antwerp_Clinical_Complete'), ('description', ' effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,'), ('job_id', 0), ('mode', 'cw'), ('n_classes', 2), ('shape', (80, 500, 3)), ('n_epochs', 110), ('lr', 0.001), ('batch_size', 16), ('ll2_reg', 0), ('weight_decay', 0.01), ('label_smoothing', 0), ('epsilon', 1e-07), ('es_patience', 15), ('min_delta', 0), ('train_test_ratio', 0.8), ('kfold', False), ('clause', 0), ('epoch_start', 0), ('testing', 0), ('adaptive_lr', False), ('cuberooting', 1), ('normalizing', 1), ('class_weights', True), ('early_stopping', True), ('initial_channels', 1), ('factor', 0.5), ('lr_patience', 5), ('min_lr', 1e-05), ('sr', 4000), ('audio_length', 5), ('step_size', 2.5), ('n_fft', 1024), ('hop_length', 254), ('n_mels', 128), ('overlap_threshold', 0.3), ('trainable_fb', False), ('to_decibel', True), ('train_nn', False), ('train_mel', False), ('file_dir', '../cache/cw/train184'), ('n_sequences', 9), ('activate_spectral_loss', False), ('normalize', False), ('stacking', False), ('oversample', False), ('one_hot_encoding', False), ('activation', 'sigmoid'), ('n_filters', 80)]
+Job id is 1.
+Job dir: ../cache/cw/train184/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+turning the kfold from 90/10 to 80/20
+100
+12
+to
+90
+22
+-----------------------
+--- Final training dataset went from 0 to 3969 elements, with 1889 none's, 991 crakles, 597 wheezes and 492 both ---
+--- Final Validation dataset contains 2096 elements, with 989 none, 843 crackles, 120 wheezes and 144 both ---
+GPUs
+['/device:GPU:0']
+Initializing weights...
+weights = {0: 0.5252779248279513, 1: 1.0012613521695257, 2: 1.6620603015075377, 3: 2.0167682926829267}
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ resnet50 (Functional)       (None, 3, 16, 2048)       23587712  
+                                                                 
+ global_average_pooling2d (G  (None, 2048)             0         
+ lobalAveragePooling2D)                                          
+                                                                 
+ dense (Dense)               (None, 100)               204900    
+                                                                 
+ dropout (Dropout)           (None, 100)               0         
+                                                                 
+ dense_1 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_1 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_2 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 23,797,764
+Trainable params: 23,744,644
+Non-trainable params: 53,120
+_________________________________________________________________
+There is no such attribute
+Model: "leaf_model9_model_efnet1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 2)                                   23797764         
+                                                                                                              
+ leaf (Leaf)                                     multiple                                    0 (unused)       
+                                                                                                              
+==============================================================================================================
+Total params: 23,798,086
+Trainable params: 23,744,966
+Non-trainable params: 53,120
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/110
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[811  86  81  11]
+ [600  69 159  15]
+ [ 77   8  34   1]
+ [ 98  12  32   2]]
+Validation val_loss: 0.6653618669718991
+Validation normalized_cm: [[0.82  0.087 0.082 0.011]
+ [0.712 0.082 0.189 0.018]
+ [0.642 0.067 0.283 0.008]
+ [0.681 0.083 0.222 0.014]]
+Validation acc: 0.43702290076335876
+Validation class_accuracies: [0.8200202224469161, 0.08185053380782918, 0.2833333333333333, 0.013888888888888888]
+Validation sensitivity: 0.0948509485094851
+Validation specificity: 0.8200202224469161
+Validation icbhi_score: 0.45743558547820057
+Validation roc_auc: None
+Validation avg_accuracy: 0.2997732446192418
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+249/249 - 637s - loss: 0.7312 - accuracy: 0.7196 - 637s/epoch - 3s/step
+Epoch 2/110
+Validation cm: [[736 194  25  34]
+ [598 221   7  17]
+ [ 74  22  12  12]
+ [ 97  38   1   8]]
+Validation val_loss: 0.6152596383218704
+Validation normalized_cm: [[0.744 0.196 0.025 0.034]
+ [0.709 0.262 0.008 0.02 ]
+ [0.617 0.183 0.1   0.1  ]
+ [0.674 0.264 0.007 0.056]]
+Validation acc: 0.4661259541984733
+Validation class_accuracies: [0.7441860465116279, 0.26215895610913403, 0.1, 0.05555555555555555]
+Validation sensitivity: 0.21770551038843722
+Validation specificity: 0.7441860465116279
+Validation icbhi_score: 0.48094577845003256
+Validation roc_auc: None
+Validation avg_accuracy: 0.2904751395440794
+Validation one_indexed_epoch: 2
+-- New best results were achieved. --
+249/249 - 642s - loss: 0.6671 - accuracy: 0.6644 - 642s/epoch - 3s/step
+Epoch 3/110
+Validation cm: [[501 319  48 121]
+ [291 423  26 103]
+ [ 39  42  17  22]
+ [ 62  53   8  21]]
+Validation val_loss: 0.6305623021512647
+Validation normalized_cm: [[0.507 0.323 0.049 0.122]
+ [0.345 0.502 0.031 0.122]
+ [0.325 0.35  0.142 0.183]
+ [0.431 0.368 0.056 0.146]]
+Validation acc: 0.45896946564885494
+Validation class_accuracies: [0.506572295247725, 0.501779359430605, 0.14166666666666666, 0.14583333333333334]
+Validation sensitivity: 0.4164408310749774
+Validation specificity: 0.506572295247725
+Validation icbhi_score: 0.4615065631613512
+Validation roc_auc: None
+Validation avg_accuracy: 0.32396291366958246
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.48094577845003256 hasn't increased by 0 in 1 epochs
+249/249 - 644s - loss: 0.6469 - accuracy: 0.7095 - 644s/epoch - 3s/step
+Epoch 4/110
+Validation cm: [[595 199  52 143]
+ [370 301  37 135]
+ [ 33  37  15  35]
+ [ 73  28   9  34]]
+Validation val_loss: 0.7456056135926115
+Validation normalized_cm: [[0.602 0.201 0.053 0.145]
+ [0.439 0.357 0.044 0.16 ]
+ [0.275 0.308 0.125 0.292]
+ [0.507 0.194 0.062 0.236]]
+Validation acc: 0.4508587786259542
+Validation class_accuracies: [0.6016177957532861, 0.3570581257413998, 0.125, 0.2361111111111111]
+Validation sensitivity: 0.31616982836495033
+Validation specificity: 0.6016177957532861
+Validation icbhi_score: 0.4588938120591182
+Validation roc_auc: None
+Validation avg_accuracy: 0.32994675815144925
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.48094577845003256 hasn't increased by 0 in 2 epochs
+249/249 - 644s - loss: 0.6294 - accuracy: 0.6916 - 644s/epoch - 3s/step
+Epoch 5/110
+Validation cm: [[578 239  90  82]
+ [413 261  76  93]
+ [ 49  24  24  23]
+ [ 73  35  15  21]]
+Validation val_loss: 0.6294103045504084
+Validation normalized_cm: [[0.584 0.242 0.091 0.083]
+ [0.49  0.31  0.09  0.11 ]
+ [0.408 0.2   0.2   0.192]
+ [0.507 0.243 0.104 0.146]]
+Validation acc: 0.4217557251908397
+Validation class_accuracies: [0.5844287158746209, 0.3096085409252669, 0.2, 0.14583333333333334]
+Validation sensitivity: 0.2764227642276423
+Validation specificity: 0.5844287158746209
+Validation icbhi_score: 0.43042574005113154
+Validation roc_auc: None
+Validation avg_accuracy: 0.30996764753330525
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.48094577845003256 hasn't increased by 0 in 3 epochs
+249/249 - 647s - loss: 0.6347 - accuracy: 0.6793 - 647s/epoch - 3s/step
+Epoch 6/110

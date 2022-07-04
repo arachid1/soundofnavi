@@ -79,7 +79,7 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
     if bool(parameters.class_weights):
         print("Initializing weights...")
         weights = class_weight.compute_class_weight(
-            "balanced", [0, 1], [l for l in train_labels if l == 0 or l == 1])
+            "balanced", [0, 1], [l for l in train_labels])
         weights = {i: weights[i] for i in range(0, len(weights))}
         print("weights = {}".format(weights))
     

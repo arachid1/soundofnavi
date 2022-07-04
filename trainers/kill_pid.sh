@@ -1,0 +1,1 @@
+nvidia-smi -q -d PIDS | grep -P "Process ID +: [0-9]+" | grep -Po "[0-9]+" | xargs kill -9

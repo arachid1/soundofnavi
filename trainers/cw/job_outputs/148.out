@@ -1,0 +1,333 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train148
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+Job id is 1.
+Job dir: ../cache/cw/train148/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+-----------------------
+--- Final training dataset went from 0 to 4349 elements, with 0 none's, 0 crakles, 0 wheezes and 0 both ---
+--- Final Validation dataset contains 1716 elements, with 0 none, 0 crackles, 0 wheezes and 0 both ---
+Initializing weights...
+Model: "vgg16"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ input_1 (InputLayer)        [(None, 80, 500, 3)]      0         
+                                                                 
+ block1_conv1 (Conv2D)       (None, 80, 500, 64)       1792      
+                                                                 
+ block1_conv2 (Conv2D)       (None, 80, 500, 64)       36928     
+                                                                 
+ block1_pool (MaxPooling2D)  (None, 40, 250, 64)       0         
+                                                                 
+ block2_conv1 (Conv2D)       (None, 40, 250, 128)      73856     
+                                                                 
+ block2_conv2 (Conv2D)       (None, 40, 250, 128)      147584    
+                                                                 
+ block2_pool (MaxPooling2D)  (None, 20, 125, 128)      0         
+                                                                 
+ block3_conv1 (Conv2D)       (None, 20, 125, 256)      295168    
+                                                                 
+ block3_conv2 (Conv2D)       (None, 20, 125, 256)      590080    
+                                                                 
+ block3_conv3 (Conv2D)       (None, 20, 125, 256)      590080    
+                                                                 
+ block3_pool (MaxPooling2D)  (None, 10, 62, 256)       0         
+                                                                 
+ block4_conv1 (Conv2D)       (None, 10, 62, 512)       1180160   
+                                                                 
+ block4_conv2 (Conv2D)       (None, 10, 62, 512)       2359808   
+                                                                 
+ block4_conv3 (Conv2D)       (None, 10, 62, 512)       2359808   
+                                                                 
+ block4_pool (MaxPooling2D)  (None, 5, 31, 512)        0         
+                                                                 
+ block5_conv1 (Conv2D)       (None, 5, 31, 512)        2359808   
+                                                                 
+ block5_conv2 (Conv2D)       (None, 5, 31, 512)        2359808   
+                                                                 
+ block5_conv3 (Conv2D)       (None, 5, 31, 512)        2359808   
+                                                                 
+ block5_pool (MaxPooling2D)  (None, 2, 15, 512)        0         
+                                                                 
+=================================================================
+Total params: 14,714,688
+Trainable params: 14,714,688
+Non-trainable params: 0
+_________________________________________________________________
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ batch_normalization (BatchN  (None, 80, 500, 3)       12        
+ ormalization)                                                   
+                                                                 
+ vgg16 (Functional)          (None, 2, 15, 512)        14714688  
+                                                                 
+ batch_normalization_1 (Batc  (None, 2, 15, 512)       2048      
+ hNormalization)                                                 
+                                                                 
+=================================================================
+Total params: 14,716,748
+Trainable params: 1,030
+Non-trainable params: 14,715,718
+_________________________________________________________________
+(None, 2, 15, 512)
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ global_average_pooling2d (G  (None, 512)              0         
+ lobalAveragePooling2D)                                          
+                                                                 
+ dense (Dense)               (None, 256)               131328    
+                                                                 
+ dropout (Dropout)           (None, 256)               0         
+                                                                 
+ dense_1 (Dense)             (None, 256)               65792     
+                                                                 
+ dropout_1 (Dropout)         (None, 256)               0         
+                                                                 
+ dense_2 (Dense)             (None, 4)                 1028      
+                                                                 
+=================================================================
+Total params: 198,148
+Trainable params: 198,148
+Non-trainable params: 0
+_________________________________________________________________
+Model: "leaf_model9_model_res"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks (MelFilterbanks)                multiple                                    0                
+                                                                                                              
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 2, 15, 512)                          14716748         
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 4)                                   198148           
+                                                                                                              
+==============================================================================================================
+Total params: 14,915,058
+Trainable params: 199,340
+Non-trainable params: 14,715,718
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/80
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+There is no such attribute
+272/272 - 102s - loss: 1.4414 - accuracy: 0.2532 - 102s/epoch - 375ms/step
+Epoch 2/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.5 hasn't increased by 0 in 1 epochs
+There is no such attribute
+272/272 - 99s - loss: 1.4209 - accuracy: 0.2755 - 99s/epoch - 362ms/step
+Epoch 3/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.5 hasn't increased by 0 in 2 epochs
+There is no such attribute
+272/272 - 98s - loss: 1.4051 - accuracy: 0.2812 - 98s/epoch - 360ms/step
+Epoch 4/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.5 hasn't increased by 0 in 3 epochs
+There is no such attribute
+272/272 - 100s - loss: 1.3984 - accuracy: 0.2920 - 100s/epoch - 366ms/step
+Epoch 5/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.5 hasn't increased by 0 in 4 epochs
+There is no such attribute
+272/272 - 98s - loss: 1.3917 - accuracy: 0.3129 - 98s/epoch - 359ms/step
+Epoch 6/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.5 hasn't increased by 0 in 5 epochs
+There is no such attribute
+272/272 - 102s - loss: 1.3805 - accuracy: 0.3272 - 102s/epoch - 375ms/step
+Epoch 7/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.5 hasn't increased by 0 in 6 epochs
+There is no such attribute
+272/272 - 102s - loss: 1.3559 - accuracy: 0.3442 - 102s/epoch - 377ms/step
+Epoch 8/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.5 hasn't increased by 0 in 7 epochs
+There is no such attribute
+272/272 - 104s - loss: 1.3508 - accuracy: 0.3440 - 104s/epoch - 383ms/step
+Epoch 9/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.5 hasn't increased by 0 in 8 epochs
+There is no such attribute
+272/272 - 104s - loss: 1.3523 - accuracy: 0.3504 - 104s/epoch - 381ms/step
+Epoch 10/80
+Validation cm: [[958   0   0   0]
+ [562   0   0   0]
+ [ 69   0   0   0]
+ [127   0   0   0]]
+Validation normalized_cm: [[1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]
+ [1. 0. 0. 0.]]
+Validation acc: 0.5582750582750583
+Validation class_accuracies: [1.0, 0.0, 0.0, 0.0]
+Validation sensitivity: 0.0
+Validation specificity: 1.0
+Validation icbhi_score: 0.5
+Validation roc_auc: None
+Validation avg_accuracy: 0.25
+Validation one_indexed_epoch: 10
+The validation tracker metric at 0.5 hasn't increased by 0 in 9 epochs
+There is no such attribute
+272/272 - 105s - loss: 1.3506 - accuracy: 0.3651 - 105s/epoch - 385ms/step
+Epoch 11/80

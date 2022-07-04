@@ -1,0 +1,2130 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train168
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+Job id is 1.
+Job dir: ../cache/cw/train168/1
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+-----------------------
+--- Final training dataset went from 0 to 3969 elements, with 1889 none's, 991 crakles, 597 wheezes and 492 both ---
+--- Final Validation dataset contains 2096 elements, with 989 none, 843 crackles, 120 wheezes and 144 both ---
+[LogicalDevice(name='/device:GPU:0', device_type='GPU')]
+Initializing weights...
+weights = {0: 0.5252779248279513, 1: 1.0012613521695257, 2: 1.6620603015075377, 3: 2.0167682926829267}
+Model: "resnet50"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 80, 500, 3)  0           []                               
+                                ]                                                                 
+                                                                                                  
+ conv1_pad (ZeroPadding2D)      (None, 86, 506, 3)   0           ['input_1[0][0]']                
+                                                                                                  
+ conv1_conv (Conv2D)            (None, 40, 250, 64)  9472        ['conv1_pad[0][0]']              
+                                                                                                  
+ conv1_bn (BatchNormalization)  (None, 40, 250, 64)  256         ['conv1_conv[0][0]']             
+                                                                                                  
+ conv1_relu (Activation)        (None, 40, 250, 64)  0           ['conv1_bn[0][0]']               
+                                                                                                  
+ pool1_pad (ZeroPadding2D)      (None, 42, 252, 64)  0           ['conv1_relu[0][0]']             
+                                                                                                  
+ pool1_pool (MaxPooling2D)      (None, 20, 125, 64)  0           ['pool1_pad[0][0]']              
+                                                                                                  
+ conv2_block1_1_conv (Conv2D)   (None, 20, 125, 64)  4160        ['pool1_pool[0][0]']             
+                                                                                                  
+ conv2_block1_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block1_1_relu[0][0]']    
+                                                                                                  
+ conv2_block1_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_0_conv (Conv2D)   (None, 20, 125, 256  16640       ['pool1_pool[0][0]']             
+                                )                                                                 
+                                                                                                  
+ conv2_block1_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block1_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block1_0_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block1_0_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block1_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block1_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block1_add (Add)         (None, 20, 125, 256  0           ['conv2_block1_0_bn[0][0]',      
+                                )                                 'conv2_block1_3_bn[0][0]']      
+                                                                                                  
+ conv2_block1_out (Activation)  (None, 20, 125, 256  0           ['conv2_block1_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv2_block2_1_conv (Conv2D)   (None, 20, 125, 64)  16448       ['conv2_block1_out[0][0]']       
+                                                                                                  
+ conv2_block2_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block2_1_relu[0][0]']    
+                                                                                                  
+ conv2_block2_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block2_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block2_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block2_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block2_add (Add)         (None, 20, 125, 256  0           ['conv2_block1_out[0][0]',       
+                                )                                 'conv2_block2_3_bn[0][0]']      
+                                                                                                  
+ conv2_block2_out (Activation)  (None, 20, 125, 256  0           ['conv2_block2_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv2_block3_1_conv (Conv2D)   (None, 20, 125, 64)  16448       ['conv2_block2_out[0][0]']       
+                                                                                                  
+ conv2_block3_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block3_1_relu[0][0]']    
+                                                                                                  
+ conv2_block3_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block3_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block3_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block3_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block3_add (Add)         (None, 20, 125, 256  0           ['conv2_block2_out[0][0]',       
+                                )                                 'conv2_block3_3_bn[0][0]']      
+                                                                                                  
+ conv2_block3_out (Activation)  (None, 20, 125, 256  0           ['conv2_block3_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv3_block1_1_conv (Conv2D)   (None, 10, 63, 128)  32896       ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block1_1_relu[0][0]']    
+                                                                                                  
+ conv3_block1_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_0_conv (Conv2D)   (None, 10, 63, 512)  131584      ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block1_2_relu[0][0]']    
+                                                                                                  
+ conv3_block1_0_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_add (Add)         (None, 10, 63, 512)  0           ['conv3_block1_0_bn[0][0]',      
+                                                                  'conv3_block1_3_bn[0][0]']      
+                                                                                                  
+ conv3_block1_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block1_add[0][0]']       
+                                                                                                  
+ conv3_block2_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block1_out[0][0]']       
+                                                                                                  
+ conv3_block2_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block2_1_relu[0][0]']    
+                                                                                                  
+ conv3_block2_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block2_2_relu[0][0]']    
+                                                                                                  
+ conv3_block2_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_add (Add)         (None, 10, 63, 512)  0           ['conv3_block1_out[0][0]',       
+                                                                  'conv3_block2_3_bn[0][0]']      
+                                                                                                  
+ conv3_block2_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block2_add[0][0]']       
+                                                                                                  
+ conv3_block3_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block2_out[0][0]']       
+                                                                                                  
+ conv3_block3_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block3_1_relu[0][0]']    
+                                                                                                  
+ conv3_block3_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block3_2_relu[0][0]']    
+                                                                                                  
+ conv3_block3_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_add (Add)         (None, 10, 63, 512)  0           ['conv3_block2_out[0][0]',       
+                                                                  'conv3_block3_3_bn[0][0]']      
+                                                                                                  
+ conv3_block3_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block3_add[0][0]']       
+                                                                                                  
+ conv3_block4_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block3_out[0][0]']       
+                                                                                                  
+ conv3_block4_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block4_1_relu[0][0]']    
+                                                                                                  
+ conv3_block4_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block4_2_relu[0][0]']    
+                                                                                                  
+ conv3_block4_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block4_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_add (Add)         (None, 10, 63, 512)  0           ['conv3_block3_out[0][0]',       
+                                                                  'conv3_block4_3_bn[0][0]']      
+                                                                                                  
+ conv3_block4_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block4_add[0][0]']       
+                                                                                                  
+ conv4_block1_1_conv (Conv2D)   (None, 5, 32, 256)   131328      ['conv3_block4_out[0][0]']       
+                                                                                                  
+ conv4_block1_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block1_1_relu[0][0]']    
+                                                                                                  
+ conv4_block1_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_0_conv (Conv2D)   (None, 5, 32, 1024)  525312      ['conv3_block4_out[0][0]']       
+                                                                                                  
+ conv4_block1_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block1_2_relu[0][0]']    
+                                                                                                  
+ conv4_block1_0_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block1_0_bn[0][0]',      
+                                                                  'conv4_block1_3_bn[0][0]']      
+                                                                                                  
+ conv4_block1_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block1_add[0][0]']       
+                                                                                                  
+ conv4_block2_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block1_out[0][0]']       
+                                                                                                  
+ conv4_block2_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block2_1_relu[0][0]']    
+                                                                                                  
+ conv4_block2_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block2_2_relu[0][0]']    
+                                                                                                  
+ conv4_block2_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block1_out[0][0]',       
+                                                                  'conv4_block2_3_bn[0][0]']      
+                                                                                                  
+ conv4_block2_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block2_add[0][0]']       
+                                                                                                  
+ conv4_block3_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block2_out[0][0]']       
+                                                                                                  
+ conv4_block3_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block3_1_relu[0][0]']    
+                                                                                                  
+ conv4_block3_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block3_2_relu[0][0]']    
+                                                                                                  
+ conv4_block3_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block2_out[0][0]',       
+                                                                  'conv4_block3_3_bn[0][0]']      
+                                                                                                  
+ conv4_block3_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block3_add[0][0]']       
+                                                                                                  
+ conv4_block4_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block3_out[0][0]']       
+                                                                                                  
+ conv4_block4_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block4_1_relu[0][0]']    
+                                                                                                  
+ conv4_block4_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block4_2_relu[0][0]']    
+                                                                                                  
+ conv4_block4_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block4_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block3_out[0][0]',       
+                                                                  'conv4_block4_3_bn[0][0]']      
+                                                                                                  
+ conv4_block4_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block4_add[0][0]']       
+                                                                                                  
+ conv4_block5_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block4_out[0][0]']       
+                                                                                                  
+ conv4_block5_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block5_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block5_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block5_1_relu[0][0]']    
+                                                                                                  
+ conv4_block5_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block5_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block5_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block5_2_relu[0][0]']    
+                                                                                                  
+ conv4_block5_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block5_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block4_out[0][0]',       
+                                                                  'conv4_block5_3_bn[0][0]']      
+                                                                                                  
+ conv4_block5_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block5_add[0][0]']       
+                                                                                                  
+ conv4_block6_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block5_out[0][0]']       
+                                                                                                  
+ conv4_block6_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block6_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block6_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block6_1_relu[0][0]']    
+                                                                                                  
+ conv4_block6_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block6_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block6_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block6_2_relu[0][0]']    
+                                                                                                  
+ conv4_block6_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block6_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block5_out[0][0]',       
+                                                                  'conv4_block6_3_bn[0][0]']      
+                                                                                                  
+ conv4_block6_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block6_add[0][0]']       
+                                                                                                  
+ conv5_block1_1_conv (Conv2D)   (None, 3, 16, 512)   524800      ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block1_1_relu[0][0]']    
+                                                                                                  
+ conv5_block1_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_0_conv (Conv2D)   (None, 3, 16, 2048)  2099200     ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block1_2_relu[0][0]']    
+                                                                                                  
+ conv5_block1_0_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block1_0_bn[0][0]',      
+                                                                  'conv5_block1_3_bn[0][0]']      
+                                                                                                  
+ conv5_block1_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block1_add[0][0]']       
+                                                                                                  
+ conv5_block2_1_conv (Conv2D)   (None, 3, 16, 512)   1049088     ['conv5_block1_out[0][0]']       
+                                                                                                  
+ conv5_block2_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block2_1_relu[0][0]']    
+                                                                                                  
+ conv5_block2_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block2_2_relu[0][0]']    
+                                                                                                  
+ conv5_block2_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block1_out[0][0]',       
+                                                                  'conv5_block2_3_bn[0][0]']      
+                                                                                                  
+ conv5_block2_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block2_add[0][0]']       
+                                                                                                  
+ conv5_block3_1_conv (Conv2D)   (None, 3, 16, 512)   1049088     ['conv5_block2_out[0][0]']       
+                                                                                                  
+ conv5_block3_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block3_1_relu[0][0]']    
+                                                                                                  
+ conv5_block3_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block3_2_relu[0][0]']    
+                                                                                                  
+ conv5_block3_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block2_out[0][0]',       
+                                                                  'conv5_block3_3_bn[0][0]']      
+                                                                                                  
+ conv5_block3_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block3_add[0][0]']       
+                                                                                                  
+==================================================================================================
+Total params: 23,587,712
+Trainable params: 23,534,592
+Non-trainable params: 53,120
+__________________________________________________________________________________________________
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ resnet50 (Functional)       (None, 3, 16, 2048)       23587712  
+                                                                 
+ global_average_pooling2d (G  (None, 2048)             0         
+ lobalAveragePooling2D)                                          
+                                                                 
+ dense (Dense)               (None, 100)               204900    
+                                                                 
+ dropout (Dropout)           (None, 100)               0         
+                                                                 
+ dense_1 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_1 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_2 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 23,797,764
+Trainable params: 23,744,644
+Non-trainable params: 53,120
+_________________________________________________________________
+Model: "leaf_model9_model_efnet1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks (MelFilterbanks)                multiple                                    0                
+                                                                                                              
+ mel_filterbanks_1 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 2)                                   23797764         
+                                                                                                              
+==============================================================================================================
+Total params: 23,797,926
+Trainable params: 23,744,806
+Non-trainable params: 53,120
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/80
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[325   0 661   3]
+ [284   0 552   7]
+ [ 13   0 106   1]
+ [ 23   0 120   1]]
+Validation normalized_cm: [[0.329 0.    0.668 0.003]
+ [0.337 0.    0.655 0.008]
+ [0.108 0.    0.883 0.008]
+ [0.16  0.    0.833 0.007]]
+Validation acc: 0.20610687022900764
+Validation class_accuracies: [0.32861476238624876, 0.0, 0.8833333333333333, 0.006944444444444444]
+Validation sensitivity: 0.0966576332429991
+Validation specificity: 0.32861476238624876
+Validation icbhi_score: 0.21263619781462392
+Validation roc_auc: None
+Validation avg_accuracy: 0.3047231350410066
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+There is no such attribute
+249/249 - 160s - loss: 0.6730 - accuracy: 0.6110 - 160s/epoch - 642ms/step
+Epoch 2/80
+Validation cm: [[589 306  49  45]
+ [577 229  17  20]
+ [ 33  25  34  28]
+ [ 79  12  23  30]]
+Validation normalized_cm: [[0.596 0.309 0.05  0.046]
+ [0.684 0.272 0.02  0.024]
+ [0.275 0.208 0.283 0.233]
+ [0.549 0.083 0.16  0.208]]
+Validation acc: 0.4208015267175573
+Validation class_accuracies: [0.5955510616784631, 0.27164887307236063, 0.2833333333333333, 0.20833333333333334]
+Validation sensitivity: 0.2646793134598013
+Validation specificity: 0.5955510616784631
+Validation icbhi_score: 0.43011518756913214
+Validation roc_auc: None
+Validation avg_accuracy: 0.33971665035437254
+Validation one_indexed_epoch: 2
+-- New best results were achieved. --
+There is no such attribute
+249/249 - 150s - loss: 0.5780 - accuracy: 0.6969 - 150s/epoch - 602ms/step
+Epoch 3/80
+Validation cm: [[405 426  82  76]
+ [211 571  23  38]
+ [ 20  24  55  21]
+ [ 24  71  36  13]]
+Validation normalized_cm: [[0.41  0.431 0.083 0.077]
+ [0.25  0.677 0.027 0.045]
+ [0.167 0.2   0.458 0.175]
+ [0.167 0.493 0.25  0.09 ]]
+Validation acc: 0.49809160305343514
+Validation class_accuracies: [0.40950455005055614, 0.6773428232502966, 0.4583333333333333, 0.09027777777777778]
+Validation sensitivity: 0.5772357723577236
+Validation specificity: 0.40950455005055614
+Validation icbhi_score: 0.4933701612041399
+Validation roc_auc: None
+Validation avg_accuracy: 0.40886462110299093
+Validation one_indexed_epoch: 3
+-- New best results were achieved. --
+There is no such attribute
+249/249 - 154s - loss: 0.5039 - accuracy: 0.7584 - 154s/epoch - 620ms/step
+Epoch 4/80
+Validation cm: [[647 105 111 126]
+ [522 140  76 105]
+ [ 23   1  59  37]
+ [ 56  16  33  39]]
+Validation normalized_cm: [[0.654 0.106 0.112 0.127]
+ [0.619 0.166 0.09  0.125]
+ [0.192 0.008 0.492 0.308]
+ [0.389 0.111 0.229 0.271]]
+Validation acc: 0.4222328244274809
+Validation class_accuracies: [0.654196157735086, 0.166073546856465, 0.49166666666666664, 0.2708333333333333]
+Validation sensitivity: 0.21499548328816623
+Validation specificity: 0.654196157735086
+Validation icbhi_score: 0.4345958205116261
+Validation roc_auc: None
+Validation avg_accuracy: 0.39569242614788774
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 1 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.4575 - accuracy: 0.7811 - 157s/epoch - 630ms/step
+Epoch 5/80
+Validation cm: [[643 252  38  56]
+ [583 226  11  23]
+ [ 46  16  35  23]
+ [ 92  26  16  10]]
+Validation normalized_cm: [[0.65  0.255 0.038 0.057]
+ [0.692 0.268 0.013 0.027]
+ [0.383 0.133 0.292 0.192]
+ [0.639 0.181 0.111 0.069]]
+Validation acc: 0.4360687022900763
+Validation class_accuracies: [0.6501516683518705, 0.2680901542111507, 0.2916666666666667, 0.06944444444444445]
+Validation sensitivity: 0.24480578139114725
+Validation specificity: 0.6501516683518705
+Validation icbhi_score: 0.4474787248715089
+Validation roc_auc: None
+Validation avg_accuracy: 0.31983823341853307
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 2 epochs
+There is no such attribute
+249/249 - 156s - loss: 0.3944 - accuracy: 0.8055 - 156s/epoch - 628ms/step
+Epoch 6/80
+Validation cm: [[748 118  74  49]
+ [679 116  26  22]
+ [ 40   2  69   9]
+ [ 91   4  48   1]]
+Validation normalized_cm: [[0.756 0.119 0.075 0.05 ]
+ [0.805 0.138 0.031 0.026]
+ [0.333 0.017 0.575 0.075]
+ [0.632 0.028 0.333 0.007]]
+Validation acc: 0.44561068702290074
+Validation class_accuracies: [0.756319514661274, 0.1376037959667853, 0.575, 0.006944444444444444]
+Validation sensitivity: 0.16802168021680217
+Validation specificity: 0.756319514661274
+Validation icbhi_score: 0.4621705974390381
+Validation roc_auc: None
+Validation avg_accuracy: 0.3689669387681259
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 3 epochs
+There is no such attribute
+249/249 - 156s - loss: 0.3456 - accuracy: 0.8118 - 156s/epoch - 624ms/step
+Epoch 7/80
+Validation cm: [[549 291 116  33]
+ [391 373  65  14]
+ [ 33  10  69   8]
+ [ 54  41  33  16]]
+Validation normalized_cm: [[0.555 0.294 0.117 0.033]
+ [0.464 0.442 0.077 0.017]
+ [0.275 0.083 0.575 0.067]
+ [0.375 0.285 0.229 0.111]]
+Validation acc: 0.4804389312977099
+Validation class_accuracies: [0.5551061678463094, 0.4424673784104389, 0.575, 0.1111111111111111]
+Validation sensitivity: 0.4137308039747064
+Validation specificity: 0.5551061678463094
+Validation icbhi_score: 0.4844184859105079
+Validation roc_auc: None
+Validation avg_accuracy: 0.42092116434196486
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 4 epochs
+There is no such attribute
+249/249 - 156s - loss: 0.3099 - accuracy: 0.8030 - 156s/epoch - 626ms/step
+Epoch 8/80
+Validation cm: [[716  92 100  81]
+ [535 180  66  62]
+ [ 35   1  57  27]
+ [ 67  11  33  33]]
+Validation normalized_cm: [[0.724 0.093 0.101 0.082]
+ [0.635 0.214 0.078 0.074]
+ [0.292 0.008 0.475 0.225]
+ [0.465 0.076 0.229 0.229]]
+Validation acc: 0.47041984732824427
+Validation class_accuracies: [0.723963599595551, 0.21352313167259787, 0.475, 0.22916666666666666]
+Validation sensitivity: 0.24390243902439024
+Validation specificity: 0.723963599595551
+Validation icbhi_score: 0.4839330193099706
+Validation roc_auc: None
+Validation avg_accuracy: 0.4104133494837039
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 5 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.2521 - accuracy: 0.8226 - 157s/epoch - 629ms/step
+Epoch 9/80
+Validation cm: [[457 354  80  98]
+ [270 478  25  70]
+ [ 23  15  21  61]
+ [ 27  62  17  38]]
+Validation normalized_cm: [[0.462 0.358 0.081 0.099]
+ [0.32  0.567 0.03  0.083]
+ [0.192 0.125 0.175 0.508]
+ [0.188 0.431 0.118 0.264]]
+Validation acc: 0.47423664122137404
+Validation class_accuracies: [0.4620829120323559, 0.5670225385527876, 0.175, 0.2638888888888889]
+Validation sensitivity: 0.48509485094850946
+Validation specificity: 0.4620829120323559
+Validation icbhi_score: 0.47358888149043266
+Validation roc_auc: None
+Validation avg_accuracy: 0.3669985848685081
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 6 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.2110 - accuracy: 0.8146 - 158s/epoch - 635ms/step
+Epoch 10/80
+Validation cm: [[793  94  76  26]
+ [686  89  50  18]
+ [ 52   0  59   9]
+ [ 98   9  14  23]]
+Validation normalized_cm: [[0.802 0.095 0.077 0.026]
+ [0.814 0.106 0.059 0.021]
+ [0.433 0.    0.492 0.075]
+ [0.681 0.062 0.097 0.16 ]]
+Validation acc: 0.4599236641221374
+Validation class_accuracies: [0.8018200202224469, 0.1055753262158956, 0.49166666666666664, 0.1597222222222222]
+Validation sensitivity: 0.15447154471544716
+Validation specificity: 0.8018200202224469
+Validation icbhi_score: 0.478145782468947
+Validation roc_auc: None
+Validation avg_accuracy: 0.3896960588318078
+Validation one_indexed_epoch: 10
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 7 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.1861 - accuracy: 0.7959 - 157s/epoch - 630ms/step
+Epoch 11/80
+Validation cm: [[ 75 220 163 531]
+ [ 67 321  85 370]
+ [  5   6  18  91]
+ [  4  12  28 100]]
+Validation normalized_cm: [[0.076 0.222 0.165 0.537]
+ [0.079 0.381 0.101 0.439]
+ [0.042 0.05  0.15  0.758]
+ [0.028 0.083 0.194 0.694]]
+Validation acc: 0.2452290076335878
+Validation class_accuracies: [0.07583417593528817, 0.3807829181494662, 0.15, 0.6944444444444444]
+Validation sensitivity: 0.39656729900632337
+Validation specificity: 0.07583417593528817
+Validation icbhi_score: 0.23620073747080578
+Validation roc_auc: None
+Validation avg_accuracy: 0.3252653846322997
+Validation one_indexed_epoch: 11
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 8 epochs
+Lr has been adjusted to 0.0005000000237487257
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+There is no such attribute
+249/249 - 157s - loss: 0.1675 - accuracy: 0.7952 - 157s/epoch - 632ms/step
+Epoch 12/80
+Validation cm: [[855  30  54  50]
+ [753  43  23  24]
+ [ 61   0  49  10]
+ [102   0  22  20]]
+Validation normalized_cm: [[0.865 0.03  0.055 0.051]
+ [0.893 0.051 0.027 0.028]
+ [0.508 0.    0.408 0.083]
+ [0.708 0.    0.153 0.139]]
+Validation acc: 0.4613549618320611
+Validation class_accuracies: [0.8645096056622852, 0.051008303677342826, 0.4083333333333333, 0.1388888888888889]
+Validation sensitivity: 0.1011743450767841
+Validation specificity: 0.8645096056622852
+Validation icbhi_score: 0.48284197536953466
+Validation roc_auc: None
+Validation avg_accuracy: 0.3656850328904625
+Validation one_indexed_epoch: 12
+The validation tracker metric at 0.4933701612041399 hasn't increased by 0 in 9 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.1063 - accuracy: 0.7992 - 158s/epoch - 633ms/step
+Epoch 13/80
+Validation cm: [[661 195  67  66]
+ [340 435  23  45]
+ [ 36  15  34  35]
+ [ 44  46  13  41]]
+Validation normalized_cm: [[0.668 0.197 0.068 0.067]
+ [0.403 0.516 0.027 0.053]
+ [0.3   0.125 0.283 0.292]
+ [0.306 0.319 0.09  0.285]]
+Validation acc: 0.5586832061068703
+Validation class_accuracies: [0.6683518705763397, 0.5160142348754448, 0.2833333333333333, 0.2847222222222222]
+Validation sensitivity: 0.46070460704607047
+Validation specificity: 0.6683518705763397
+Validation icbhi_score: 0.5645282388112051
+Validation roc_auc: None
+Validation avg_accuracy: 0.438105415251835
+Validation one_indexed_epoch: 13
+-- New best results were achieved. --
+There is no such attribute
+249/249 - 159s - loss: 0.0831 - accuracy: 0.7939 - 159s/epoch - 637ms/step
+Epoch 14/80
+Validation cm: [[359 224 150 256]
+ [138 337 104 264]
+ [ 14   6  30  70]
+ [ 13  22  41  68]]
+Validation normalized_cm: [[0.363 0.226 0.152 0.259]
+ [0.164 0.4   0.123 0.313]
+ [0.117 0.05  0.25  0.583]
+ [0.09  0.153 0.285 0.472]]
+Validation acc: 0.3788167938931298
+Validation class_accuracies: [0.36299292214357937, 0.3997627520759193, 0.25, 0.4722222222222222]
+Validation sensitivity: 0.39295392953929537
+Validation specificity: 0.36299292214357937
+Validation icbhi_score: 0.37797342584143734
+Validation roc_auc: None
+Validation avg_accuracy: 0.37124447411043027
+Validation one_indexed_epoch: 14
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 1 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0625 - accuracy: 0.7992 - 158s/epoch - 633ms/step
+Epoch 15/80
+Validation cm: [[656 126 117  90]
+ [541 153  85  64]
+ [ 26   0  61  33]
+ [ 57  11  43  33]]
+Validation normalized_cm: [[0.663 0.127 0.118 0.091]
+ [0.642 0.181 0.101 0.076]
+ [0.217 0.    0.508 0.275]
+ [0.396 0.076 0.299 0.229]]
+Validation acc: 0.4308206106870229
+Validation class_accuracies: [0.6632962588473206, 0.18149466192170818, 0.5083333333333333, 0.22916666666666666]
+Validation sensitivity: 0.22312556458897922
+Validation specificity: 0.6632962588473206
+Validation icbhi_score: 0.4432109117181499
+Validation roc_auc: None
+Validation avg_accuracy: 0.3955727301922572
+Validation one_indexed_epoch: 15
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 2 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0540 - accuracy: 0.7818 - 158s/epoch - 633ms/step
+Epoch 16/80
+Validation cm: [[576 191  56 166]
+ [358 324  37 124]
+ [ 23   6  27  64]
+ [ 47  20  13  64]]
+Validation normalized_cm: [[0.582 0.193 0.057 0.168]
+ [0.425 0.384 0.044 0.147]
+ [0.192 0.05  0.225 0.533]
+ [0.326 0.139 0.09  0.444]]
+Validation acc: 0.47280534351145037
+Validation class_accuracies: [0.5824064711830131, 0.38434163701067614, 0.225, 0.4444444444444444]
+Validation sensitivity: 0.3748870822041554
+Validation specificity: 0.5824064711830131
+Validation icbhi_score: 0.47864677669358424
+Validation roc_auc: None
+Validation avg_accuracy: 0.40904813815953345
+Validation one_indexed_epoch: 16
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 3 epochs
+There is no such attribute
+249/249 - 154s - loss: 0.0722 - accuracy: 0.7375 - 154s/epoch - 618ms/step
+Epoch 17/80
+Validation cm: [[871  19  60  39]
+ [781  12  32  18]
+ [ 57   0  58   5]
+ [104   0  23  17]]
+Validation normalized_cm: [[0.881 0.019 0.061 0.039]
+ [0.926 0.014 0.038 0.021]
+ [0.475 0.    0.483 0.042]
+ [0.722 0.    0.16  0.118]]
+Validation acc: 0.4570610687022901
+Validation class_accuracies: [0.8806875631951466, 0.014234875444839857, 0.48333333333333334, 0.11805555555555555]
+Validation sensitivity: 0.07859078590785908
+Validation specificity: 0.8806875631951466
+Validation icbhi_score: 0.47963917455150284
+Validation roc_auc: None
+Validation avg_accuracy: 0.3740778318822188
+Validation one_indexed_epoch: 17
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 4 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.0669 - accuracy: 0.7269 - 157s/epoch - 630ms/step
+Epoch 18/80
+Validation cm: [[582 232  87  88]
+ [458 274  47  64]
+ [ 31   6  51  32]
+ [ 50  20  47  27]]
+Validation normalized_cm: [[0.588 0.235 0.088 0.089]
+ [0.543 0.325 0.056 0.076]
+ [0.258 0.05  0.425 0.267]
+ [0.347 0.139 0.326 0.188]]
+Validation acc: 0.44561068702290074
+Validation class_accuracies: [0.5884732052578362, 0.3250296559905101, 0.425, 0.1875]
+Validation sensitivity: 0.3179765130984643
+Validation specificity: 0.5884732052578362
+Validation icbhi_score: 0.45322485917815025
+Validation roc_auc: None
+Validation avg_accuracy: 0.38150071531208657
+Validation one_indexed_epoch: 18
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 5 epochs
+There is no such attribute
+249/249 - 159s - loss: 0.0487 - accuracy: 0.7891 - 159s/epoch - 638ms/step
+Epoch 19/80
+Validation cm: [[835  37  73  44]
+ [720  60  44  19]
+ [ 46   2  65   7]
+ [ 91   0  35  18]]
+Validation normalized_cm: [[0.844 0.037 0.074 0.044]
+ [0.854 0.071 0.052 0.023]
+ [0.383 0.017 0.542 0.058]
+ [0.632 0.    0.243 0.125]]
+Validation acc: 0.4666030534351145
+Validation class_accuracies: [0.8442871587462083, 0.0711743772241993, 0.5416666666666666, 0.125]
+Validation sensitivity: 0.12917795844625113
+Validation specificity: 0.8442871587462083
+Validation icbhi_score: 0.4867325585962297
+Validation roc_auc: None
+Validation avg_accuracy: 0.39553205065926855
+Validation one_indexed_epoch: 19
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 6 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0456 - accuracy: 0.7407 - 158s/epoch - 633ms/step
+Epoch 20/80
+Validation cm: [[579 207  89 114]
+ [350 355  50  88]
+ [ 24   6  48  42]
+ [ 41  28  33  42]]
+Validation normalized_cm: [[0.585 0.209 0.09  0.115]
+ [0.415 0.421 0.059 0.104]
+ [0.2   0.05  0.4   0.35 ]
+ [0.285 0.194 0.229 0.292]]
+Validation acc: 0.48854961832061067
+Validation class_accuracies: [0.5854398382204247, 0.4211150652431791, 0.4, 0.2916666666666667]
+Validation sensitivity: 0.4019873532068654
+Validation specificity: 0.5854398382204247
+Validation icbhi_score: 0.49371359571364504
+Validation roc_auc: None
+Validation avg_accuracy: 0.42455539253256763
+Validation one_indexed_epoch: 20
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 7 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0428 - accuracy: 0.7654 - 158s/epoch - 633ms/step
+Epoch 21/80
+Validation cm: [[512 370  36  71]
+ [324 455  17  47]
+ [ 22  33  24  41]
+ [ 29  69  11  35]]
+Validation normalized_cm: [[0.518 0.374 0.036 0.072]
+ [0.384 0.54  0.02  0.056]
+ [0.183 0.275 0.2   0.342]
+ [0.201 0.479 0.076 0.243]]
+Validation acc: 0.48950381679389315
+Validation class_accuracies: [0.5176946410515673, 0.5397390272835113, 0.2, 0.24305555555555555]
+Validation sensitivity: 0.4643179765130985
+Validation specificity: 0.5176946410515673
+Validation icbhi_score: 0.49100630878233287
+Validation roc_auc: None
+Validation avg_accuracy: 0.3751223059726585
+Validation one_indexed_epoch: 21
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 8 epochs
+Lr has been adjusted to 0.0002500000118743628
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+There is no such attribute
+249/249 - 159s - loss: 0.0346 - accuracy: 0.7549 - 159s/epoch - 638ms/step
+Epoch 22/80
+Validation cm: [[585 206  73 125]
+ [390 325  37  91]
+ [ 19  13  45  43]
+ [ 44  29  31  40]]
+Validation normalized_cm: [[0.592 0.208 0.074 0.126]
+ [0.463 0.386 0.044 0.108]
+ [0.158 0.108 0.375 0.358]
+ [0.306 0.201 0.215 0.278]]
+Validation acc: 0.4747137404580153
+Validation class_accuracies: [0.5915065722952477, 0.38552787663107946, 0.375, 0.2777777777777778]
+Validation sensitivity: 0.37037037037037035
+Validation specificity: 0.5915065722952477
+Validation icbhi_score: 0.48093847133280904
+Validation roc_auc: None
+Validation avg_accuracy: 0.40745305667602627
+Validation one_indexed_epoch: 22
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 9 epochs
+There is no such attribute
+249/249 - 160s - loss: 0.0325 - accuracy: 0.7533 - 160s/epoch - 641ms/step
+Epoch 23/80
+Validation cm: [[570 273  55  91]
+ [350 415  26  52]
+ [ 21  22  48  29]
+ [ 41  42  20  41]]
+Validation normalized_cm: [[0.576 0.276 0.056 0.092]
+ [0.415 0.492 0.031 0.062]
+ [0.175 0.183 0.4   0.242]
+ [0.285 0.292 0.139 0.285]]
+Validation acc: 0.5124045801526718
+Validation class_accuracies: [0.5763397371081901, 0.49228944246737844, 0.4, 0.2847222222222222]
+Validation sensitivity: 0.45528455284552843
+Validation specificity: 0.5763397371081901
+Validation icbhi_score: 0.5158121449768592
+Validation roc_auc: None
+Validation avg_accuracy: 0.43833785044944773
+Validation one_indexed_epoch: 23
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 10 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.0285 - accuracy: 0.7518 - 157s/epoch - 631ms/step
+Epoch 24/80
+Validation cm: [[628 205  56 100]
+ [478 263  36  66]
+ [ 26  15  51  28]
+ [ 51  31  30  32]]
+Validation normalized_cm: [[0.635 0.207 0.057 0.101]
+ [0.567 0.312 0.043 0.078]
+ [0.217 0.125 0.425 0.233]
+ [0.354 0.215 0.208 0.222]]
+Validation acc: 0.46469465648854963
+Validation class_accuracies: [0.6349848331648129, 0.31198102016607354, 0.425, 0.2222222222222222]
+Validation sensitivity: 0.31255645889792233
+Validation specificity: 0.6349848331648129
+Validation icbhi_score: 0.47377064603136765
+Validation roc_auc: None
+Validation avg_accuracy: 0.39854701888827715
+Validation one_indexed_epoch: 24
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 11 epochs
+There is no such attribute
+249/249 - 153s - loss: 0.0312 - accuracy: 0.7448 - 153s/epoch - 616ms/step
+Epoch 25/80
+Validation cm: [[581 255  42 111]
+ [494 260  21  68]
+ [ 30  15  23  52]
+ [ 58  28  10  48]]
+Validation normalized_cm: [[0.587 0.258 0.042 0.112]
+ [0.586 0.308 0.025 0.081]
+ [0.25  0.125 0.192 0.433]
+ [0.403 0.194 0.069 0.333]]
+Validation acc: 0.4351145038167939
+Validation class_accuracies: [0.5874620829120324, 0.3084223013048636, 0.19166666666666668, 0.3333333333333333]
+Validation sensitivity: 0.2990063233965673
+Validation specificity: 0.5874620829120324
+Validation icbhi_score: 0.44323420315429984
+Validation roc_auc: None
+Validation avg_accuracy: 0.355221096054224
+Validation one_indexed_epoch: 25
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 12 epochs
+There is no such attribute
+249/249 - 159s - loss: 0.0189 - accuracy: 0.7286 - 159s/epoch - 640ms/step
+Epoch 26/80
+Validation cm: [[354 465  50 120]
+ [166 566  21  90]
+ [ 14  21  27  58]
+ [ 20  60  13  51]]
+Validation normalized_cm: [[0.358 0.47  0.051 0.121]
+ [0.197 0.671 0.025 0.107]
+ [0.117 0.175 0.225 0.483]
+ [0.139 0.417 0.09  0.354]]
+Validation acc: 0.4761450381679389
+Validation class_accuracies: [0.3579373104145602, 0.6714116251482799, 0.225, 0.3541666666666667]
+Validation sensitivity: 0.5817524841915086
+Validation specificity: 0.3579373104145602
+Validation icbhi_score: 0.46984489730303436
+Validation roc_auc: None
+Validation avg_accuracy: 0.4021289005573767
+Validation one_indexed_epoch: 26
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 13 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.0188 - accuracy: 0.7304 - 157s/epoch - 631ms/step
+Epoch 27/80
+Validation cm: [[848  47  49  45]
+ [723  68  26  26]
+ [ 59   3  35  23]
+ [ 92   3  25  24]]
+Validation normalized_cm: [[0.857 0.048 0.05  0.046]
+ [0.858 0.081 0.031 0.031]
+ [0.492 0.025 0.292 0.192]
+ [0.639 0.021 0.174 0.167]]
+Validation acc: 0.4651717557251908
+Validation class_accuracies: [0.8574317492416582, 0.08066429418742586, 0.2916666666666667, 0.16666666666666666]
+Validation sensitivity: 0.11472448057813911
+Validation specificity: 0.8574317492416582
+Validation icbhi_score: 0.48607811490989866
+Validation roc_auc: None
+Validation avg_accuracy: 0.34910734419060435
+Validation one_indexed_epoch: 27
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 14 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0212 - accuracy: 0.7397 - 158s/epoch - 635ms/step
+Epoch 28/80
+Validation cm: [[756 107  60  66]
+ [583 183  34  43]
+ [ 36   8  51  25]
+ [ 72  13  33  26]]
+Validation normalized_cm: [[0.764 0.108 0.061 0.067]
+ [0.692 0.217 0.04  0.051]
+ [0.3   0.067 0.425 0.208]
+ [0.5   0.09  0.229 0.181]]
+Validation acc: 0.4847328244274809
+Validation class_accuracies: [0.7644084934277048, 0.21708185053380782, 0.425, 0.18055555555555555]
+Validation sensitivity: 0.23486901535682023
+Validation specificity: 0.7644084934277048
+Validation icbhi_score: 0.4996387543922625
+Validation roc_auc: None
+Validation avg_accuracy: 0.39676147487926705
+Validation one_indexed_epoch: 28
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 15 epochs
+There is no such attribute
+249/249 - 157s - loss: 0.0170 - accuracy: 0.7435 - 157s/epoch - 631ms/step
+Epoch 29/80
+Validation cm: [[661 183  67  78]
+ [516 235  36  56]
+ [ 29  13  53  25]
+ [ 57  25  36  26]]
+Validation normalized_cm: [[0.668 0.185 0.068 0.079]
+ [0.612 0.279 0.043 0.066]
+ [0.242 0.108 0.442 0.208]
+ [0.396 0.174 0.25  0.181]]
+Validation acc: 0.4651717557251908
+Validation class_accuracies: [0.6683518705763397, 0.27876631079478054, 0.44166666666666665, 0.18055555555555555]
+Validation sensitivity: 0.2836495031616983
+Validation specificity: 0.6683518705763397
+Validation icbhi_score: 0.476000686869019
+Validation roc_auc: None
+Validation avg_accuracy: 0.3923351008983356
+Validation one_indexed_epoch: 29
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 16 epochs
+Lr has been adjusted to 0.0001250000059371814
+There is no such attribute
+249/249 - 157s - loss: 0.0139 - accuracy: 0.7511 - 157s/epoch - 632ms/step
+Epoch 30/80
+Validation cm: [[611 232  60  86]
+ [410 335  37  61]
+ [ 27  14  45  34]
+ [ 46  35  31  32]]
+Validation normalized_cm: [[0.618 0.235 0.061 0.087]
+ [0.486 0.397 0.044 0.072]
+ [0.225 0.117 0.375 0.283]
+ [0.319 0.243 0.215 0.222]]
+Validation acc: 0.4880725190839695
+Validation class_accuracies: [0.6177957532861477, 0.3973902728351127, 0.375, 0.2222222222222222]
+Validation sensitivity: 0.3721770551038844
+Validation specificity: 0.6177957532861477
+Validation icbhi_score: 0.49498640419501605
+Validation roc_auc: None
+Validation avg_accuracy: 0.4031020620858706
+Validation one_indexed_epoch: 30
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 17 epochs
+There is no such attribute
+249/249 - 159s - loss: 0.0165 - accuracy: 0.7551 - 159s/epoch - 638ms/step
+Epoch 31/80
+Validation cm: [[539 290  62  98]
+ [349 387  32  75]
+ [ 23  17  44  36]
+ [ 40  39  29  36]]
+Validation normalized_cm: [[0.545 0.293 0.063 0.099]
+ [0.414 0.459 0.038 0.089]
+ [0.192 0.142 0.367 0.3  ]
+ [0.278 0.271 0.201 0.25 ]]
+Validation acc: 0.4799618320610687
+Validation class_accuracies: [0.544994944388271, 0.45907473309608543, 0.36666666666666664, 0.25]
+Validation sensitivity: 0.4218608852755194
+Validation specificity: 0.544994944388271
+Validation icbhi_score: 0.4834279148318952
+Validation roc_auc: None
+Validation avg_accuracy: 0.4051840860377558
+Validation one_indexed_epoch: 31
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 18 epochs
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+There is no such attribute
+249/249 - 161s - loss: 0.0143 - accuracy: 0.7506 - 161s/epoch - 645ms/step
+Epoch 32/80
+Validation cm: [[600 238  62  89]
+ [389 351  35  68]
+ [ 22  15  44  39]
+ [ 42  38  31  33]]
+Validation normalized_cm: [[0.607 0.241 0.063 0.09 ]
+ [0.461 0.416 0.042 0.081]
+ [0.183 0.125 0.367 0.325]
+ [0.292 0.264 0.215 0.229]]
+Validation acc: 0.4904580152671756
+Validation class_accuracies: [0.6066734074823054, 0.41637010676156583, 0.36666666666666664, 0.22916666666666666]
+Validation sensitivity: 0.3866305329719964
+Validation specificity: 0.6066734074823054
+Validation icbhi_score: 0.4966519702271509
+Validation roc_auc: None
+Validation avg_accuracy: 0.40471921189430116
+Validation one_indexed_epoch: 32
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 19 epochs
+There is no such attribute
+249/249 - 160s - loss: 0.0129 - accuracy: 0.7589 - 160s/epoch - 642ms/step
+Epoch 33/80
+Validation cm: [[572 275  56  86]
+ [379 370  27  67]
+ [ 21  18  46  35]
+ [ 40  41  28  35]]
+Validation normalized_cm: [[0.578 0.278 0.057 0.087]
+ [0.45  0.439 0.032 0.079]
+ [0.175 0.15  0.383 0.292]
+ [0.278 0.285 0.194 0.243]]
+Validation acc: 0.4880725190839695
+Validation class_accuracies: [0.5783619817997978, 0.4389086595492289, 0.38333333333333336, 0.24305555555555555]
+Validation sensitivity: 0.4074074074074074
+Validation specificity: 0.5783619817997978
+Validation icbhi_score: 0.4928846946036026
+Validation roc_auc: None
+Validation avg_accuracy: 0.4109148825594789
+Validation one_indexed_epoch: 33
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 20 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0159 - accuracy: 0.7486 - 158s/epoch - 636ms/step
+Epoch 34/80
+Validation cm: [[478 355  58  98]
+ [281 460  31  71]
+ [ 19  20  39  42]
+ [ 32  50  24  38]]
+Validation normalized_cm: [[0.483 0.359 0.059 0.099]
+ [0.333 0.546 0.037 0.084]
+ [0.158 0.167 0.325 0.35 ]
+ [0.222 0.347 0.167 0.264]]
+Validation acc: 0.4842557251908397
+Validation class_accuracies: [0.4833164812942366, 0.5456702253855279, 0.325, 0.2638888888888889]
+Validation sensitivity: 0.48509485094850946
+Validation specificity: 0.4833164812942366
+Validation icbhi_score: 0.48420566612137306
+Validation roc_auc: None
+Validation avg_accuracy: 0.4044688988921633
+Validation one_indexed_epoch: 34
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 21 epochs
+There is no such attribute
+249/249 - 159s - loss: 0.0135 - accuracy: 0.7420 - 159s/epoch - 638ms/step
+Epoch 35/80
+Validation cm: [[486 343  66  94]
+ [301 441  31  70]
+ [ 19  19  44  38]
+ [ 32  51  26  35]]
+Validation normalized_cm: [[0.491 0.347 0.067 0.095]
+ [0.357 0.523 0.037 0.083]
+ [0.158 0.158 0.367 0.317]
+ [0.222 0.354 0.181 0.243]]
+Validation acc: 0.4799618320610687
+Validation class_accuracies: [0.4914054600606673, 0.5231316725978647, 0.36666666666666664, 0.24305555555555555]
+Validation sensitivity: 0.46973803071364045
+Validation specificity: 0.4914054600606673
+Validation icbhi_score: 0.48057174538715386
+Validation roc_auc: None
+Validation avg_accuracy: 0.40606483872018856
+Validation one_indexed_epoch: 35
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 22 epochs
+There is no such attribute
+249/249 - 160s - loss: 0.0113 - accuracy: 0.7498 - 160s/epoch - 644ms/step
+Epoch 36/80
+Validation cm: [[518 294  67 110]
+ [333 392  34  84]
+ [ 23  14  41  42]
+ [ 36  43  27  38]]
+Validation normalized_cm: [[0.524 0.297 0.068 0.111]
+ [0.395 0.465 0.04  0.1  ]
+ [0.192 0.117 0.342 0.35 ]
+ [0.25  0.299 0.188 0.264]]
+Validation acc: 0.47185114503816794
+Validation class_accuracies: [0.5237613751263903, 0.465005931198102, 0.3416666666666667, 0.2638888888888889]
+Validation sensitivity: 0.4254742547425474
+Validation specificity: 0.5237613751263903
+Validation icbhi_score: 0.47461781493446886
+Validation roc_auc: None
+Validation avg_accuracy: 0.39858071547001195
+Validation one_indexed_epoch: 36
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 23 epochs
+There is no such attribute
+249/249 - 158s - loss: 0.0099 - accuracy: 0.7337 - 158s/epoch - 636ms/step
+Epoch 37/80
+Validation cm: [[652 179  66  92]
+ [460 280  39  64]
+ [ 29   9  46  36]
+ [ 51  29  34  30]]
+Validation normalized_cm: [[0.659 0.181 0.067 0.093]
+ [0.546 0.332 0.046 0.076]
+ [0.242 0.075 0.383 0.3  ]
+ [0.354 0.201 0.236 0.208]]
+Validation acc: 0.48091603053435117
+Validation class_accuracies: [0.6592517694641051, 0.33214709371293, 0.38333333333333336, 0.20833333333333334]
+Validation sensitivity: 0.3215898825654923
+Validation specificity: 0.6592517694641051
+Validation icbhi_score: 0.49042082601479875
+Validation roc_auc: None
+Validation avg_accuracy: 0.39576638246092544
+Validation one_indexed_epoch: 37
+The validation tracker metric at 0.5645282388112051 hasn't increased by 0 in 24 epochs
+Lr has been adjusted to 6.25000029685907e-05
+There is no such attribute
+249/249 - 159s - loss: 0.0109 - accuracy: 0.7289 - 159s/epoch - 639ms/step
+Epoch 38/80
+Validation cm: [[553 286  62  88]
+ [348 393  34  68]
+ [ 19  20  43  38]
+ [ 33  49  29  33]]
+Validation normalized_cm: [[0.559 0.289 0.063 0.089]
+ [0.413 0.466 0.04  0.081]
+ [0.158 0.167 0.358 0.317]
+ [0.229 0.34  0.201 0.229]]
+Validation acc: 0.48759541984732824
+Validation class_accuracies: [0.5591506572295247, 0.46619217081850534, 0.35833333333333334, 0.22916666666666666]
+Validation sensitivity: 0.42366757000903343
+Validation specificity: 0.5591506572295247
+Validation icbhi_score: 0.4914091136192791
+Validation roc_auc: None
+Validation avg_accuracy: 0.40321070701200756
+Validation one_indexed_epoch: 38
+The number of epochs since last 1% equals the patience
+There is no such attribute
+249/249 - 158s - loss: 0.0127 - accuracy: 0.7264 - 158s/epoch - 635ms/step
+----------------------------------
+The best metrics for this job are: 
+
+Best icbhi_score: 0.5645282388112051
+Best cm: [[661 195  67  66]
+ [340 435  23  45]
+ [ 36  15  34  35]
+ [ 44  46  13  41]]
+Best normalized_cm: [[0.668 0.197 0.068 0.067]
+ [0.403 0.516 0.027 0.053]
+ [0.3   0.125 0.283 0.292]
+ [0.306 0.319 0.09  0.285]]
+Best acc: 0.5586832061068703
+Best class_accuracies: [0.6683518705763397, 0.5160142348754448, 0.2833333333333333, 0.2847222222222222]
+Best sensitivity: 0.46070460704607047
+Best specificity: 0.6683518705763397
+Best roc_auc: None
+Best avg_accuracy: 0.438105415251835
+Best one_indexed_epoch: 13
+icbhi_score
+model
+cm
+normalized_cm
+acc
+class_accuracies
+sensitivity
+specificity
+roc_auc
+avg_accuracy
+one_indexed_epoch
+25
+25
+Initial weights
+[]
+Post training weights
+[]
+Weight difference
+[]
+{'loss': [0.6729636192321777, 0.5779840350151062, 0.5038512945175171, 0.45746272802352905, 0.39442944526672363, 0.34559470415115356, 0.3098614513874054, 0.2520942687988281, 0.21102450788021088, 0.1861005425453186, 0.16746096312999725, 0.10629994422197342, 0.08307726681232452, 0.06254932284355164, 0.053957320749759674, 0.07216828316450119, 0.06685865670442581, 0.04867707937955856, 0.04562496021389961, 0.04284348711371422, 0.034635622054338455, 0.032502803951501846, 0.02852821536362171, 0.03117525763809681, 0.0188655573874712, 0.018756333738565445, 0.02119569294154644, 0.01702933944761753, 0.013867526315152645, 0.016481788828969002, 0.014262309297919273, 0.012926600873470306, 0.015864640474319458, 0.013484619557857513, 0.011304427869617939, 0.00985990185290575, 0.010864423587918282, 0.012678632512688637], 'accuracy': [0.6109851598739624, 0.6969009637832642, 0.7583774328231812, 0.7810531854629517, 0.8054925799369812, 0.8117913603782654, 0.8029730319976807, 0.8226253390312195, 0.8145628571510315, 0.795918345451355, 0.7951624989509583, 0.7991937398910522, 0.7939027547836304, 0.7991937398910522, 0.7818090319633484, 0.7374653816223145, 0.7268833518028259, 0.7891156673431396, 0.7407407164573669, 0.7654321193695068, 0.7548500895500183, 0.7533383965492249, 0.7518266439437866, 0.7447719573974609, 0.728646993637085, 0.7304106950759888, 0.7397329211235046, 0.7435122132301331, 0.7510707974433899, 0.7551020383834839, 0.7505668997764587, 0.7588813304901123, 0.7485512495040894, 0.7420005202293396, 0.749811053276062, 0.733686089515686, 0.7288989424705505, 0.7263794541358948]}
+Model: "resnet50"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_2 (InputLayer)           [(None, 80, 500, 3)  0           []                               
+                                ]                                                                 
+                                                                                                  
+ conv1_pad (ZeroPadding2D)      (None, 86, 506, 3)   0           ['input_2[0][0]']                
+                                                                                                  
+ conv1_conv (Conv2D)            (None, 40, 250, 64)  9472        ['conv1_pad[0][0]']              
+                                                                                                  
+ conv1_bn (BatchNormalization)  (None, 40, 250, 64)  256         ['conv1_conv[0][0]']             
+                                                                                                  
+ conv1_relu (Activation)        (None, 40, 250, 64)  0           ['conv1_bn[0][0]']               
+                                                                                                  
+ pool1_pad (ZeroPadding2D)      (None, 42, 252, 64)  0           ['conv1_relu[0][0]']             
+                                                                                                  
+ pool1_pool (MaxPooling2D)      (None, 20, 125, 64)  0           ['pool1_pad[0][0]']              
+                                                                                                  
+ conv2_block1_1_conv (Conv2D)   (None, 20, 125, 64)  4160        ['pool1_pool[0][0]']             
+                                                                                                  
+ conv2_block1_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block1_1_relu[0][0]']    
+                                                                                                  
+ conv2_block1_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_0_conv (Conv2D)   (None, 20, 125, 256  16640       ['pool1_pool[0][0]']             
+                                )                                                                 
+                                                                                                  
+ conv2_block1_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block1_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block1_0_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block1_0_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block1_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block1_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block1_add (Add)         (None, 20, 125, 256  0           ['conv2_block1_0_bn[0][0]',      
+                                )                                 'conv2_block1_3_bn[0][0]']      
+                                                                                                  
+ conv2_block1_out (Activation)  (None, 20, 125, 256  0           ['conv2_block1_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv2_block2_1_conv (Conv2D)   (None, 20, 125, 64)  16448       ['conv2_block1_out[0][0]']       
+                                                                                                  
+ conv2_block2_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block2_1_relu[0][0]']    
+                                                                                                  
+ conv2_block2_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block2_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block2_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block2_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block2_add (Add)         (None, 20, 125, 256  0           ['conv2_block1_out[0][0]',       
+                                )                                 'conv2_block2_3_bn[0][0]']      
+                                                                                                  
+ conv2_block2_out (Activation)  (None, 20, 125, 256  0           ['conv2_block2_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv2_block3_1_conv (Conv2D)   (None, 20, 125, 64)  16448       ['conv2_block2_out[0][0]']       
+                                                                                                  
+ conv2_block3_1_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_1_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_2_conv (Conv2D)   (None, 20, 125, 64)  36928       ['conv2_block3_1_relu[0][0]']    
+                                                                                                  
+ conv2_block3_2_bn (BatchNormal  (None, 20, 125, 64)  256        ['conv2_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_2_relu (Activatio  (None, 20, 125, 64)  0          ['conv2_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_3_conv (Conv2D)   (None, 20, 125, 256  16640       ['conv2_block3_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv2_block3_3_bn (BatchNormal  (None, 20, 125, 256  1024       ['conv2_block3_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv2_block3_add (Add)         (None, 20, 125, 256  0           ['conv2_block2_out[0][0]',       
+                                )                                 'conv2_block3_3_bn[0][0]']      
+                                                                                                  
+ conv2_block3_out (Activation)  (None, 20, 125, 256  0           ['conv2_block3_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv3_block1_1_conv (Conv2D)   (None, 10, 63, 128)  32896       ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block1_1_relu[0][0]']    
+                                                                                                  
+ conv3_block1_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_0_conv (Conv2D)   (None, 10, 63, 512)  131584      ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block1_2_relu[0][0]']    
+                                                                                                  
+ conv3_block1_0_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_add (Add)         (None, 10, 63, 512)  0           ['conv3_block1_0_bn[0][0]',      
+                                                                  'conv3_block1_3_bn[0][0]']      
+                                                                                                  
+ conv3_block1_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block1_add[0][0]']       
+                                                                                                  
+ conv3_block2_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block1_out[0][0]']       
+                                                                                                  
+ conv3_block2_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block2_1_relu[0][0]']    
+                                                                                                  
+ conv3_block2_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block2_2_relu[0][0]']    
+                                                                                                  
+ conv3_block2_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_add (Add)         (None, 10, 63, 512)  0           ['conv3_block1_out[0][0]',       
+                                                                  'conv3_block2_3_bn[0][0]']      
+                                                                                                  
+ conv3_block2_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block2_add[0][0]']       
+                                                                                                  
+ conv3_block3_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block2_out[0][0]']       
+                                                                                                  
+ conv3_block3_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block3_1_relu[0][0]']    
+                                                                                                  
+ conv3_block3_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block3_2_relu[0][0]']    
+                                                                                                  
+ conv3_block3_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_add (Add)         (None, 10, 63, 512)  0           ['conv3_block2_out[0][0]',       
+                                                                  'conv3_block3_3_bn[0][0]']      
+                                                                                                  
+ conv3_block3_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block3_add[0][0]']       
+                                                                                                  
+ conv3_block4_1_conv (Conv2D)   (None, 10, 63, 128)  65664       ['conv3_block3_out[0][0]']       
+                                                                                                  
+ conv3_block4_1_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_1_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_2_conv (Conv2D)   (None, 10, 63, 128)  147584      ['conv3_block4_1_relu[0][0]']    
+                                                                                                  
+ conv3_block4_2_bn (BatchNormal  (None, 10, 63, 128)  512        ['conv3_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_2_relu (Activatio  (None, 10, 63, 128)  0          ['conv3_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_3_conv (Conv2D)   (None, 10, 63, 512)  66048       ['conv3_block4_2_relu[0][0]']    
+                                                                                                  
+ conv3_block4_3_bn (BatchNormal  (None, 10, 63, 512)  2048       ['conv3_block4_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_add (Add)         (None, 10, 63, 512)  0           ['conv3_block3_out[0][0]',       
+                                                                  'conv3_block4_3_bn[0][0]']      
+                                                                                                  
+ conv3_block4_out (Activation)  (None, 10, 63, 512)  0           ['conv3_block4_add[0][0]']       
+                                                                                                  
+ conv4_block1_1_conv (Conv2D)   (None, 5, 32, 256)   131328      ['conv3_block4_out[0][0]']       
+                                                                                                  
+ conv4_block1_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block1_1_relu[0][0]']    
+                                                                                                  
+ conv4_block1_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_0_conv (Conv2D)   (None, 5, 32, 1024)  525312      ['conv3_block4_out[0][0]']       
+                                                                                                  
+ conv4_block1_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block1_2_relu[0][0]']    
+                                                                                                  
+ conv4_block1_0_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block1_0_bn[0][0]',      
+                                                                  'conv4_block1_3_bn[0][0]']      
+                                                                                                  
+ conv4_block1_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block1_add[0][0]']       
+                                                                                                  
+ conv4_block2_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block1_out[0][0]']       
+                                                                                                  
+ conv4_block2_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block2_1_relu[0][0]']    
+                                                                                                  
+ conv4_block2_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block2_2_relu[0][0]']    
+                                                                                                  
+ conv4_block2_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block1_out[0][0]',       
+                                                                  'conv4_block2_3_bn[0][0]']      
+                                                                                                  
+ conv4_block2_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block2_add[0][0]']       
+                                                                                                  
+ conv4_block3_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block2_out[0][0]']       
+                                                                                                  
+ conv4_block3_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block3_1_relu[0][0]']    
+                                                                                                  
+ conv4_block3_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block3_2_relu[0][0]']    
+                                                                                                  
+ conv4_block3_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block2_out[0][0]',       
+                                                                  'conv4_block3_3_bn[0][0]']      
+                                                                                                  
+ conv4_block3_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block3_add[0][0]']       
+                                                                                                  
+ conv4_block4_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block3_out[0][0]']       
+                                                                                                  
+ conv4_block4_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block4_1_relu[0][0]']    
+                                                                                                  
+ conv4_block4_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block4_2_relu[0][0]']    
+                                                                                                  
+ conv4_block4_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block4_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block3_out[0][0]',       
+                                                                  'conv4_block4_3_bn[0][0]']      
+                                                                                                  
+ conv4_block4_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block4_add[0][0]']       
+                                                                                                  
+ conv4_block5_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block4_out[0][0]']       
+                                                                                                  
+ conv4_block5_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block5_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block5_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block5_1_relu[0][0]']    
+                                                                                                  
+ conv4_block5_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block5_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block5_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block5_2_relu[0][0]']    
+                                                                                                  
+ conv4_block5_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block5_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block4_out[0][0]',       
+                                                                  'conv4_block5_3_bn[0][0]']      
+                                                                                                  
+ conv4_block5_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block5_add[0][0]']       
+                                                                                                  
+ conv4_block6_1_conv (Conv2D)   (None, 5, 32, 256)   262400      ['conv4_block5_out[0][0]']       
+                                                                                                  
+ conv4_block6_1_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block6_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_1_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block6_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_2_conv (Conv2D)   (None, 5, 32, 256)   590080      ['conv4_block6_1_relu[0][0]']    
+                                                                                                  
+ conv4_block6_2_bn (BatchNormal  (None, 5, 32, 256)  1024        ['conv4_block6_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_2_relu (Activatio  (None, 5, 32, 256)  0           ['conv4_block6_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_3_conv (Conv2D)   (None, 5, 32, 1024)  263168      ['conv4_block6_2_relu[0][0]']    
+                                                                                                  
+ conv4_block6_3_bn (BatchNormal  (None, 5, 32, 1024)  4096       ['conv4_block6_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_add (Add)         (None, 5, 32, 1024)  0           ['conv4_block5_out[0][0]',       
+                                                                  'conv4_block6_3_bn[0][0]']      
+                                                                                                  
+ conv4_block6_out (Activation)  (None, 5, 32, 1024)  0           ['conv4_block6_add[0][0]']       
+                                                                                                  
+ conv5_block1_1_conv (Conv2D)   (None, 3, 16, 512)   524800      ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block1_1_relu[0][0]']    
+                                                                                                  
+ conv5_block1_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_0_conv (Conv2D)   (None, 3, 16, 2048)  2099200     ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block1_2_relu[0][0]']    
+                                                                                                  
+ conv5_block1_0_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block1_0_bn[0][0]',      
+                                                                  'conv5_block1_3_bn[0][0]']      
+                                                                                                  
+ conv5_block1_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block1_add[0][0]']       
+                                                                                                  
+ conv5_block2_1_conv (Conv2D)   (None, 3, 16, 512)   1049088     ['conv5_block1_out[0][0]']       
+                                                                                                  
+ conv5_block2_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block2_1_relu[0][0]']    
+                                                                                                  
+ conv5_block2_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block2_2_relu[0][0]']    
+                                                                                                  
+ conv5_block2_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block1_out[0][0]',       
+                                                                  'conv5_block2_3_bn[0][0]']      
+                                                                                                  
+ conv5_block2_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block2_add[0][0]']       
+                                                                                                  
+ conv5_block3_1_conv (Conv2D)   (None, 3, 16, 512)   1049088     ['conv5_block2_out[0][0]']       
+                                                                                                  
+ conv5_block3_1_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_1_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_2_conv (Conv2D)   (None, 3, 16, 512)   2359808     ['conv5_block3_1_relu[0][0]']    
+                                                                                                  
+ conv5_block3_2_bn (BatchNormal  (None, 3, 16, 512)  2048        ['conv5_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_2_relu (Activatio  (None, 3, 16, 512)  0           ['conv5_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_3_conv (Conv2D)   (None, 3, 16, 2048)  1050624     ['conv5_block3_2_relu[0][0]']    
+                                                                                                  
+ conv5_block3_3_bn (BatchNormal  (None, 3, 16, 2048)  8192       ['conv5_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_add (Add)         (None, 3, 16, 2048)  0           ['conv5_block2_out[0][0]',       
+                                                                  'conv5_block3_3_bn[0][0]']      
+                                                                                                  
+ conv5_block3_out (Activation)  (None, 3, 16, 2048)  0           ['conv5_block3_add[0][0]']       
+                                                                                                  
+==================================================================================================
+Total params: 23,587,712
+Trainable params: 23,534,592
+Non-trainable params: 53,120
+__________________________________________________________________________________________________
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ resnet50 (Functional)       (None, 3, 16, 2048)       23587712  
+                                                                 
+ global_average_pooling2d_1   (None, 2048)             0         
+ (GlobalAveragePooling2D)                                        
+                                                                 
+ dense_3 (Dense)             (None, 100)               204900    
+                                                                 
+ dropout_2 (Dropout)         (None, 100)               0         
+                                                                 
+ dense_4 (Dense)             (None, 50)                5050      
+                                                                 
+ dropout_3 (Dropout)         (None, 50)                0         
+                                                                 
+ dense_5 (Dense)             (None, 2)                 102       
+                                                                 
+=================================================================
+Total params: 23,797,764
+Trainable params: 23,744,644
+Non-trainable params: 53,120
+_________________________________________________________________
+Model: "leaf_model9_model_efnet1_1"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ mel_filterbanks_3 (MelFilterbanks)              multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 2)                                   23797764         
+                                                                                                              
+ leaf (Leaf)                                     multiple                                    560              
+                                                                                                              
+==============================================================================================================
+Total params: 23,798,486
+Trainable params: 23,745,366
+Non-trainable params: 53,120
+______________________________________________________________________________________________________________
+Target metric is icbhi_score
+Epoch 1/80
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+WARNING:tensorflow:Gradients do not exist for variables ['kernel:0', 'Variable:0', 'Variable:0'] when minimizing the loss. If you're using `model.compile()`, did you forget to provide a `loss`argument?
+Validation cm: [[985   2   2   0]
+ [838   5   0   0]
+ [120   0   0   0]
+ [141   3   0   0]]
+Validation normalized_cm: [[0.996 0.002 0.002 0.   ]
+ [0.994 0.006 0.    0.   ]
+ [1.    0.    0.    0.   ]
+ [0.979 0.021 0.    0.   ]]
+Validation acc: 0.4723282442748092
+Validation class_accuracies: [0.9959555106167847, 0.005931198102016607, 0.0, 0.0]
+Validation sensitivity: 0.004516711833785004
+Validation specificity: 0.9959555106167847
+Validation icbhi_score: 0.5002361112252849
+Validation roc_auc: None
+Validation avg_accuracy: 0.2504716771797003
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+249/249 - 688s - loss: 1.1038 - accuracy: 0.5813 - 688s/epoch - 3s/step
+Epoch 2/80
+Validation cm: [[955  25   9   0]
+ [813  23   7   0]
+ [107   4   9   0]
+ [137   1   5   1]]
+Validation normalized_cm: [[0.966 0.025 0.009 0.   ]
+ [0.964 0.027 0.008 0.   ]
+ [0.892 0.033 0.075 0.   ]
+ [0.951 0.007 0.035 0.007]]
+Validation acc: 0.4713740458015267
+Validation class_accuracies: [0.9656218402426694, 0.027283511269276393, 0.075, 0.006944444444444444]
+Validation sensitivity: 0.02981029810298103
+Validation specificity: 0.9656218402426694
+Validation icbhi_score: 0.49771606917282524
+Validation roc_auc: None
+Validation avg_accuracy: 0.2687124489890976
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 1 epochs
+249/249 - 679s - loss: 0.7607 - accuracy: 0.5674 - 679s/epoch - 3s/step
+Epoch 3/80
+Validation cm: [[811 133  37   8]
+ [693 111  31   8]
+ [ 99   5  12   4]
+ [119  14   9   2]]
+Validation normalized_cm: [[0.82  0.134 0.037 0.008]
+ [0.822 0.132 0.037 0.009]
+ [0.825 0.042 0.1   0.033]
+ [0.826 0.097 0.062 0.014]]
+Validation acc: 0.44656488549618323
+Validation class_accuracies: [0.8200202224469161, 0.13167259786476868, 0.1, 0.013888888888888888]
+Validation sensitivity: 0.11291779584462511
+Validation specificity: 0.8200202224469161
+Validation icbhi_score: 0.4664690091457706
+Validation roc_auc: None
+Validation avg_accuracy: 0.26639542730014343
+Validation one_indexed_epoch: 3
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 2 epochs
+249/249 - 703s - loss: 0.6675 - accuracy: 0.5825 - 703s/epoch - 3s/step
+Epoch 4/80
+Validation cm: [[662 229  58  40]
+ [477 243  70  53]
+ [ 51  16  41  12]
+ [ 72  42  18  12]]
+Validation normalized_cm: [[0.669 0.232 0.059 0.04 ]
+ [0.566 0.288 0.083 0.063]
+ [0.425 0.133 0.342 0.1  ]
+ [0.5   0.292 0.125 0.083]]
+Validation acc: 0.4570610687022901
+Validation class_accuracies: [0.6693629929221436, 0.28825622775800713, 0.3416666666666667, 0.08333333333333333]
+Validation sensitivity: 0.26738934056007224
+Validation specificity: 0.6693629929221436
+Validation icbhi_score: 0.46837616674110794
+Validation roc_auc: None
+Validation avg_accuracy: 0.3456548051700377
+Validation one_indexed_epoch: 4
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 3 epochs
+249/249 - 709s - loss: 0.6330 - accuracy: 0.5999 - 709s/epoch - 3s/step
+Epoch 5/80
+Validation cm: [[593 330  36  30]
+ [426 345  40  32]
+ [ 41  38  28  13]
+ [ 54  62  17  11]]
+Validation normalized_cm: [[0.6   0.334 0.036 0.03 ]
+ [0.505 0.409 0.047 0.038]
+ [0.342 0.317 0.233 0.108]
+ [0.375 0.431 0.118 0.076]]
+Validation acc: 0.4661259541984733
+Validation class_accuracies: [0.5995955510616785, 0.4092526690391459, 0.23333333333333334, 0.0763888888888889]
+Validation sensitivity: 0.34688346883468835
+Validation specificity: 0.5995955510616785
+Validation icbhi_score: 0.4732395099481834
+Validation roc_auc: None
+Validation avg_accuracy: 0.32964261058076166
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 4 epochs
+249/249 - 715s - loss: 0.6119 - accuracy: 0.6203 - 715s/epoch - 3s/step
+Epoch 6/80
+Validation cm: [[561 342  56  30]
+ [429 324  51  39]
+ [ 41  26  35  18]
+ [ 61  52  20  11]]
+Validation normalized_cm: [[0.567 0.346 0.057 0.03 ]
+ [0.509 0.384 0.06  0.046]
+ [0.342 0.217 0.292 0.15 ]
+ [0.424 0.361 0.139 0.076]]
+Validation acc: 0.4441793893129771
+Validation class_accuracies: [0.5672396359959555, 0.38434163701067614, 0.2916666666666667, 0.0763888888888889]
+Validation sensitivity: 0.33423667570009036
+Validation specificity: 0.5672396359959555
+Validation icbhi_score: 0.4507381558480229
+Validation roc_auc: None
+Validation avg_accuracy: 0.3299092071405468
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 5 epochs
+249/249 - 713s - loss: 0.5972 - accuracy: 0.6344 - 713s/epoch - 3s/step
+Epoch 7/80
+Validation cm: [[540 377  46  26]
+ [363 415  30  35]
+ [ 33  35  32  20]
+ [ 53  64  13  14]]
+Validation normalized_cm: [[0.546 0.381 0.047 0.026]
+ [0.431 0.492 0.036 0.042]
+ [0.275 0.292 0.267 0.167]
+ [0.368 0.444 0.09  0.097]]
+Validation acc: 0.4775763358778626
+Validation class_accuracies: [0.5460060667340748, 0.49228944246737844, 0.26666666666666666, 0.09722222222222222]
+Validation sensitivity: 0.4164408310749774
+Validation specificity: 0.5460060667340748
+Validation icbhi_score: 0.4812234489045261
+Validation roc_auc: None
+Validation avg_accuracy: 0.35054609952258553
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 6 epochs
+249/249 - 705s - loss: 0.5906 - accuracy: 0.6548 - 705s/epoch - 3s/step
+Epoch 8/80
+Validation cm: [[610 339  29  11]
+ [480 332  14  17]
+ [ 42  37  31  10]
+ [ 78  47  16   3]]
+Validation normalized_cm: [[0.617 0.343 0.029 0.011]
+ [0.569 0.394 0.017 0.02 ]
+ [0.35  0.308 0.258 0.083]
+ [0.542 0.326 0.111 0.021]]
+Validation acc: 0.46564885496183206
+Validation class_accuracies: [0.6167846309403437, 0.39383155397390274, 0.25833333333333336, 0.020833333333333332]
+Validation sensitivity: 0.33062330623306235
+Validation specificity: 0.6167846309403437
+Validation icbhi_score: 0.47370396858670305
+Validation roc_auc: None
+Validation avg_accuracy: 0.3224457128952283
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 7 epochs
+249/249 - 702s - loss: 0.5722 - accuracy: 0.6616 - 702s/epoch - 3s/step
+Epoch 9/80
+Validation cm: [[642 288  40  19]
+ [513 273  41  16]
+ [ 54  24  28  14]
+ [ 84  35  14  11]]
+Validation normalized_cm: [[0.649 0.291 0.04  0.019]
+ [0.609 0.324 0.049 0.019]
+ [0.45  0.2   0.233 0.117]
+ [0.583 0.243 0.097 0.076]]
+Validation acc: 0.4551526717557252
+Validation class_accuracies: [0.6491405460060667, 0.3238434163701068, 0.23333333333333334, 0.0763888888888889]
+Validation sensitivity: 0.28184281842818426
+Validation specificity: 0.6491405460060667
+Validation icbhi_score: 0.4654916822171255
+Validation roc_auc: None
+Validation avg_accuracy: 0.32067654614959895
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 8 epochs
+Lr has been adjusted to 3.125000148429535e-05
+249/249 - 678s - loss: 0.5742 - accuracy: 0.6689 - 678s/epoch - 3s/step
+Epoch 10/80
+Validation cm: [[669 266  35  19]
+ [557 243  24  19]
+ [ 59  20  33   8]
+ [ 98  28  12   6]]
+Validation normalized_cm: [[0.676 0.269 0.035 0.019]
+ [0.661 0.288 0.028 0.023]
+ [0.492 0.167 0.275 0.067]
+ [0.681 0.194 0.083 0.042]]
+Validation acc: 0.45372137404580154
+Validation class_accuracies: [0.6764408493427705, 0.28825622775800713, 0.275, 0.041666666666666664]
+Validation sensitivity: 0.25474254742547425
+Validation specificity: 0.6764408493427705
+Validation icbhi_score: 0.4655916983841224
+Validation roc_auc: None
+Validation avg_accuracy: 0.32034093594186114
+Validation one_indexed_epoch: 10
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 9 epochs
+249/249 - 670s - loss: 0.5955 - accuracy: 0.6591 - 670s/epoch - 3s/step
+Epoch 11/80
+Validation cm: [[565 369  28  27]
+ [426 375  28  14]
+ [ 49  29  30  12]
+ [ 69  56  10   9]]
+Validation normalized_cm: [[0.571 0.373 0.028 0.027]
+ [0.505 0.445 0.033 0.017]
+ [0.408 0.242 0.25  0.1  ]
+ [0.479 0.389 0.069 0.062]]
+Validation acc: 0.46708015267175573
+Validation class_accuracies: [0.5712841253791708, 0.44483985765124556, 0.25, 0.0625]
+Validation sensitivity: 0.37398373983739835
+Validation specificity: 0.5712841253791708
+Validation icbhi_score: 0.47263393260828457
+Validation roc_auc: None
+Validation avg_accuracy: 0.33215599575760413
+Validation one_indexed_epoch: 11
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 10 epochs
+Mel loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+sinc loss: <tf.Variable 'Variable:0' shape=() dtype=float32, numpy=0.5>
+249/249 - 678s - loss: 0.5633 - accuracy: 0.6647 - 678s/epoch - 3s/step
+Epoch 12/80
+Validation cm: [[567 344  52  26]
+ [442 325  54  22]
+ [ 50  23  38   9]
+ [ 74  47  16   7]]
+Validation normalized_cm: [[0.573 0.348 0.053 0.026]
+ [0.524 0.386 0.064 0.026]
+ [0.417 0.192 0.317 0.075]
+ [0.514 0.326 0.111 0.049]]
+Validation acc: 0.4470419847328244
+Validation class_accuracies: [0.5733063700707786, 0.38552787663107946, 0.31666666666666665, 0.04861111111111111]
+Validation sensitivity: 0.33423667570009036
+Validation specificity: 0.5733063700707786
+Validation icbhi_score: 0.45377152288543443
+Validation roc_auc: None
+Validation avg_accuracy: 0.33102800611990896
+Validation one_indexed_epoch: 12
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 11 epochs
+249/249 - 679s - loss: 0.5542 - accuracy: 0.6629 - 679s/epoch - 3s/step
+Epoch 13/80
+Validation cm: [[587 348  35  19]
+ [460 350  16  17]
+ [ 45  29  32  14]
+ [ 72  54   8  10]]
+Validation normalized_cm: [[0.594 0.352 0.035 0.019]
+ [0.546 0.415 0.019 0.02 ]
+ [0.375 0.242 0.267 0.117]
+ [0.5   0.375 0.056 0.069]]
+Validation acc: 0.46708015267175573
+Validation class_accuracies: [0.5935288169868554, 0.4151838671411625, 0.26666666666666666, 0.06944444444444445]
+Validation sensitivity: 0.35411020776874436
+Validation specificity: 0.5935288169868554
+Validation icbhi_score: 0.4738195123777999
+Validation roc_auc: None
+Validation avg_accuracy: 0.3362059488097822
+Validation one_indexed_epoch: 13
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 12 epochs
+249/249 - 669s - loss: 0.5450 - accuracy: 0.6735 - 669s/epoch - 3s/step
+Epoch 14/80
+Validation cm: [[531 370  50  38]
+ [389 379  33  42]
+ [ 36  28  34  22]
+ [ 66  51  15  12]]
+Validation normalized_cm: [[0.537 0.374 0.051 0.038]
+ [0.461 0.45  0.039 0.05 ]
+ [0.3   0.233 0.283 0.183]
+ [0.458 0.354 0.104 0.083]]
+Validation acc: 0.45610687022900764
+Validation class_accuracies: [0.5369059656218402, 0.44958481613285883, 0.2833333333333333, 0.08333333333333333]
+Validation sensitivity: 0.3839205058717254
+Validation specificity: 0.5369059656218402
+Validation icbhi_score: 0.46041323574678283
+Validation roc_auc: None
+Validation avg_accuracy: 0.3382893621053414
+Validation one_indexed_epoch: 14
+The validation tracker metric at 0.5002361112252849 hasn't increased by 0 in 13 epochs
+249/249 - 683s - loss: 0.5286 - accuracy: 0.6828 - 683s/epoch - 3s/step
+Epoch 15/80

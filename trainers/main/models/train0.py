@@ -156,7 +156,6 @@ if __name__ == "__main__":
     audio_aug_params = [
         ["augmix", {"quantity" : 0.2, "label": -1, "no_pad" : False, "minval" : 0.3, "maxval" : 0.7, "aug_functions": [shift_pitch, stretch_time]}]
     ]
-
     launch_job({"Bd": 0, "Jordan": 1, "Icbhi": 1, "Perch": 0, "Ant": 0, "SimAnt": 0,}, mixednet, spec_aug_params, audio_aug_params, spec_parser)
     
     # to run another job, add a line to modify whatever parameters, and rerun a launch_job function as many times as you want!

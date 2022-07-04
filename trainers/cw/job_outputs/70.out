@@ -1,0 +1,1125 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train70
+Description: crackles with diff params + mixing data + diff loss
+-----------------------
+Job id is 1.
+- Loading Perch.
+3278 Perch audios have been loaded.
+- Loading Icbhi.
+725 Icbhi audios have been loaded.
+- Loading Antwerp.
+131 Antwerp audios have been loaded.
+- Preparing Perch.
+862 Perch groups of audio chunks (by filename or patients) have been prepared.
+- Preparing Icbhi.
+112 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+- Preparing Antwerp.
+15 Antwerp groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+--- Perch training dataset went from 0 to 2649 elements, with 2346 none's, 61 crakles, 186 wheezes and 56 both ---
+--- Perch Validation dataset contains 629 elements, with 551 none, 12 crackles, 54 wheezes and 12 both ---
+--- Icbhi training dataset went from 0 to 2040 elements, with 707 none's, 720 crakles, 285 wheezes and 327 both ---
+--- Icbhi Validation dataset contains 299 elements, with 172 none, 70 crackles, 18 wheezes and 39 both ---
+--- Antwerp training dataset went from 0 to 580 elements, with 82 none's, 16 crakles, 448 wheezes and 34 both ---
+--- Antwerp Validation dataset contains 111 elements, with 17 none, 10 crackles, 5 wheezes and 79 both ---
+3908
+1138
+964
+298
+-----------------------
+--- Final training dataset went from 0 to 5046 elements, with 3908 0's, 1138 1's and 0 others ---
+--- Final Validation dataset contains 1262 elements, with 964 0's and 298 1's ---
+Model: "leaf_model9_model_bis"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ leaf (Leaf)                                     multiple                                    560              
+                                                                                                              
+ mel_filterbanks (MelFilterbanks)                multiple                                    0 (unused)       
+                                                                                                              
+ sincnet (SincNet)                               multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 80, 500, 1)                          4                
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 80, 500, 16)                         2352             
+                                                                                                              
+ sequential_2 (Sequential)                       (None, 80, 500, 16)                         6448             
+                                                                                                              
+ sequential_3 (Sequential)                       (None, 80, 500, 16)                         32               
+                                                                                                              
+ concatenate (Concatenate)                       multiple                                    0                
+                                                                                                              
+ sequential_4 (Sequential)                       (None, 1)                                   6191809          
+                                                                                                              
+==============================================================================================================
+Total params: 6,201,365
+Trainable params: 6,159,859
+Non-trainable params: 41,506
+______________________________________________________________________________________________________________
+Target metric is avg_accuracy
+Epoch 1/25
+Validation cm: [[964   0]
+ [298   0]]
+Validation normalized_cm: [[1. 0.]
+ [1. 0.]]
+Validation acc: 0.7638668779714739
+Validation class_accuracies: [1.0, 0.0]
+Validation precision: 0.0
+Validation recall: 0.0
+Validation f1: 0.0
+Validation roc_auc: 0.5737924336517308
+Validation avg_accuracy: 0.5
+Validation one_indexed_epoch: 1
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[693   0]
+ [ 47   0]] 
+Patient Normalized Confusion matrix: 
+ [[1. 0.]
+ [1. 0.]] 
+Patient Validation accuracy: 
+ 93.65 
+Patient Validation class accuracies: 
+ [1.0, 0.0] 
+316/316 - 930s - loss: 0.5239 - accuracy: 0.7642 - 930s/epoch - 3s/step
+Epoch 2/25
+Validation cm: [[945  19]
+ [298   0]]
+Validation normalized_cm: [[0.98 0.02]
+ [1.   0.  ]]
+Validation acc: 0.748811410459588
+Validation class_accuracies: [0.9802904564315352, 0.0]
+Validation precision: 0.0
+Validation recall: 0.0
+Validation f1: 0.0
+Validation roc_auc: 0.796283661477624
+Validation avg_accuracy: 0.4901452282157676
+Validation one_indexed_epoch: 2
+The validation tracker metric at 0.5 hasn't increased by 0 in 1 epochs
+316/316 - 911s - loss: 0.4257 - accuracy: 0.7917 - 911s/epoch - 3s/step
+Epoch 3/25
+Validation cm: [[190 774]
+ [  9 289]]
+Validation normalized_cm: [[0.197 0.803]
+ [0.03  0.97 ]]
+Validation acc: 0.3795562599049128
+Validation class_accuracies: [0.1970954356846473, 0.9697986577181208]
+Validation precision: 0.2718720602069614
+Validation recall: 0.9697986577181208
+Validation f1: 0.42468772961058054
+Validation roc_auc: 0.7153046589991366
+Validation avg_accuracy: 0.583447046701384
+Validation one_indexed_epoch: 3
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[121 572]
+ [  4  43]] 
+Patient Normalized Confusion matrix: 
+ [[0.175 0.825]
+ [0.085 0.915]] 
+Patient Validation accuracy: 
+ 22.16 
+Patient Validation class accuracies: 
+ [0.1746031746031746, 0.9148936170212766] 
+316/316 - 913s - loss: 0.4229 - accuracy: 0.7753 - 913s/epoch - 3s/step
+Epoch 4/25
+Validation cm: [[777 187]
+ [ 84 214]]
+Validation normalized_cm: [[0.806 0.194]
+ [0.282 0.718]]
+Validation acc: 0.7852614896988906
+Validation class_accuracies: [0.8060165975103735, 0.7181208053691275]
+Validation precision: 0.5336658354114713
+Validation recall: 0.7181208053691275
+Validation f1: 0.6123032904148783
+Validation roc_auc: 0.8360230025898799
+Validation avg_accuracy: 0.7620687014397505
+Validation one_indexed_epoch: 4
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[646  47]
+ [ 27  20]] 
+Patient Normalized Confusion matrix: 
+ [[0.932 0.068]
+ [0.574 0.426]] 
+Patient Validation accuracy: 
+ 90.00 
+Patient Validation class accuracies: 
+ [0.9321789321789322, 0.425531914893617] 
+316/316 - 915s - loss: 0.4051 - accuracy: 0.8022 - 915s/epoch - 3s/step
+Epoch 5/25
+Validation cm: [[841 123]
+ [131 167]]
+Validation normalized_cm: [[0.872 0.128]
+ [0.44  0.56 ]]
+Validation acc: 0.7987321711568938
+Validation class_accuracies: [0.8724066390041494, 0.5604026845637584]
+Validation precision: 0.5758620689655173
+Validation recall: 0.5604026845637584
+Validation f1: 0.5680272108843538
+Validation roc_auc: 0.8543575426773232
+Validation avg_accuracy: 0.7164046617839539
+Validation one_indexed_epoch: 5
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 1 epochs
+316/316 - 914s - loss: 0.3916 - accuracy: 0.8042 - 914s/epoch - 3s/step
+Epoch 6/25
+Validation cm: [[956   8]
+ [258  40]]
+Validation normalized_cm: [[0.992 0.008]
+ [0.866 0.134]]
+Validation acc: 0.7892234548335975
+Validation class_accuracies: [0.991701244813278, 0.1342281879194631]
+Validation precision: 0.8333333333333334
+Validation recall: 0.1342281879194631
+Validation f1: 0.23121387283236994
+Validation roc_auc: 0.7913440920103596
+Validation avg_accuracy: 0.5629647163663706
+Validation one_indexed_epoch: 6
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 2 epochs
+316/316 - 914s - loss: 0.3862 - accuracy: 0.8050 - 914s/epoch - 3s/step
+Epoch 7/25
+Validation cm: [[904  60]
+ [169 129]]
+Validation normalized_cm: [[0.938 0.062]
+ [0.567 0.433]]
+Validation acc: 0.8185419968304279
+Validation class_accuracies: [0.9377593360995851, 0.43288590604026844]
+Validation precision: 0.6825396825396826
+Validation recall: 0.43288590604026844
+Validation f1: 0.5297741273100616
+Validation roc_auc: 0.877816146369991
+Validation avg_accuracy: 0.6853226210699268
+Validation one_indexed_epoch: 7
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 3 epochs
+316/316 - 911s - loss: 0.3720 - accuracy: 0.8210 - 911s/epoch - 3s/step
+Epoch 8/25
+Validation cm: [[899  65]
+ [195 103]]
+Validation normalized_cm: [[0.933 0.067]
+ [0.654 0.346]]
+Validation acc: 0.7939778129952456
+Validation class_accuracies: [0.9325726141078838, 0.34563758389261745]
+Validation precision: 0.6130952380952381
+Validation recall: 0.34563758389261745
+Validation f1: 0.44206008583690987
+Validation roc_auc: 0.8489932885906041
+Validation avg_accuracy: 0.6391050990002507
+Validation one_indexed_epoch: 8
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 4 epochs
+316/316 - 911s - loss: 0.3706 - accuracy: 0.8222 - 911s/epoch - 3s/step
+Epoch 9/25
+Validation cm: [[806 158]
+ [101 197]]
+Validation normalized_cm: [[0.836 0.164]
+ [0.339 0.661]]
+Validation acc: 0.794770206022187
+Validation class_accuracies: [0.8360995850622407, 0.6610738255033557]
+Validation precision: 0.5549295774647888
+Validation recall: 0.6610738255033557
+Validation f1: 0.6033690658499236
+Validation roc_auc: 0.8536648194046061
+Validation avg_accuracy: 0.7485867052827981
+Validation one_indexed_epoch: 9
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 5 epochs
+316/316 - 912s - loss: 0.3613 - accuracy: 0.8222 - 912s/epoch - 3s/step
+Epoch 10/25
+Validation cm: [[933  31]
+ [225  73]]
+Validation normalized_cm: [[0.968 0.032]
+ [0.755 0.245]]
+Validation acc: 0.7971473851030111
+Validation class_accuracies: [0.9678423236514523, 0.24496644295302014]
+Validation precision: 0.7019230769230769
+Validation recall: 0.24496644295302014
+Validation f1: 0.36318407960199006
+Validation roc_auc: 0.6349452783424768
+Validation avg_accuracy: 0.6064043833022362
+Validation one_indexed_epoch: 10
+The validation tracker metric at 0.7620687014397505 hasn't increased by 0 in 6 epochs
+316/316 - 912s - loss: 0.3401 - accuracy: 0.8363 - 912s/epoch - 3s/step
+Epoch 11/25
+Validation cm: [[788 176]
+ [ 69 229]]
+Validation normalized_cm: [[0.817 0.183]
+ [0.232 0.768]]
+Validation acc: 0.805863708399366
+Validation class_accuracies: [0.8174273858921162, 0.7684563758389261]
+Validation precision: 0.5654320987654321
+Validation recall: 0.7684563758389261
+Validation f1: 0.6514935988620199
+Validation roc_auc: 0.869510429140327
+Validation avg_accuracy: 0.7929418808655211
+Validation one_indexed_epoch: 11
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[622  71]
+ [ 17  30]] 
+Patient Normalized Confusion matrix: 
+ [[0.898 0.102]
+ [0.362 0.638]] 
+Patient Validation accuracy: 
+ 88.11 
+Patient Validation class accuracies: 
+ [0.8975468975468975, 0.6382978723404256] 
+316/316 - 912s - loss: 0.3420 - accuracy: 0.8421 - 912s/epoch - 3s/step
+Epoch 12/25
+Validation cm: [[823 141]
+ [ 80 218]]
+Validation normalized_cm: [[0.854 0.146]
+ [0.268 0.732]]
+Validation acc: 0.8248811410459588
+Validation class_accuracies: [0.8537344398340249, 0.7315436241610739]
+Validation precision: 0.6072423398328691
+Validation recall: 0.7315436241610739
+Validation f1: 0.6636225266362253
+Validation roc_auc: 0.8770363975605
+Validation avg_accuracy: 0.7926390319975494
+Validation one_indexed_epoch: 12
+The validation tracker metric at 0.7929418808655211 hasn't increased by 0 in 1 epochs
+316/316 - 913s - loss: 0.3358 - accuracy: 0.8403 - 913s/epoch - 3s/step
+Epoch 13/25
+Validation cm: [[837 127]
+ [105 193]]
+Validation normalized_cm: [[0.868 0.132]
+ [0.352 0.648]]
+Validation acc: 0.8161648177496038
+Validation class_accuracies: [0.8682572614107884, 0.6476510067114094]
+Validation precision: 0.603125
+Validation recall: 0.6476510067114094
+Validation f1: 0.6245954692556636
+Validation roc_auc: 0.8852411651675068
+Validation avg_accuracy: 0.7579541340610989
+Validation one_indexed_epoch: 13
+The validation tracker metric at 0.7929418808655211 hasn't increased by 0 in 2 epochs
+316/316 - 911s - loss: 0.3196 - accuracy: 0.8504 - 911s/epoch - 3s/step
+Epoch 14/25
+Validation cm: [[859 105]
+ [126 172]]
+Validation normalized_cm: [[0.891 0.109]
+ [0.423 0.577]]
+Validation acc: 0.8169572107765452
+Validation class_accuracies: [0.8910788381742739, 0.5771812080536913]
+Validation precision: 0.6209386281588448
+Validation recall: 0.5771812080536913
+Validation f1: 0.5982608695652174
+Validation roc_auc: 0.8496651257344954
+Validation avg_accuracy: 0.7341300231139827
+Validation one_indexed_epoch: 14
+The validation tracker metric at 0.7929418808655211 hasn't increased by 0 in 3 epochs
+316/316 - 913s - loss: 0.3164 - accuracy: 0.8528 - 913s/epoch - 3s/step
+Epoch 15/25
+Validation cm: [[742 222]
+ [ 47 251]]
+Validation normalized_cm: [[0.77  0.23 ]
+ [0.158 0.842]]
+Validation acc: 0.7868462757527733
+Validation class_accuracies: [0.7697095435684648, 0.8422818791946308]
+Validation precision: 0.5306553911205074
+Validation recall: 0.8422818791946308
+Validation f1: 0.6511024643320363
+Validation roc_auc: 0.8715050544431757
+Validation avg_accuracy: 0.8059957113815478
+Validation one_indexed_epoch: 15
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[577 116]
+ [  4  43]] 
+Patient Normalized Confusion matrix: 
+ [[0.833 0.167]
+ [0.085 0.915]] 
+Patient Validation accuracy: 
+ 83.78 
+Patient Validation class accuracies: 
+ [0.8326118326118326, 0.9148936170212766] 
+316/316 - 913s - loss: 0.3099 - accuracy: 0.8539 - 913s/epoch - 3s/step
+Epoch 16/25
+Validation cm: [[814 150]
+ [ 76 222]]
+Validation normalized_cm: [[0.844 0.156]
+ [0.255 0.745]]
+Validation acc: 0.820919175911252
+Validation class_accuracies: [0.8443983402489627, 0.7449664429530202]
+Validation precision: 0.5967741935483871
+Validation recall: 0.7449664429530202
+Validation f1: 0.6626865671641792
+Validation roc_auc: 0.8925130190203012
+Validation avg_accuracy: 0.7946823916009914
+Validation one_indexed_epoch: 16
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 1 epochs
+316/316 - 916s - loss: 0.2987 - accuracy: 0.8639 - 916s/epoch - 3s/step
+Epoch 17/25
+Validation cm: [[826 138]
+ [ 86 212]]
+Validation normalized_cm: [[0.857 0.143]
+ [0.289 0.711]]
+Validation acc: 0.8225039619651348
+Validation class_accuracies: [0.8568464730290456, 0.7114093959731543]
+Validation precision: 0.6057142857142858
+Validation recall: 0.7114093959731543
+Validation f1: 0.654320987654321
+Validation roc_auc: 0.8712439778328553
+Validation avg_accuracy: 0.7841279345011
+Validation one_indexed_epoch: 17
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 2 epochs
+316/316 - 919s - loss: 0.2775 - accuracy: 0.8736 - 919s/epoch - 3s/step
+Epoch 18/25
+Validation cm: [[912  52]
+ [181 117]]
+Validation normalized_cm: [[0.946 0.054]
+ [0.607 0.393]]
+Validation acc: 0.8153724247226625
+Validation class_accuracies: [0.946058091286307, 0.3926174496644295]
+Validation precision: 0.6923076923076923
+Validation recall: 0.3926174496644295
+Validation f1: 0.5010706638115632
+Validation roc_auc: 0.8590917318778022
+Validation avg_accuracy: 0.6693377704753682
+Validation one_indexed_epoch: 18
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 3 epochs
+316/316 - 914s - loss: 0.2756 - accuracy: 0.8803 - 914s/epoch - 3s/step
+Epoch 19/25
+Validation cm: [[926  38]
+ [186 112]]
+Validation normalized_cm: [[0.961 0.039]
+ [0.624 0.376]]
+Validation acc: 0.8225039619651348
+Validation class_accuracies: [0.9605809128630706, 0.37583892617449666]
+Validation precision: 0.7466666666666667
+Validation recall: 0.37583892617449666
+Validation f1: 0.5
+Validation roc_auc: 0.6745871508535465
+Validation avg_accuracy: 0.6682099195187836
+Validation one_indexed_epoch: 19
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 4 epochs
+316/316 - 912s - loss: 0.2722 - accuracy: 0.8805 - 912s/epoch - 3s/step
+Epoch 20/25
+Validation cm: [[882  82]
+ [126 172]]
+Validation normalized_cm: [[0.915 0.085]
+ [0.423 0.577]]
+Validation acc: 0.8351822503961965
+Validation class_accuracies: [0.9149377593360996, 0.5771812080536913]
+Validation precision: 0.6771653543307087
+Validation recall: 0.5771812080536913
+Validation f1: 0.6231884057971016
+Validation roc_auc: 0.8849696454927735
+Validation avg_accuracy: 0.7460594836948955
+Validation one_indexed_epoch: 20
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 5 epochs
+316/316 - 912s - loss: 0.2620 - accuracy: 0.8815 - 912s/epoch - 3s/step
+Epoch 21/25
+Validation cm: [[913  51]
+ [163 135]]
+Validation normalized_cm: [[0.947 0.053]
+ [0.547 0.453]]
+Validation acc: 0.8304278922345484
+Validation class_accuracies: [0.9470954356846473, 0.45302013422818793]
+Validation precision: 0.7258064516129032
+Validation recall: 0.45302013422818793
+Validation f1: 0.5578512396694215
+Validation roc_auc: 0.7839469213846111
+Validation avg_accuracy: 0.7000577849564176
+Validation one_indexed_epoch: 21
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 6 epochs
+316/316 - 846s - loss: 0.2449 - accuracy: 0.8920 - 846s/epoch - 3s/step
+Epoch 22/25
+Validation cm: [[922  42]
+ [168 130]]
+Validation normalized_cm: [[0.956 0.044]
+ [0.564 0.436]]
+Validation acc: 0.8335974643423137
+Validation class_accuracies: [0.9564315352697096, 0.436241610738255]
+Validation precision: 0.7558139534883721
+Validation recall: 0.436241610738255
+Validation f1: 0.5531914893617021
+Validation roc_auc: 0.7430066278648806
+Validation avg_accuracy: 0.6963365730039823
+Validation one_indexed_epoch: 22
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 7 epochs
+316/316 - 840s - loss: 0.2417 - accuracy: 0.8969 - 840s/epoch - 3s/step
+Epoch 23/25
+Validation cm: [[667 297]
+ [ 31 267]]
+Validation normalized_cm: [[0.692 0.308]
+ [0.104 0.896]]
+Validation acc: 0.7400950871632329
+Validation class_accuracies: [0.691908713692946, 0.8959731543624161]
+Validation precision: 0.4734042553191489
+Validation recall: 0.8959731543624161
+Validation f1: 0.6194895591647331
+Validation roc_auc: 0.8809386226294245
+Validation avg_accuracy: 0.7939409340276811
+Validation one_indexed_epoch: 23
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 8 epochs
+316/316 - 840s - loss: 0.2293 - accuracy: 0.9033 - 840s/epoch - 3s/step
+Epoch 24/25
+Validation cm: [[907  57]
+ [151 147]]
+Validation normalized_cm: [[0.941 0.059]
+ [0.507 0.493]]
+Validation acc: 0.8351822503961965
+Validation class_accuracies: [0.9408713692946058, 0.49328859060402686]
+Validation precision: 0.7205882352941176
+Validation recall: 0.49328859060402686
+Validation f1: 0.5856573705179283
+Validation roc_auc: 0.8884158567490044
+Validation avg_accuracy: 0.7170799799493164
+Validation one_indexed_epoch: 24
+The validation tracker metric at 0.8059957113815478 hasn't increased by 0 in 9 epochs
+316/316 - 841s - loss: 0.2078 - accuracy: 0.9126 - 841s/epoch - 3s/step
+Epoch 25/25
+Validation cm: [[837 127]
+ [ 55 243]]
+Validation normalized_cm: [[0.868 0.132]
+ [0.185 0.815]]
+Validation acc: 0.8557844690966719
+Validation class_accuracies: [0.8682572614107884, 0.8154362416107382]
+Validation precision: 0.6567567567567567
+Validation recall: 0.8154362416107382
+Validation f1: 0.7275449101796407
+Validation roc_auc: 0.9261396864295859
+Validation avg_accuracy: 0.8418467515107633
+Validation one_indexed_epoch: 25
+-- New best results were achieved. --
+Patient Confusion matrix: 
+ [[642  51]
+ [ 10  37]] 
+Patient Normalized Confusion matrix: 
+ [[0.926 0.074]
+ [0.213 0.787]] 
+Patient Validation accuracy: 
+ 91.76 
+Patient Validation class accuracies: 
+ [0.9264069264069265, 0.7872340425531915] 
+316/316 - 838s - loss: 0.1966 - accuracy: 0.9187 - 838s/epoch - 3s/step
+----------------------------------
+The best metrics for this job are: 
+
+Best avg_accuracy: 0.8418467515107633
+Best cm: [[837 127]
+ [ 55 243]]
+Best normalized_cm: [[0.868 0.132]
+ [0.185 0.815]]
+Best acc: 0.8557844690966719
+Best class_accuracies: [0.8682572614107884, 0.8154362416107382]
+Best precision: 0.6567567567567567
+Best recall: 0.8154362416107382
+Best f1: 0.7275449101796407
+Best roc_auc: 0.9261396864295859
+Best one_indexed_epoch: 25
+Best patient_cm: [[642  51]
+ [ 10  37]]
+avg_accuracy
+model
+cm
+normalized_cm
+acc
+class_accuracies
+precision
+recall
+f1
+roc_auc
+one_indexed_epoch
+patient_cm
+Initial weights
+[<tf.Variable 'kernel:0' shape=(80, 2) dtype=float32, numpy=
+array([[0.000e+00, 1.503e+02],
+       [0.000e+00, 9.602e+01],
+       [3.350e-02, 1.502e+02],
+       [5.653e-02, 1.503e+02],
+       [2.962e-02, 1.502e+02],
+       [8.337e-02, 9.588e+01],
+       [9.863e-02, 9.563e+01],
+       [8.825e-02, 9.519e+01],
+       [9.874e-02, 9.546e+01],
+       [1.485e-01, 9.533e+01],
+       [1.446e-01, 9.555e+01],
+       [1.244e-01, 9.555e+01],
+       [2.004e-01, 9.582e+01],
+       [2.257e-01, 9.582e+01],
+       [1.861e-01, 9.610e+01],
+       [2.147e-01, 9.583e+01],
+       [2.220e-01, 1.503e+02],
+       [2.365e-01, 9.590e+01],
+       [2.485e-01, 9.582e+01],
+       [2.668e-01, 9.634e+01],
+       [2.871e-01, 9.608e+01],
+       [2.967e-01, 9.620e+01],
+       [2.840e-01, 9.611e+01],
+       [3.540e-01, 9.621e+01],
+       [3.615e-01, 6.390e+01],
+       [3.349e-01, 9.629e+01],
+       [4.156e-01, 6.386e+01],
+       [4.430e-01, 9.627e+01],
+       [4.701e-01, 6.420e+01],
+       [4.771e-01, 6.432e+01],
+       [5.113e-01, 6.423e+01],
+       [5.009e-01, 6.424e+01],
+       [5.003e-01, 6.407e+01],
+       [5.554e-01, 6.389e+01],
+       [5.921e-01, 6.402e+01],
+       [5.233e-01, 6.400e+01],
+       [6.810e-01, 6.386e+01],
+       [6.005e-01, 6.411e+01],
+       [6.363e-01, 4.801e+01],
+       [7.489e-01, 4.781e+01],
+       [7.559e-01, 4.794e+01],
+       [8.199e-01, 4.795e+01],
+       [8.364e-01, 4.795e+01],
+       [8.970e-01, 4.798e+01],
+       [8.983e-01, 4.805e+01],
+       [8.344e-01, 4.792e+01],
+       [8.930e-01, 4.786e+01],
+       [9.975e-01, 3.831e+01],
+       [9.847e-01, 3.842e+01],
+       [1.148e+00, 3.851e+01],
+       [1.137e+00, 3.849e+01],
+       [1.226e+00, 3.845e+01],
+       [1.087e+00, 3.187e+01],
+       [1.153e+00, 3.185e+01],
+       [1.220e+00, 3.836e+01],
+       [1.299e+00, 3.177e+01],
+       [1.412e+00, 3.192e+01],
+       [1.420e+00, 3.192e+01],
+       [1.430e+00, 2.746e+01],
+       [1.508e+00, 2.739e+01],
+       [1.608e+00, 3.198e+01],
+       [1.693e+00, 2.742e+01],
+       [1.688e+00, 2.739e+01],
+       [1.751e+00, 2.411e+01],
+       [1.805e+00, 2.415e+01],
+       [1.880e+00, 2.396e+01],
+       [1.986e+00, 2.403e+01],
+       [1.988e+00, 2.409e+01],
+       [1.975e+00, 2.123e+01],
+       [2.121e+00, 2.128e+01],
+       [2.297e+00, 1.922e+01],
+       [2.195e+00, 1.906e+01],
+       [2.403e+00, 2.129e+01],
+       [2.407e+00, 1.918e+01],
+       [2.465e+00, 1.921e+01],
+       [2.631e+00, 1.741e+01],
+       [2.772e+00, 1.746e+01],
+       [2.759e+00, 1.607e+01],
+       [2.892e+00, 1.767e+01],
+       [2.915e+00, 1.611e+01]], dtype=float32)>, <tf.Variable 'leaf/learnable_pooling/kernel:0' shape=(1, 1, 80, 1) dtype=float32, numpy=
+array([[[[0.471],
+         [0.469],
+         [0.49 ],
+         [0.5  ],
+         [0.491],
+         [0.476],
+         [0.468],
+         [0.464],
+         [0.446],
+         [0.451],
+         [0.448],
+         [0.44 ],
+         [0.436],
+         [0.433],
+         [0.409],
+         [0.417],
+         [0.424],
+         [0.417],
+         [0.417],
+         [0.438],
+         [0.434],
+         [0.424],
+         [0.424],
+         [0.422],
+         [0.396],
+         [0.404],
+         [0.411],
+         [0.398],
+         [0.386],
+         [0.39 ],
+         [0.394],
+         [0.387],
+         [0.407],
+         [0.443],
+         [0.419],
+         [0.419],
+         [0.429],
+         [0.418],
+         [0.426],
+         [0.433],
+         [0.424],
+         [0.405],
+         [0.4  ],
+         [0.403],
+         [0.402],
+         [0.42 ],
+         [0.409],
+         [0.416],
+         [0.404],
+         [0.398],
+         [0.401],
+         [0.404],
+         [0.415],
+         [0.412],
+         [0.405],
+         [0.416],
+         [0.406],
+         [0.41 ],
+         [0.411],
+         [0.407],
+         [0.402],
+         [0.409],
+         [0.411],
+         [0.396],
+         [0.391],
+         [0.403],
+         [0.39 ],
+         [0.384],
+         [0.396],
+         [0.389],
+         [0.394],
+         [0.401],
+         [0.392],
+         [0.39 ],
+         [0.397],
+         [0.392],
+         [0.395],
+         [0.39 ],
+         [0.388],
+         [0.393]]]], dtype=float32)>, <tf.Variable 'leaf/PCEN/alpha:0' shape=(80,) dtype=float32, numpy=
+array([1.001, 1.   , 1.   , 1.   , 1.   , 0.995, 0.989, 0.982, 0.986,
+       0.984, 0.985, 0.977, 0.986, 0.979, 0.973, 0.977, 0.965, 0.976,
+       0.967, 0.957, 0.965, 0.95 , 0.947, 0.949, 0.96 , 0.952, 0.953,
+       0.95 , 0.968, 0.965, 0.958, 0.951, 0.956, 0.956, 0.945, 0.956,
+       0.953, 0.947, 0.957, 0.956, 0.965, 0.955, 0.958, 0.96 , 0.956,
+       0.943, 0.942, 0.94 , 0.957, 0.941, 0.955, 0.952, 0.946, 0.949,
+       0.954, 0.946, 0.952, 0.936, 0.953, 0.936, 0.942, 0.946, 0.953,
+       0.946, 0.943, 0.953, 0.938, 0.937, 0.954, 0.937, 0.942, 0.954,
+       0.944, 0.939, 0.954, 0.938, 0.947, 0.936, 0.944, 0.932],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/delta:0' shape=(80,) dtype=float32, numpy=
+array([1.805, 1.804, 1.842, 1.837, 1.863, 1.867, 1.894, 1.914, 1.908,
+       1.938, 1.945, 1.95 , 1.96 , 1.958, 1.965, 1.964, 1.989, 1.97 ,
+       1.981, 1.998, 1.992, 2.009, 2.011, 2.011, 2.001, 2.011, 2.008,
+       2.011, 1.993, 1.996, 2.002, 2.008, 2.003, 2.004, 2.015, 2.003,
+       2.008, 2.013, 2.002, 2.003, 1.992, 2.003, 2.001, 2.   , 2.003,
+       2.018, 2.018, 2.02 , 2.003, 2.019, 2.004, 2.007, 2.014, 2.011,
+       2.006, 2.014, 2.008, 2.024, 2.007, 2.024, 2.018, 2.013, 2.007,
+       2.014, 2.017, 2.007, 2.021, 2.022, 2.006, 2.023, 2.018, 2.005,
+       2.016, 2.021, 2.005, 2.022, 2.013, 2.024, 2.016, 2.028],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/root:0' shape=(80,) dtype=float32, numpy=
+array([1.892, 1.901, 1.925, 1.925, 1.94 , 1.947, 1.959, 1.989, 1.965,
+       1.996, 1.995, 1.997, 1.998, 2.003, 1.993, 1.993, 2.027, 1.998,
+       2.007, 2.018, 2.012, 2.023, 2.021, 2.019, 2.013, 2.026, 2.015,
+       2.024, 2.001, 2.008, 2.012, 2.019, 2.014, 2.016, 2.023, 2.018,
+       2.02 , 2.027, 2.02 , 2.014, 2.004, 2.01 , 2.01 , 2.008, 2.007,
+       2.024, 2.021, 2.022, 2.009, 2.023, 2.008, 2.013, 2.018, 2.015,
+       2.011, 2.017, 2.01 , 2.024, 2.01 , 2.025, 2.02 , 2.015, 2.009,
+       2.014, 2.017, 2.009, 2.023, 2.024, 2.008, 2.025, 2.018, 2.008,
+       2.017, 2.021, 2.008, 2.022, 2.014, 2.024, 2.016, 2.029],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/EMA/smooth:0' shape=(80,) dtype=float32, numpy=
+array([0.103, 0.102, 0.099, 0.1  , 0.1  , 0.093, 0.088, 0.082, 0.085,
+       0.082, 0.082, 0.082, 0.09 , 0.077, 0.082, 0.085, 0.069, 0.086,
+       0.075, 0.071, 0.072, 0.072, 0.074, 0.069, 0.073, 0.071, 0.069,
+       0.066, 0.073, 0.073, 0.07 , 0.072, 0.073, 0.072, 0.07 , 0.076,
+       0.068, 0.072, 0.071, 0.067, 0.07 , 0.062, 0.062, 0.063, 0.062,
+       0.059, 0.057, 0.058, 0.063, 0.058, 0.06 , 0.058, 0.055, 0.056,
+       0.058, 0.052, 0.056, 0.048, 0.056, 0.05 , 0.051, 0.053, 0.055,
+       0.051, 0.051, 0.054, 0.049, 0.048, 0.056, 0.051, 0.047, 0.054,
+       0.046, 0.043, 0.053, 0.047, 0.05 , 0.054, 0.054, 0.054],
+      dtype=float32)>]
+Post training weights
+[<tf.Variable 'kernel:0' shape=(80, 2) dtype=float32, numpy=
+array([[0.000e+00, 1.503e+02],
+       [0.000e+00, 9.602e+01],
+       [3.350e-02, 1.502e+02],
+       [5.653e-02, 1.503e+02],
+       [2.962e-02, 1.502e+02],
+       [8.337e-02, 9.588e+01],
+       [9.863e-02, 9.563e+01],
+       [8.825e-02, 9.519e+01],
+       [9.874e-02, 9.546e+01],
+       [1.485e-01, 9.533e+01],
+       [1.446e-01, 9.555e+01],
+       [1.244e-01, 9.555e+01],
+       [2.004e-01, 9.582e+01],
+       [2.257e-01, 9.582e+01],
+       [1.861e-01, 9.610e+01],
+       [2.147e-01, 9.583e+01],
+       [2.220e-01, 1.503e+02],
+       [2.365e-01, 9.590e+01],
+       [2.485e-01, 9.582e+01],
+       [2.668e-01, 9.634e+01],
+       [2.871e-01, 9.608e+01],
+       [2.967e-01, 9.620e+01],
+       [2.840e-01, 9.611e+01],
+       [3.540e-01, 9.621e+01],
+       [3.615e-01, 6.390e+01],
+       [3.349e-01, 9.629e+01],
+       [4.156e-01, 6.386e+01],
+       [4.430e-01, 9.627e+01],
+       [4.701e-01, 6.420e+01],
+       [4.771e-01, 6.432e+01],
+       [5.113e-01, 6.423e+01],
+       [5.009e-01, 6.424e+01],
+       [5.003e-01, 6.407e+01],
+       [5.554e-01, 6.389e+01],
+       [5.921e-01, 6.402e+01],
+       [5.233e-01, 6.400e+01],
+       [6.810e-01, 6.386e+01],
+       [6.005e-01, 6.411e+01],
+       [6.363e-01, 4.801e+01],
+       [7.489e-01, 4.781e+01],
+       [7.559e-01, 4.794e+01],
+       [8.199e-01, 4.795e+01],
+       [8.364e-01, 4.795e+01],
+       [8.970e-01, 4.798e+01],
+       [8.983e-01, 4.805e+01],
+       [8.344e-01, 4.792e+01],
+       [8.930e-01, 4.786e+01],
+       [9.975e-01, 3.831e+01],
+       [9.847e-01, 3.842e+01],
+       [1.148e+00, 3.851e+01],
+       [1.137e+00, 3.849e+01],
+       [1.226e+00, 3.845e+01],
+       [1.087e+00, 3.187e+01],
+       [1.153e+00, 3.185e+01],
+       [1.220e+00, 3.836e+01],
+       [1.299e+00, 3.177e+01],
+       [1.412e+00, 3.192e+01],
+       [1.420e+00, 3.192e+01],
+       [1.430e+00, 2.746e+01],
+       [1.508e+00, 2.739e+01],
+       [1.608e+00, 3.198e+01],
+       [1.693e+00, 2.742e+01],
+       [1.688e+00, 2.739e+01],
+       [1.751e+00, 2.411e+01],
+       [1.805e+00, 2.415e+01],
+       [1.880e+00, 2.396e+01],
+       [1.986e+00, 2.403e+01],
+       [1.988e+00, 2.409e+01],
+       [1.975e+00, 2.123e+01],
+       [2.121e+00, 2.128e+01],
+       [2.297e+00, 1.922e+01],
+       [2.195e+00, 1.906e+01],
+       [2.403e+00, 2.129e+01],
+       [2.407e+00, 1.918e+01],
+       [2.465e+00, 1.921e+01],
+       [2.631e+00, 1.741e+01],
+       [2.772e+00, 1.746e+01],
+       [2.759e+00, 1.607e+01],
+       [2.892e+00, 1.767e+01],
+       [2.915e+00, 1.611e+01]], dtype=float32)>, <tf.Variable 'leaf/learnable_pooling/kernel:0' shape=(1, 1, 80, 1) dtype=float32, numpy=
+array([[[[0.471],
+         [0.469],
+         [0.49 ],
+         [0.5  ],
+         [0.491],
+         [0.476],
+         [0.468],
+         [0.464],
+         [0.446],
+         [0.451],
+         [0.448],
+         [0.44 ],
+         [0.436],
+         [0.433],
+         [0.409],
+         [0.417],
+         [0.424],
+         [0.417],
+         [0.417],
+         [0.438],
+         [0.434],
+         [0.424],
+         [0.424],
+         [0.422],
+         [0.396],
+         [0.404],
+         [0.411],
+         [0.398],
+         [0.386],
+         [0.39 ],
+         [0.394],
+         [0.387],
+         [0.407],
+         [0.443],
+         [0.419],
+         [0.419],
+         [0.429],
+         [0.418],
+         [0.426],
+         [0.433],
+         [0.424],
+         [0.405],
+         [0.4  ],
+         [0.403],
+         [0.402],
+         [0.42 ],
+         [0.409],
+         [0.416],
+         [0.404],
+         [0.398],
+         [0.401],
+         [0.404],
+         [0.415],
+         [0.412],
+         [0.405],
+         [0.416],
+         [0.406],
+         [0.41 ],
+         [0.411],
+         [0.407],
+         [0.402],
+         [0.409],
+         [0.411],
+         [0.396],
+         [0.391],
+         [0.403],
+         [0.39 ],
+         [0.384],
+         [0.396],
+         [0.389],
+         [0.394],
+         [0.401],
+         [0.392],
+         [0.39 ],
+         [0.397],
+         [0.392],
+         [0.395],
+         [0.39 ],
+         [0.388],
+         [0.393]]]], dtype=float32)>, <tf.Variable 'leaf/PCEN/alpha:0' shape=(80,) dtype=float32, numpy=
+array([1.001, 1.   , 1.   , 1.   , 1.   , 0.995, 0.989, 0.982, 0.986,
+       0.984, 0.985, 0.977, 0.986, 0.979, 0.973, 0.977, 0.965, 0.976,
+       0.967, 0.957, 0.965, 0.95 , 0.947, 0.949, 0.96 , 0.952, 0.953,
+       0.95 , 0.968, 0.965, 0.958, 0.951, 0.956, 0.956, 0.945, 0.956,
+       0.953, 0.947, 0.957, 0.956, 0.965, 0.955, 0.958, 0.96 , 0.956,
+       0.943, 0.942, 0.94 , 0.957, 0.941, 0.955, 0.952, 0.946, 0.949,
+       0.954, 0.946, 0.952, 0.936, 0.953, 0.936, 0.942, 0.946, 0.953,
+       0.946, 0.943, 0.953, 0.938, 0.937, 0.954, 0.937, 0.942, 0.954,
+       0.944, 0.939, 0.954, 0.938, 0.947, 0.936, 0.944, 0.932],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/delta:0' shape=(80,) dtype=float32, numpy=
+array([1.805, 1.804, 1.842, 1.837, 1.863, 1.867, 1.894, 1.914, 1.908,
+       1.938, 1.945, 1.95 , 1.96 , 1.958, 1.965, 1.964, 1.989, 1.97 ,
+       1.981, 1.998, 1.992, 2.009, 2.011, 2.011, 2.001, 2.011, 2.008,
+       2.011, 1.993, 1.996, 2.002, 2.008, 2.003, 2.004, 2.015, 2.003,
+       2.008, 2.013, 2.002, 2.003, 1.992, 2.003, 2.001, 2.   , 2.003,
+       2.018, 2.018, 2.02 , 2.003, 2.019, 2.004, 2.007, 2.014, 2.011,
+       2.006, 2.014, 2.008, 2.024, 2.007, 2.024, 2.018, 2.013, 2.007,
+       2.014, 2.017, 2.007, 2.021, 2.022, 2.006, 2.023, 2.018, 2.005,
+       2.016, 2.021, 2.005, 2.022, 2.013, 2.024, 2.016, 2.028],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/root:0' shape=(80,) dtype=float32, numpy=
+array([1.892, 1.901, 1.925, 1.925, 1.94 , 1.947, 1.959, 1.989, 1.965,
+       1.996, 1.995, 1.997, 1.998, 2.003, 1.993, 1.993, 2.027, 1.998,
+       2.007, 2.018, 2.012, 2.023, 2.021, 2.019, 2.013, 2.026, 2.015,
+       2.024, 2.001, 2.008, 2.012, 2.019, 2.014, 2.016, 2.023, 2.018,
+       2.02 , 2.027, 2.02 , 2.014, 2.004, 2.01 , 2.01 , 2.008, 2.007,
+       2.024, 2.021, 2.022, 2.009, 2.023, 2.008, 2.013, 2.018, 2.015,
+       2.011, 2.017, 2.01 , 2.024, 2.01 , 2.025, 2.02 , 2.015, 2.009,
+       2.014, 2.017, 2.009, 2.023, 2.024, 2.008, 2.025, 2.018, 2.008,
+       2.017, 2.021, 2.008, 2.022, 2.014, 2.024, 2.016, 2.029],
+      dtype=float32)>, <tf.Variable 'leaf/PCEN/EMA/smooth:0' shape=(80,) dtype=float32, numpy=
+array([0.103, 0.102, 0.099, 0.1  , 0.1  , 0.093, 0.088, 0.082, 0.085,
+       0.082, 0.082, 0.082, 0.09 , 0.077, 0.082, 0.085, 0.069, 0.086,
+       0.075, 0.071, 0.072, 0.072, 0.074, 0.069, 0.073, 0.071, 0.069,
+       0.066, 0.073, 0.073, 0.07 , 0.072, 0.073, 0.072, 0.07 , 0.076,
+       0.068, 0.072, 0.071, 0.067, 0.07 , 0.062, 0.062, 0.063, 0.062,
+       0.059, 0.057, 0.058, 0.063, 0.058, 0.06 , 0.058, 0.055, 0.056,
+       0.058, 0.052, 0.056, 0.048, 0.056, 0.05 , 0.051, 0.053, 0.055,
+       0.051, 0.051, 0.054, 0.049, 0.048, 0.056, 0.051, 0.047, 0.054,
+       0.046, 0.043, 0.053, 0.047, 0.05 , 0.054, 0.054, 0.054],
+      dtype=float32)>]/home/alirachidi/anaconda3/envs/LungSoundClass/lib/python3.7/site-packages/sklearn/metrics/_classification.py:1272: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+/home/alirachidi/classification_algorithm/trainers/modules/callbacks/visualizationCallback.py:32: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  print(np.array(self.model._frontend.weights) - np.array(self.first_weights))
+
+Weight difference
+[<tf.Tensor: shape=(80, 2), dtype=float32, numpy=
+ array([[0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.],
+        [0., 0.]], dtype=float32)>
+ <tf.Tensor: shape=(1, 1, 80, 1), dtype=float32, numpy=
+ array([[[[0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.],
+          [0.]]]], dtype=float32)>
+ <tf.Tensor: shape=(80,), dtype=float32, numpy=
+ array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float32)>
+ <tf.Tensor: shape=(80,), dtype=float32, numpy=
+ array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float32)>
+ <tf.Tensor: shape=(80,), dtype=float32, numpy=
+ array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float32)>
+ <tf.Tensor: shape=(80,), dtype=float32, numpy=
+ array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.], dtype=float32)>   ]

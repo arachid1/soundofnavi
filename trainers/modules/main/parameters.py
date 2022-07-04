@@ -1,11 +1,57 @@
 import argparse
 import json
 import os
+import tensorflow as tf
+import random
+import numpy as np
+import shutil
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-def init():
-    print("Collecting Variables...")
+
+def seed_everything():
+    os.environ["PYTHONHASHSEED"] = "0"
+    np.random.seed(0)
+    random.seed(0)
+    tf.random.set_seed(0)
+    # tf.config.experimental.enable_op_determinism()
+    # first = tf.random.normal((10, 1), 1, 1, dtype=tf.float32)
+    # print(first)
+    # sec = tf.random.normal((10, 1), 1, 1, dtype=tf.float32)
+    # print(sec)
+
+
+def initialize_job():
+    global file_dir
+    global job_id
+    global job_dir
+    job_id += 1
+    job_dir = os.path.join(file_dir, str(job_id))
+    print("First job directory is {}".format(job_dir))
+    os.mkdir(job_dir)
+    os.mkdir(os.path.join(job_dir, "logs"))
+    os.mkdir(os.path.join(job_dir, "logs/train"))
+    os.mkdir(os.path.join(job_dir, "logs/validation"))
+    os.mkdir(os.path.join(job_dir, "specs"))
+    os.mkdir(os.path.join(job_dir, "gradcam"))
+    os.mkdir(os.path.join(job_dir, "others"))
+    # make more folders
+    # initialize the wanddb stuff
+
+
+def initialize_file_folder(file_dir):
+    # maybe delete it too, doing it for now for easy testing
+    if os.path.exists(file_dir):
+        shutil.rmtree(file_dir)
+    os.mkdir(file_dir)
+    print("File dir is {}".format(file_dir))
+
+
+def init(arguments, file_name):
+
+    print("-- Collecting Variables... --")
+    print("Tensorflow Version: {}".format(tf.__version__))
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     global testing
     global mode
 
@@ -31,9 +77,11 @@ def init():
     global target
     global adaptive_lr
     global cuberooting
-    global normalizing
+    global normalize
     global initial_channels
-    global class_weights
+    global use_class_weights
+    global early_stopping
+    global oversample
 
     # adaptive lr
     global factor
@@ -50,7 +98,7 @@ def init():
     global job_id
     global n_sequences
     global overlap_threshold
-    
+
     # splitting and data handling
     global train_test_ratio
     global kfold
@@ -66,26 +114,34 @@ def init():
     global perch_root
     global ant_root
     global description
+    global official_labels_path
 
     # kapre
     global trainable_fb
     global to_decibel
-    
+
     global train_nn
     global train_mel
-    
+    global spec_aug_params
+    global audio_aug_params
 
-    # cache_root = "/home/alirachidi/classification_algorithm/cache/"
-    cache_root = "../cache/"
-    # data_root = "/home/alirachidi/classification_algorithm/data/"
-    data_root = "../data/"
+    global parse_function
+
+    cache_root = "/home/alirachidi/classification_algorithm/cache/"
+    # cache_root = "../cache/"
+    data_root = "/home/alirachidi/classification_algorithm/data/"
+    # data_root = "../data/"
     jordan_root = os.path.join(data_root, 'jwyy9np4gv-3/')
-    icbhi_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
+    # icbhi_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
+    icbhi_root = os.path.join(
+        data_root, 'raw_audios/icbhi_preprocessed_v2_8000/')
     bd_root = os.path.join(data_root, 'PCV_SEGMENTED_Processed_Files/')
-    excel_path = os.path.join(data_root, 'Bangladesh_PCV_onlyStudyPatients.xlsx')
+    excel_path = os.path.join(
+        data_root, 'Bangladesh_PCV_onlyStudyPatients.xlsx')
     perch_root = os.path.join(data_root, 'raw_audios/perch_8000_10seconds')
     ant_root = os.path.join(data_root, 'raw_audios/Antwerp_Clinical_Complete')
-    # icbhi_root = '../data/raw_audios/icbhi_preprocessed_v2_cleaned_8000/'
+    official_labels_path = "/home/alirachidi/classification_algorithm/data/raw_audios/icbhi_preprocessed_v2_8000/official_labels.txt"
+
     # bd_root = '../data/PCV_SEGMENTED_Processed_Files/'
     # excel_path = "../data/Bangladesh_PCV_onlyStudyPatients.xlsx"
     # perch_root="../data/raw_audios/perch_8000_10seconds/"
@@ -93,10 +149,10 @@ def init():
     description = None
     job_id = 0
     mode = "pneumonia"
-    
-    n_classes = 1
+
+    # n_classes = 1
     shape = (128, 313)
-    n_epochs = 45
+    n_epochs = 20
 
     lr = 1e-3
     batch_size = 16
@@ -117,9 +173,10 @@ def init():
     testing = 0
     adaptive_lr = 1
     cuberooting = 1
-    normalizing = 1
-    class_weights = 1
-    # oversample =
+    normalize = 1
+    use_class_weights = 1
+    early_stopping = 1
+    oversample = 0
 
     initial_channels = 1
 
@@ -129,13 +186,14 @@ def init():
 
     sr = 8000
     audio_length = 10
-    step_size = 5 # jump to the next point, also the overlap between two subsequent chunks frome the same audio
+    step_size = 5  # jump to the next point, also the overlap between two subsequent chunks frome the same audio
 
     n_fft = 1024
     hop_length = 256
     n_mels = 128
 
-    overlap_threshold = 0.15 # user for labels => how much does the chunk overlap with the times of the label?
+    # user for labels => how much does the chunk overlap with the times of the label?
+    overlap_threshold = 0.15
 
     # for Kapre
     trainable_fb = False
@@ -144,35 +202,47 @@ def init():
     train_nn = False
     train_mel = False
 
-    # old augmentation parameters
+    spec_aug_params = []
+    audio_aug_params = []
 
-    # augmentation = bool(params['AUGMENTATION'])
-    # spec_add = bool(spec_params['ADD'])
-    # spec_quantity = int(spec_params["QUANTITY"])
-    # time_masking = int(spec_params["TIME_MASKING"])
-    # frequency_masking = int(spec_params["FREQUENCY_MASKING"])
-    # loudness = int(spec_params["LOUDNESS"])
+    parse_function = None
 
-    # jordan_dataset = int(params["JORDAN_DATASET"])
-    # pneumonia_only = int(params["PNEUMONIA_ONLY"])
+    ######
+    mode = "pneumonia" if arguments["mode"] == "main" else arguments["mode"]
+    n_classes = 2 if mode == "cw" else 1
+    file_dir = os.path.join(
+        cache_root, mode, file_name)
+    description = arguments["description"]
+    testing = int(arguments["testing"])
 
-    # wav_add = bool(wav_params['ADD'])
-    # wav_quantity = int(wav_params['QUANTITY'])
-    # wav_path = str(wav_params["WAV_PATH"]).split(',')
-    print("All variables have been collected.")
+    if testing:
+        file_dir += "_testing"
+        n_epochs = 2
+        train_test_ratio = 0.5
+        description = "testing"
+
+    # seed_everything()
+    initialize_file_folder(file_dir)
+    initialize_job()
+    print("PID: {}".format(os.getpid()))
+
+    print("Description: {}".format(description))
+    print("-- All variables have been collected. --")
+
 
 def return_model_params():
-    return { "N_CLASSES": n_classes,
-        "SR": sr,
-        "BATCH_SIZE": batch_size,
-        "LR": lr,
-        "SHAPE": shape,
-        "INITIAL_CHANNELS": initial_channels,
-        "WEIGHT_DECAY": weight_decay,
-        "LL2_REG": ll2_reg,
-        "EPSILON": epsilon,
-        "LABEL_SMOOTHING": label_smoothing
-    }
+    return {"N_CLASSES": n_classes,
+            "SR": sr,
+            "BATCH_SIZE": batch_size,
+            "LR": lr,
+            "SHAPE": shape,
+            "INITIAL_CHANNELS": initial_channels,
+            "WEIGHT_DECAY": weight_decay,
+            "LL2_REG": ll2_reg,
+            "EPSILON": epsilon,
+            "LABEL_SMOOTHING": label_smoothing
+            }
+
 
 def return_lr_params():
     return {
@@ -180,6 +250,7 @@ def return_lr_params():
         "lr_patience": lr_patience,
         "min_lr": min_lr
     }
+
 
 def parse_arguments():
 

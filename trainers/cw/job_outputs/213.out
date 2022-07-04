@@ -1,0 +1,130 @@
+Tensorflow Version: 2.8.0
+Num GPUs Available:  1
+Collecting Variables...
+All variables have been collected.
+../cache/
+cw
+train213
+Description:  effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,
+-----------------------
+training parameters
+[('cache_root', '../cache/'), ('data_root', '../data/'), ('jordan_root', '../data/jwyy9np4gv-3/'), ('icbhi_root', '../data/raw_audios/icbhi_preprocessed_v2_8000/'), ('bd_root', '../data/PCV_SEGMENTED_Processed_Files/'), ('excel_path', '../data/Bangladesh_PCV_onlyStudyPatients.xlsx'), ('perch_root', '../data/raw_audios/perch_8000_10seconds'), ('ant_root', '../data/raw_audios/Antwerp_Clinical_Complete'), ('description', ' effnet: kfold, mel, no normalizing, 1 optimizer w adaptive lr, overlap threshold = 0.3,'), ('job_id', 0), ('mode', 'cw'), ('n_classes', 2), ('shape', (80, 200, 1)), ('n_epochs', 40), ('lr', 0.0001), ('batch_size', 32), ('ll2_reg', 0), ('weight_decay', 0.0001), ('label_smoothing', 0), ('epsilon', 1e-07), ('es_patience', 8), ('min_delta', 0), ('train_test_ratio', 0.8), ('kfold', False), ('clause', 0), ('epoch_start', 0), ('testing', 0), ('adaptive_lr', False), ('cuberooting', 1), ('normalizing', 1), ('class_weights', False), ('early_stopping', True), ('initial_channels', 1), ('factor', 0.5), ('lr_patience', 5), ('min_lr', 1e-05), ('sr', 8000), ('audio_length', 5), ('step_size', 2.5), ('n_fft', 2048), ('hop_length', 254), ('n_mels', 128), ('overlap_threshold', 0.3), ('trainable_fb', False), ('to_decibel', True), ('train_nn', False), ('train_mel', False), ('file_dir', '../cache/cw/train213'), ('n_sequences', 9), ('activate_spectral_loss', False), ('normalize', True), ('stacking', False), ('oversample', False), ('one_hot_encoding', False), ('activation', 'sigmoid'), ('n_filters', 80), ('code', -1), ('distillation', False), ('window_len', 100), ('window_stride', 25), ('output_argument', <leaf_audio.frontend.MelFilterbanks object at 0x7fc36363bd10>), ('input_argument', <leaf_audio.frontend.Leaf object at 0x7fc3636cff10>), ('model', 'resnet'), ('_alpha', 0.1), ('temperature', 1), ('distill_features', False)]
+Job id is 1.
+Job dir: ../cache/cw/train213/1
+- Loading Icbhi.
+920 Icbhi audios have been loaded.
+- Preparing Icbhi.
+126 Icbhi groups of audio chunks (by filename or patients) have been prepared.
+--- Samples are being split into training/val groups and de-grouped by patient ---
+Job id is 2.
+len(_all_samples)
+7857
+-----------------------
+--- Final training dataset went from 0 to 4769 elements, with 2299 none's, 1353 crakles, 554 wheezes and 563 both ---
+--- Final Validation dataset contains 3080 elements, with 1574 none, 860 crackles, 404 wheezes and 242 both ---
+GPUs
+['/device:GPU:0']
+Initializing weights...
+weights = {0: 0.518595041322314, 1: 0.881189948263119, 2: 2.152075812274368, 3: 2.1176731793960926}
+Model: "encoder"
+______________________________________________________________________________________________________________
+ Layer (type)                                    Output Shape                                Param #          
+==============================================================================================================
+ leaf (Leaf)                                     multiple                                    560              
+                                                                                                              
+ mel_filterbanks (MelFilterbanks)                multiple                                    0 (unused)       
+                                                                                                              
+ sequential (Sequential)                         (None, 10, 25, 64)                          131502           
+                                                                                                              
+ sequential_1 (Sequential)                       (None, 80, 200, 1)                          660292           
+                                                                                                              
+==============================================================================================================
+Total params: 792,354
+Trainable params: 774,184
+Non-trainable params: 18,170
+______________________________________________________________________________________________________________
+Epoch 1/40
+150/150 - 293s - loss: 0.0679 - val_loss: 0.5528 - 293s/epoch - 2s/step
+Epoch 2/40
+150/150 - 280s - loss: 0.0544 - val_loss: 0.4581 - 280s/epoch - 2s/step
+Epoch 3/40
+150/150 - 274s - loss: 0.0544 - val_loss: 0.3578 - 274s/epoch - 2s/step
+Epoch 4/40
+150/150 - 280s - loss: 0.0539 - val_loss: 0.2288 - 280s/epoch - 2s/step
+Epoch 5/40
+150/150 - 277s - loss: 0.0536 - val_loss: 0.1614 - 277s/epoch - 2s/step
+Epoch 6/40
+150/150 - 288s - loss: 0.0536 - val_loss: 0.1534 - 288s/epoch - 2s/step
+Epoch 7/40
+150/150 - 288s - loss: 0.0532 - val_loss: 0.1505 - 288s/epoch - 2s/step
+Epoch 8/40
+150/150 - 289s - loss: 0.0530 - val_loss: 0.1462 - 289s/epoch - 2s/step
+Epoch 9/40
+150/150 - 294s - loss: 0.0531 - val_loss: 0.1461 - 294s/epoch - 2s/step
+Epoch 10/40
+150/150 - 288s - loss: 0.0528 - val_loss: 0.1462 - 288s/epoch - 2s/step
+Epoch 11/40
+150/150 - 289s - loss: 0.0528 - val_loss: 0.1421 - 289s/epoch - 2s/step
+Epoch 12/40
+150/150 - 293s - loss: 0.0526 - val_loss: 0.1435 - 293s/epoch - 2s/step
+Epoch 13/40
+150/150 - 287s - loss: 0.0525 - val_loss: 0.1411 - 287s/epoch - 2s/step
+Epoch 14/40
+150/150 - 288s - loss: 0.0525 - val_loss: 0.1393 - 288s/epoch - 2s/step
+Epoch 15/40
+150/150 - 289s - loss: 0.0524 - val_loss: 0.1391 - 289s/epoch - 2s/step
+Epoch 16/40
+150/150 - 289s - loss: 0.0523 - val_loss: 0.1366 - 289s/epoch - 2s/step
+Epoch 17/40
+150/150 - 288s - loss: 0.0525 - val_loss: 0.1362 - 288s/epoch - 2s/step
+Epoch 18/40
+150/150 - 289s - loss: 0.0522 - val_loss: 0.1359 - 289s/epoch - 2s/step
+Epoch 19/40
+150/150 - 291s - loss: 0.0522 - val_loss: 0.1350 - 291s/epoch - 2s/step
+Epoch 20/40
+150/150 - 290s - loss: 0.0522 - val_loss: 0.1352 - 290s/epoch - 2s/step
+Epoch 21/40
+150/150 - 288s - loss: 0.0521 - val_loss: 0.1345 - 288s/epoch - 2s/step
+Epoch 22/40
+150/150 - 296s - loss: 0.0520 - val_loss: 0.1338 - 296s/epoch - 2s/step
+Epoch 23/40
+150/150 - 289s - loss: 0.0522 - val_loss: 0.1300 - 289s/epoch - 2s/step
+Epoch 24/40
+150/150 - 287s - loss: 0.0519 - val_loss: 0.1295 - 287s/epoch - 2s/step
+Epoch 25/40
+150/150 - 289s - loss: 0.0520 - val_loss: 0.1283 - 289s/epoch - 2s/step
+Epoch 26/40
+150/150 - 286s - loss: 0.0516 - val_loss: 0.1288 - 286s/epoch - 2s/step
+Epoch 27/40
+150/150 - 286s - loss: 0.0519 - val_loss: 0.1265 - 286s/epoch - 2s/step
+Epoch 28/40
+150/150 - 285s - loss: 0.0519 - val_loss: 0.1254 - 285s/epoch - 2s/step
+Epoch 29/40
+150/150 - 287s - loss: 0.0518 - val_loss: 0.1234 - 287s/epoch - 2s/step
+Epoch 30/40
+150/150 - 286s - loss: 0.0517 - val_loss: 0.1233 - 286s/epoch - 2s/step
+Epoch 31/40
+150/150 - 286s - loss: 0.0515 - val_loss: 0.1230 - 286s/epoch - 2s/step
+Epoch 32/40
+150/150 - 291s - loss: 0.0516 - val_loss: 0.1211 - 291s/epoch - 2s/step
+Epoch 33/40
+150/150 - 286s - loss: 0.0515 - val_loss: 0.1190 - 286s/epoch - 2s/step
+Epoch 34/40
+150/150 - 287s - loss: 0.0515 - val_loss: 0.1187 - 287s/epoch - 2s/step
+Epoch 35/40
+150/150 - 291s - loss: 0.0513 - val_loss: 0.1172 - 291s/epoch - 2s/step
+Epoch 36/40
+150/150 - 286s - loss: 0.0513 - val_loss: 0.1166 - 286s/epoch - 2s/step
+Epoch 37/40
+150/150 - 285s - loss: 0.0513 - val_loss: 0.1140 - 285s/epoch - 2s/step
+Epoch 38/40
+150/150 - 291s - loss: 0.0513 - val_loss: 0.1128 - 291s/epoch - 2s/step
+Epoch 39/40
+150/150 - 288s - loss: 0.0510 - val_loss: 0.1126 - 288s/epoch - 2s/step
+Epoch 40/40
+150/150 - 285s - loss: 0.0508 - val_loss: 0.1120 - 285s/epoch - 2s/step
+/home/alirachidi/classification_algorithm/trainers/modules/main/global_helpers.py:48: UserWarning: Matplotlib is currently using agg, which is a non-GUI backend, so cannot show the figure.
+  plt.show()
+End
+####################################
+Job dir: ../cache/cw/train213/2

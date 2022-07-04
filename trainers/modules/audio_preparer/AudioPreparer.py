@@ -89,7 +89,7 @@ class AudioPrepaper:
             audio_c, start_ind, end_ind = self.slice_array(start, end, audio, parameters.sr, max_ind)
             if (not (abs(end_ind - start_ind) == (parameters.audio_length * parameters.sr))):  # ending the loop
                 additional_step = False
-                if (abs(start_ind - end_ind) <= (parameters.sr * parameters.audio_length * Decimal(0.5))):  # disregard if LOE than fraction of the audio length (<=1 for 0.5 using 2sec, <=5 for 10sec) 
+                if (abs(start_ind - end_ind) < (parameters.sr * parameters.audio_length * Decimal(0.5))):  # disregard if LOE than fraction of the audio length (<=1 for 0.5 using 2sec, <=5 for 10sec) 
                     continue
                 else:  # 0 pad if more than half of audio length
                     audio_c = self.pad_sample(
@@ -104,6 +104,7 @@ class AudioPrepaper:
             rw_index = start + parameters.step_size
             order += 1
 
+        # changing the index number to 99 for last file
         if len(chunked_sample) > 0:
             chunked_sample[-1][2] = self.generate_chunk_filename(filename, 99, additional_step)
 
@@ -165,6 +166,10 @@ class AudioPrepaper:
                 samples_by_patients[patient_id] = s
             else:
                 samples_by_patients[patient_id] += s
+        # print(samples_by_patients[125])
+        # print(samples_by_patients[201])
+        # print(samples_by_patients[215])
+        # exit()
         samples_by_patients = list(samples_by_patients.values())
         self.chunked_samples = samples_by_patients
         return self.chunked_samples 
