@@ -1,0 +1,22 @@
+#cloud-config
+
+package_upgrade: true
+package_update: true
+
+# this gets run on the first boot
+runcmd:
+  # auto shutdown after 120 mins https://unix.stackexchange.com/questions/567511/automatic-shutdown-after-no-activity 
+  - "sed -i 's/#IdleAction=ignore/IdleAction=shutdown/g' /etc/systemd/logind.conf"
+  - "sed -i 's/#IdleActionSec=30min/IdleActionSec=120min/g' /etc/systemd/logind.conf"
+  # install azcopy
+  - "wget https://aka.ms/downloadazcopy-v10-linux"
+  - "tar -xvf downloadazcopy-v10-linux"
+  - "cp ./azcopy_linux_amd64_*/azcopy /usr/bin/"
+  # copy data directory from storage account
+  - "mkdir -p /home/shared/data"
+  - "azcopy login --identity"
+  - [azcopy, copy, "https://sonavitrainingdata.blob.core.windows.net/training", "/home/shared/data", "--recursive=true"]
+  # clone the repo
+  - "git clone https://erictg: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@github.com/arachid1/classification_algorithm /home/shared/"
+  - "cd /home/shared/classification_algorithm"
+  - "pip3 install"
