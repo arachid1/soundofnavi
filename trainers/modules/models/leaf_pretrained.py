@@ -12,7 +12,7 @@ from typing import Optional
 from ..main import parameters
 
 
-class leaf_pretrained(tf.keras.Model):
+class sleaf_pretrained(tf.keras.Model):
     """Neural network architecture to train an audio classifier from waveforms."""
 
     def __init__(self,

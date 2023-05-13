@@ -1,4 +1,4 @@
-import sys
+ import sys
 # sys.path.insert(0, 'main/models/conv')
 from modules.main import parameters
 from modules.main.helpers import *
@@ -52,14 +52,14 @@ def train_model(datasets, model_to_be_trained, spec_aug_params, audio_aug_params
         
     # this functions loads the audios files from the given input, often .wav and .txt files
     # input: [filename1, filename2, ...]
-    # output: {'Icbhi': [[audio1, label2, filename1], [audio2, label2, filename2], 'Jordan:' : ... }
+    # output: {'Icbhi': [[audio1, label, filename1], [audio2, label, filename2], 'Jordan:' : ... }
     audios_dict = load_audios(audio_loaders)
     # print(audios_dict)
     
     # ths function takes the full audios and prepares its N chunks accordingly
     # by default, it returns samples grouped by patient according to the respective logics of datasets
-    # input: [[audio1, label1, filename1], [audio2, label2, filename2], ...]
-    # output: [ [all chunks = [audio, label, filename] of all files for patient1], [same for patient 2], ...]
+    # input: [[audio1, label, filename1], [audio2, label, filename2], ...]
+    # output: [ 'Icbhi' : [all chunks = [audio1_1, label, filename1], [audio1_2, label, filename1],.. for all filenames for patient1], [same for patient 2], ...]
     audios_c_dict = prepare_audios(audios_dict)
     # print(audios_c_dict)
 

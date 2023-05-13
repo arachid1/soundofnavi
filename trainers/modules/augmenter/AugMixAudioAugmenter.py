@@ -1,6 +1,5 @@
 from .AudioAugmenter import AudioAugmenter
 # from ..parse_functions.parse_functions import generate_spec
-from ..spec_generator.SpecGenerator import SpecGenerator
 from ..main import parameters
 from ..main.global_helpers import pad_sample
 # import types

@@ -46,16 +46,11 @@ class AudioLoader:
         # if testing mode, calls hard-coded filenames for each dataset
         if parameters.testing:
             self.filenames = self.get_testing_filenames()
-            # print("here")
-            # print(self.filenames)
         # a dictionary of labels for ALL the filenames
         #  For pneumonia, it will be patient_diagnosis.csv for ICBHI, Bangladesh_PCV_onlyStudyPatients for BD and Data_annotation.xlsx for Jordan
         label_dict = self.build_label_dict()
         for filename in self.filenames:
-            # print("inside")
-            # print(filename)
             patient_id = self.get_patient_id(filename)
-            # print(patient_id)
             audio = self.load_singular_audio(filename)
             # accessing each of the dictonary for individual labels using patient id 
             label = self.read_label(label_dict, patient_id)

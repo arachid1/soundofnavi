@@ -127,12 +127,12 @@ def init(arguments, file_name):
 
     global parse_function
 
-    cache_root = "/home/alirachidi/classification_algorithm/cache/"
-    # cache_root = "../cache/"
-    data_root = "/home/alirachidi/classification_algorithm/data/"
-    # data_root = "../data/"
+    # cache_root = "/Users/alirachidi/Documents/Sonavi Labs/classification_algorithm/cache/"
+    cache_root = "../../../cache/"
+    # data_root = "/Users/alirachidi/Documents/Sonavi Labs/classification_algorithm/data/"
+    data_root = "../../../data/"
     jordan_root = os.path.join(data_root, 'jwyy9np4gv-3/')
-    # icbhi_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
+    # icbhi_cleaned_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
     icbhi_root = os.path.join(
         data_root, 'raw_audios/icbhi_preprocessed_v2_8000/')
     bd_root = os.path.join(data_root, 'PCV_SEGMENTED_Processed_Files/')
@@ -140,12 +140,15 @@ def init(arguments, file_name):
         data_root, 'Bangladesh_PCV_onlyStudyPatients.xlsx')
     perch_root = os.path.join(data_root, 'raw_audios/perch_8000_10seconds')
     ant_root = os.path.join(data_root, 'raw_audios/Antwerp_Clinical_Complete')
-    official_labels_path = "/home/alirachidi/classification_algorithm/data/raw_audios/icbhi_preprocessed_v2_8000/official_labels.txt"
+    official_labels_path = os.path.join(data_root, "raw_audios/icbhi_preprocessed_v2_8000/official_labels.txt")
 
     # bd_root = '../data/PCV_SEGMENTED_Processed_Files/'
     # excel_path = "../data/Bangladesh_PCV_onlyStudyPatients.xlsx"
     # perch_root="../data/raw_audios/perch_8000_10seconds/"
-
+    
+    global icbhi_metadata_root
+    icbhi_metadata_root = os.path.join(data_root, "raw_audios/demographic_info.txt")
+    
     description = None
     job_id = 0
     mode = "pneumonia"

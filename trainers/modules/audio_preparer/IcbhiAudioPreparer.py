@@ -22,12 +22,7 @@ class IcbhiAudioPreparer(AudioPrepaper):
 # TODO: move this somewhere else
 def find_cw_label(self, recording_dict, start, end):
     times, ___ = find_times(recording_dict, parameters.sr, True)
-    # print(start)
-    # print(end)
-    # print(times)
     l = find_labels(times, start, end, parameters.overlap_threshold, parameters.audio_length, parameters.sr)
-    # print(l)
-    # exit()
     return l
 
 def find_times(recording_annotations, sample_rate, first):

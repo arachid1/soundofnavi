@@ -1,9 +1,7 @@
 from . import parameters
 from ..audio_preparer.helpers import return_preparer
 from ..augmenter.helpers import return_spec_augmenter, return_audio_augmenter
-from ..spec_generator.SpecGenerator import SpecGenerator
-from ..spec_generator.SpecGenerator import SpecGenerator
-from sklearn.model_selection import train_test_split, KFold, RepeatedKFold
+from sklearn.model_selection import train_test_split, RepeatedKFold, RepeatedStratifiedKFold
 import tensorflow as tf
 from collections import defaultdict
 import matplotlib.pyplot as plt
@@ -70,29 +68,43 @@ def split_and_extend(audios_c_dict, train_test_ratio, random_state=12, kfold=Fal
     train_dict = defaultdict(lambda: {})
     val_dict = defaultdict(lambda: {})
 
-    print("--- Samples are being split into training/val groups and de-grouped by patient ---")
-    for key, key_samples in audios_c_dict.items():
-        stratify_labels = []
-        # collecting PATIENT labels for PNEUMONIA <- this wouldn't be the same C/W or NON-PATIENT labelling
-        for patient in key_samples:
-            if len(patient) == 0:
-                print("Empty patient while splitting")
-                continue
-            stratify_labels.append(patient[0][1])
-        if kfold:
-            # kf = KFold(n_splits=10, random_state=random_state, shuffle=True)
-            kf = RepeatedKFold(n_splits=5, n_repeats=2,
-                               random_state=random_state)
-            kf.get_n_splits(key_samples)
-            for i, (train_indexes, val_indexes) in enumerate(kf.split(key_samples)):
-                train_dict[i][key] = [key_samples[ind]
+    print("--- Samples are being split into training/val groups by patient by dataset ---")
+    for dataset_id, dataset_samples in audios_c_dict.items():
+        samples_by_patient_by_dataset = []
+        for patient_id, patient_samples in dataset_samples.items():
+            samples_by_patient_by_dataset.append(patient_samples)
+        kf = RepeatedKFold(n_splits=5, n_repeats=2, random_state=random_state)
+        kf.get_n_splits(samples_by_patient_by_dataset)
+        for i, (train_indexes, val_indexes) in enumerate(kf.split(samples_by_patient_by_dataset)):
+            train_dict[i][dataset_id] = [samples_by_patient_by_dataset[ind]
                                       for ind in train_indexes]
-                train_dict[i][key] = [
-                    item for patientwise in train_dict[i][key] for item in patientwise]
-                val_dict[i][key] = [key_samples[ind] for ind in val_indexes]
-                val_dict[i][key] = [item for patientwise in val_dict[i][key]
-                                    for item in patientwise]
-        # else:
+            val_dict[i][dataset_id] = [samples_by_patient_by_dataset[ind] for ind in val_indexes]
+            # print(train_dict[i][dataset_id][0])
+            # print(val_dict[i][dataset_id][0])
+            # exit()
+    # for key, key_samples in audios_c_dict.items():
+    #     stratify_labels = []
+    #     # collecting PATIENT labels for PNEUMONIA <- this wouldn't be the same C/W or NON-PATIENT labelling
+    #     for patient in key_samples:
+    #         print(patient)
+    #         if len(patient) == 0:
+    #             print("Empty patient while splitting")
+    #             continue
+    #         stratify_labels.append(patient[0][1])
+    #     if kfold:
+    #         # kf = KFold(n_splits=10, random_state=random_state, shuffle=True)
+    #         kf = RepeatedKFold(n_splits=5, n_repeats=2,
+    #                            random_state=random_state)
+    #         kf.get_n_splits(key_samples)
+    #         for i, (train_indexes, val_indexes) in enumerate(kf.split(key_samples)):
+    #             train_dict[i][key] = [key_samples[ind]
+    #                                   for ind in train_indexes]
+    #             train_dict[i][key] = [
+    #                 item for patientwise in train_dict[i][key] for item in patientwise]
+    #             val_dict[i][key] = [key_samples[ind] for ind in val_indexes]
+    #             val_dict[i][key] = [item for patientwise in val_dict[i][key]
+    #                                 for item in patientwise]
+    #     # else:
         #     try:
         #         key_val_samples, key_train_samples = train_test_split(
         #             key_samples, test_size=train_test_ratio, stratify=stratify_labels, random_state=random_state)
