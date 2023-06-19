@@ -1,0 +1,240 @@
+from .modules.helpers import *
+from .modules.generators import *
+from .modules.metrics import *
+from .modules.callbacks import *
+from .core import *
+
+import argparse
+import pickle
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+import tensorflow as tf
+import sys
+from tensorflow.keras.models import Model
+from tensorflow.keras import layers
+from tensorflow.keras.regularizers import l2
+from tensorflow.python.keras import backend as K
+from sklearn.model_selection import train_test_split
+from tensorflow.python.client import device_lib
+import tensorflow_addons as tfa
+
+from tensorflow.python.lib.io import file_io
+import json
+import time
+import numpy as np
+
+
+def get_available_gpus():
+    local_device_protos = device_lib.list_local_devices()
+    return [x.name for x in local_device_protos if x.device_type == 'GPU']
+
+def conv2d(N_CLASSES, SR, BATCH_SIZE, LR, SHAPE, WEIGHT_DECAY, LL2_REG, EPSILON):
+
+    # delete above
+
+    model = Model(inputs=i, outputs=o, name="conv2d")
+    opt = tf.keras.optimizers.Adam(
+        lr=LR, beta_1=0.9, beta_2=0.999, epsilon=EPSILON, decay=WEIGHT_DECAY, amsgrad=False
+    )
+    # class_acc = class_accuracy()
+    model.compile(
+        optimizer=opt,
+        loss="binary_crossentropy",
+        metrics=[
+            calc_accuracy,
+        ],
+    )
+    return model
+    
+
+def train_model(train_file, **args):
+    logs_path = job_dir + "/logs/"
+    print("-----------------------")
+    print("Using module located at {}".format(__file__[-30:]))
+    print("Using train_file located at {}".format(train_file))
+    print("Using logs_path located at {}".format(logs_path))
+    print("-----------------------")
+
+    # setting variables
+    print("Collecting Variables...")
+
+    n_classes = params["N_CLASSES"]
+
+    n_epochs = params["N_EPOCHS"]
+
+    sr = params["SR"]
+    lr = params["LR"]
+    batch_size = params["BATCH_SIZE"]
+
+    ll2_reg = params["LL2_REG"]
+    weight_decay = params["WEIGHT_DECAY"]
+
+    epsilon = params["EPSILON"]
+
+    shape = tuple(params["SHAPE"])
+
+    es_patience = params["ES_PATIENCE"]
+    min_delta = params["MIN_DELTA"]
+
+    initial_channels = params["INITIAL_CHANNELS"]
+    shape = shape + (initial_channels, )
+    
+    save = bool(params["SAVE"])
+    add_tuned = bool(params["ADD_TUNED"])
+
+    model_params = {
+        "N_CLASSES": n_classes,
+        "SR": sr,
+        "BATCH_SIZE": batch_size,
+        "LR": lr,
+        "SHAPE": shape,
+        "WEIGHT_DECAY": weight_decay,
+        "LL2_REG": ll2_reg,
+        "EPSILON": epsilon
+    }
+
+    factor = params["FACTOR"]
+    patience = params["PATIENCE"]
+    min_lr = params["MIN_LR"]
+
+    lr_params = {
+        "factor": factor,
+        "patience": patience,
+        "min_lr": min_lr
+    }
+
+    print("Model Parameters: {}".format(model_params))
+    print("Learning Rate Parameters: {}".format(lr_params))
+    print("Early Stopping Patience: {}".format(params["ES_PATIENCE"]))
+    print("-----------------------")
+
+    train_test_ratio = 0.8
+
+    filenames = []
+    labels = []
+
+    with tf.device('/CPU:0'): 
+
+        train_file_name = train_file.split('/')[-1].split('.')[0]
+
+        path = '../../data/txt_datasets/{}'.format(train_file_name)
+        _list = os.path.join(path, 'paths_and_labels.txt')
+        with open(_list) as infile:
+            for line in infile:
+                elements = line.rstrip("\n").split(',')
+                elements[0] = '../' + elements[0]
+                filenames.append(elements[0])
+                labels.append((float(elements[1]), float(elements[2])))
+        
+        overall = np.zeros((128, 1250))
+
+        for filename in filenames:
+            data = np.loadtxt(filename, delimiter=',')
+            # data = np.repeat(data[..., np.newaxis], 3, -1)
+            overall += data
+
+        overall_spec = overall/len(filenames)
+        print(overall_spec.shape)
+        print(np.mean(overall_spec))
+        visualize_spectrogram(overall_spec, 8000, "avg_spec")
+
+        exit()
+
+        samples = list(zip(filenames, labels))
+
+        random.shuffle(samples)
+
+        val_samples, train_samples = train_test_split(
+            samples, test_size=train_test_ratio)
+
+        print("Size of training set: {}".format(len(train_samples)))
+        print("Size of validation set: {}".format(len(val_samples)))
+
+        train_filenames, train_labels = zip(*train_samples)
+        val_filenames, val_labels = zip(*val_samples)
+
+        train_dataset = tf.data.Dataset.from_tensor_slices((list(train_filenames), list(train_labels)))
+        train_dataset = train_dataset.shuffle(len(train_filenames))
+        train_dataset = train_dataset.map(parse_function, num_parallel_calls=4)
+        train_dataset = train_dataset.batch(batch_size)
+        # print(batch_size)
+        train_dataset = train_dataset.prefetch(1)
+
+        val_dataset = tf.data.Dataset.from_tensor_slices((list(val_filenames), list(val_labels)))
+        val_dataset = val_dataset.shuffle(len(val_filenames))
+        val_dataset = val_dataset.map(parse_function, num_parallel_calls=4)
+        val_dataset = val_dataset.batch(batch_size)
+        val_dataset = val_dataset.prefetch(1)
+
+        # model setting
+        model = conv2d(**model_params)
+
+        model.summary()
+
+        # weights
+        weights = None
+
+        if bool(params["CLASS_WEIGHTS"]):
+            print("Initializing weights...")
+            y_train = label_data(validation_data)
+            weights = class_weight.compute_class_weight(
+                "balanced", np.unique(y_train), y_train)
+
+            weights = {i: weights[i] for i in range(0, len(weights))}
+            print("weights = {}".format(weights))
+        
+        # callbacks
+        # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logs_path, histogram_freq=1)
+        tensorboard_callback = lr_tensorboard(log_dir=logs_path, histogram_freq=1)
+        reduce_lr_callback = tf.keras.callbacks.ReduceLROnPlateau(
+            monitor="val_calc_accuracy", **lr_params
+        )
+
+    gpus = tf.config.experimental.list_logical_devices('GPU')
+
+    if gpus:
+        with gpu in gpus:
+            model.fit(
+                train_dataset,
+                validation_data=val_dataset,
+                epochs=n_epochs,
+                verbose=1,
+                class_weight=weights,
+                callbacks=[tensorboard_callback, reduce_lr_callback]
+            )
+    
+
+
+    model.save(job_dir + "/model.h5")
+
+if __name__ == "__main__":
+    print("Tensorflow Version: {}".format(tf.__version__))
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
+    # tf.debugging.set_log_device_placement(True)
+    # tf.debugging.set_log_device_placement(True)
+    seed_everything()
+    parser = argparse.ArgumentParser()
+
+    # Input Arguments
+    parser.add_argument(
+        "--train-file",
+        help="GCS or local paths to training data",
+        required=True
+    )
+
+    parser.add_argument(
+        "--job-dir",
+        help="GCS location to write checkpoints and export models",
+        required=True,
+    )
+    parser.add_argument(
+        "--params",
+        help="parameters used in the model and training",
+        required=True,
+    )
+    args = parser.parse_args()
+    arguments = args.__dict__
+    job_dir = arguments.pop("job_dir")
+    params = arguments.pop("params")
+    params = json.loads(params)
+    train_model(**arguments)
