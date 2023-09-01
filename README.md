@@ -1,4 +1,4 @@
-Application for audio data modelling and machine learning on generalized biomedical audio data. 
+Application for audio data modelling and machine learning on biomedical audio data. 
 
 (https://readthedocs.org/projects/openmsistream/badge/?version=latest)]
 
