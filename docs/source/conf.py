@@ -31,7 +31,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
-    "sphinx.sphinx_rtd_theme",
+    "sphinx_rtd_theme",
 ]
 
 # autodoc configs
