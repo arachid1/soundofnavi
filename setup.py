@@ -15,8 +15,9 @@ setupkwargs = dict(
     # packages=find_packages(),
     zip_safe=False,
     entry_points={"console_scripts": []},
-    python_requires=">=3.7,<3.10",
-    install_requires=["numpy", "pandas", "methodtools", "matplotlib"],
+    python_requires=">=3.8,<3.9",
+    install_requires=["numpy", "pandas", "matplotlib", "tensorflow", 
+                        "scikit-learn", "librosa"],
     extras_require={},
 )
 

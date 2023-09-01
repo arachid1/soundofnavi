@@ -1,5 +1,5 @@
 # allows for debugging by picking a smaller dataset, lower number of epochs, etc
-export TESTING=0 
+export TESTING=1
 #folder indicaion: trainers/main (=> pneumonia) vs trainers/cw (=> crackles and wheezes)
 export MODE=cw 
 export TRAIN_NUMBER=221

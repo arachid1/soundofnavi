@@ -1,16 +1,16 @@
 import sys
 
+sys.path.insert(0, "../../../")
 from soundofnavi.main import parameters as p
 from soundofnavi.main.parameters import initialize_job
-from soundofnavi.training.training import train_function
-from soundofnavi.main.helpers import default_get_filenames, print_dataset, convert_cw_labels
-# from soundofnavi.main.global_helpers import *
-# from soundofnavi.audio_loader.helpers import default_get_filenames
-# from soundofnavi.callbacks.NewCallback2 import NewCallback2
-from soundofnavi.dataset.icbhi_dataset import IcbhiDataset
+from soundofnavi.main.training import *
+from soundofnavi.main.helpers import *
+from soundofnavi.main.global_helpers import *
+from soundofnavi.audio_loader.helpers import default_get_filenames
+from soundofnavi.callbacks.NewCallback2 import NewCallback2
+from soundofnavi.dataset.IcbhiDataset import IcbhiDataset
 from soundofnavi.models.leaf_pretrained import leaf_pretrained
 
-import leaf_audio.frontend as leaf_frontend
 from sklearn.utils import class_weight
 import tensorflow as tf
 import numpy as np
@@ -102,7 +102,7 @@ def launch_job(
             weights = class_weight.compute_class_weight(
                 class_weight="balanced",
                 classes=[0, 1, 2, 3],
-                y=[convert_cw_labels(l) for l in train_labels],
+                y=[NewCallback2.convert(l) for l in train_labels],
             )
             weights = {i: weights[i] for i in range(0, len(weights))}
             print("weights = {}".format(weights))
