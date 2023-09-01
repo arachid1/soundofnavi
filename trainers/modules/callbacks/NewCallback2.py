@@ -1,8 +1,8 @@
-from ..spec_generator.SpecGenerator import SpecGenerator
+# from ..spec_generator.SpecGenerator import SpecGenerator
 import PIL
 from ..main import parameters
 from ..main.global_helpers import visualize_spec
-# from .helpers import *
+
 from matplotlib import pyplot as plt
 import numpy as np
 import shutil
@@ -14,27 +14,40 @@ from tensorflow.python.keras import backend as K
 from tensorflow.keras.utils import to_categorical
 import types
 from collections import defaultdict
-from tabulate import tabulate
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support, precision_recall_curve, auc, plot_precision_recall_curve, PrecisionRecallDisplay, roc_curve, plot_roc_curve, RocCurveDisplay
+from sklearn.metrics import (
+    confusion_matrix,
+    precision_recall_fscore_support,
+    auc,
+    roc_curve,
+    RocCurveDisplay,
+)
 import itertools
 import librosa
 from librosa import display
 import soundfile as sf
+
 # import wandb
 import matplotlib
 import matplotlib.cm as plt_cm
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 
 np.set_printoptions(precision=3)
 
 
 class NewCallback2(tf.keras.callbacks.LambdaCallback):
-    '''
+    """
     Callback that handles all the validation processes, such as managing adaptive lr and early stopping, generating metrics, and creating patient reports
-    '''
+    """
 
-    def __init__(self, validation_data, val_filenames, target_key="accuracy", average_mode='binary', clause_portion=0.9):
-
+    def __init__(
+        self,
+        validation_data,
+        val_filenames,
+        target_key="accuracy",
+        average_mode="binary",
+        clause_portion=0.9,
+    ):
         self.validation_data = validation_data
         self.val_filenames = val_filenames
         self.visualize_spec = types.MethodType(visualize_spec, self)
@@ -65,32 +78,41 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         # wandb.save(self.job_dir + "/report.txt")
 
     def on_epoch_end(self, epoch, logs=None):
-
         print("-----------------------------")
         one_indexed_epoch = epoch + 1
 
         # if parameters.mode == "cw":
-        y_true_all, preds_all, rounded_preds_all, __, patients_dict, val_loss = self.return_key_elements(
-            one_indexed_epoch)
+        (
+            y_true_all,
+            preds_all,
+            rounded_preds_all,
+            __,
+            patients_dict,
+            val_loss,
+        ) = self.return_key_elements(one_indexed_epoch)
         # else:
         #     y_true_all, preds_all, rounded_preds_all, __, patients_dict = self.return_key_elements(one_indexed_epoch)
 
         cm, normalized_cm, cm_sum, acc, class_accuracies = self.return_base_metrics(
-            y_true_all, rounded_preds_all)
+            y_true_all, rounded_preds_all
+        )
 
         if not (parameters.mode == "cw"):
             precision, recall, f1, __ = self.return_precision_recall_f1(
-                y_true_all, rounded_preds_all)
-            roc_fpr, roc_tpr, roc_auc = self.return_roc_metrics(
-                y_true_all, preds_all)
+                y_true_all, rounded_preds_all
+            )
+            roc_fpr, roc_tpr, roc_auc = self.return_roc_metrics(y_true_all, preds_all)
 
         if parameters.testing == 1:
             sensitivity = 0
             specificity = 0
             icbhi_score = 0
         else:
-            sensitivity, specificity, icbhi_score = self.return_specificity_sensitivity_icbhiscore(
-                cm)
+            (
+                sensitivity,
+                specificity,
+                icbhi_score,
+            ) = self.return_specificity_sensitivity_icbhiscore(cm)
 
         # self.make_roc_curve(x_all, y_true_all, roc_fpr, roc_tpr)
 
@@ -98,16 +120,36 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
 
         if parameters.mode == "cw":
             metrics_dict = self.make_metrics_dict(
-                cm, val_loss, normalized_cm, acc, class_accuracies, avg_accuracy, one_indexed_epoch, sensitivity, specificity, icbhi_score)
+                cm,
+                val_loss,
+                normalized_cm,
+                acc,
+                class_accuracies,
+                avg_accuracy,
+                one_indexed_epoch,
+                sensitivity,
+                specificity,
+                icbhi_score,
+            )
         else:
             metrics_dict = self.make_metrics_dict(
-                cm, val_loss, normalized_cm, acc, class_accuracies, avg_accuracy, one_indexed_epoch, precision, recall, f1, roc_auc,)
+                cm,
+                val_loss,
+                normalized_cm,
+                acc,
+                class_accuracies,
+                avg_accuracy,
+                one_indexed_epoch,
+                precision,
+                recall,
+                f1,
+                roc_auc,
+            )
 
         for metric_name, metric_value in metrics_dict.items():
             tf.print("Validation {}: {}".format(metric_name, metric_value))
 
-        target_metric, best_target_metric = self.select_target_metric(
-            metrics_dict)
+        target_metric, best_target_metric = self.select_target_metric(metrics_dict)
 
         if self.apply_clause(cm, cm_sum) == 1:
             return
@@ -116,9 +158,11 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
             self.early_stopping_info(target_metric, epoch)
             if parameters.adaptive_lr:
                 self.adaptive_lr_info()
-        if ((one_indexed_epoch >= parameters.epoch_start) and (target_metric > best_target_metric)) or parameters.testing:
-            self.update_best_results(
-                metrics_dict, patients_dict, one_indexed_epoch)
+        if (
+            (one_indexed_epoch >= parameters.epoch_start)
+            and (target_metric > best_target_metric)
+        ) or parameters.testing:
+            self.update_best_results(metrics_dict, patients_dict, one_indexed_epoch)
         print("-----------------------------")
 
     def update_best_results(self, metrics_dict, patients_dict, one_indexed_epoch):
@@ -135,23 +179,56 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         # print("Saving model...")
         # self.model.save(self.job_dir + "/model_epoch{}.h5".format(one_indexed_epoch)) #TODO: DECOMMENT
 
-    def make_metrics_dict(self, cm, val_loss, normalized_cm, acc, class_accuracies, avg_accuracy, one_indexed_epoch, extra_1=None, extra_2=None, extra_3=None, roc_auc=None):
-
+    def make_metrics_dict(
+        self,
+        cm,
+        val_loss,
+        normalized_cm,
+        acc,
+        class_accuracies,
+        avg_accuracy,
+        one_indexed_epoch,
+        extra_1=None,
+        extra_2=None,
+        extra_3=None,
+        roc_auc=None,
+    ):
         if parameters.mode == "cw":
-            return {"cm": cm, "val_loss": val_loss, "normalized_cm": normalized_cm, "acc": acc, "class_accuracies": class_accuracies,
-                    "sensitivity": extra_1, "specificity": extra_2, "icbhi_score": extra_3, "roc_auc": roc_auc, "avg_accuracy": avg_accuracy, "one_indexed_epoch": one_indexed_epoch}
+            return {
+                "cm": cm,
+                "val_loss": val_loss,
+                "normalized_cm": normalized_cm,
+                "acc": acc,
+                "class_accuracies": class_accuracies,
+                "sensitivity": extra_1,
+                "specificity": extra_2,
+                "icbhi_score": extra_3,
+                "roc_auc": roc_auc,
+                "avg_accuracy": avg_accuracy,
+                "one_indexed_epoch": one_indexed_epoch,
+            }
         else:
-            return {"cm": cm, "val_loss": val_loss, "normalized_cm": normalized_cm, "acc": acc, "class_accuracies": class_accuracies,
-                    "precision": extra_1, "recall": extra_2, "f1": extra_3, "roc_auc": roc_auc, "avg_accuracy": avg_accuracy, "one_indexed_epoch": one_indexed_epoch}
+            return {
+                "cm": cm,
+                "val_loss": val_loss,
+                "normalized_cm": normalized_cm,
+                "acc": acc,
+                "class_accuracies": class_accuracies,
+                "precision": extra_1,
+                "recall": extra_2,
+                "f1": extra_3,
+                "roc_auc": roc_auc,
+                "avg_accuracy": avg_accuracy,
+                "one_indexed_epoch": one_indexed_epoch,
+            }
 
     def select_target_metric(self, metrics_dict):
-
         target_metric = metrics_dict[self.target_key]
         best_target_metric = self.best_metrics_dict[self.target_key]
 
         return target_metric, best_target_metric
 
-    def make_roc_curve(self, x_all, y_true_all, roc_fpr, roc_tpr,):
+    def make_roc_curve(self, x_all, y_true_all, roc_fpr, roc_tpr):
         roc_display = plot_roc_curve(self.model, x_all, y_true_all)
         plt.xticks(np.arange(0, 1, 0.1))
         plt.yticks(np.arange(0, 1, 0.1))
@@ -163,7 +240,8 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         pr_display.ax_.xaxis.set_ticks(np.arange(0, 1, 0.1))
         pr_display.ax_.yaxis.set_ticks(np.arange(0, 1, 0.1))
         path = os.path.join(
-            self.job_dir, "test_pr_curve_{}.png".format(one_indexed_epoch))
+            self.job_dir, "test_pr_curve_{}.png".format(one_indexed_epoch)
+        )
         path = "pr_curves/test_pr_curve_{}.png".format(one_indexed_epoch)
 
     def return_roc_metrics(self, y_true_all, preds_all):
@@ -177,18 +255,18 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         # print(cm)
         sensitivity = cm[1, 1] + cm[2, 2] + cm[3, 3]
         # print(sensitivity)
-        sensitivity = sensitivity / \
-            (sum(cm[1, :]) + sum(cm[2, :]) + sum(cm[3, :]))
+        sensitivity = sensitivity / (sum(cm[1, :]) + sum(cm[2, :]) + sum(cm[3, :]))
         # print(sensitivity)
-        specificity = cm[0, 0]/sum(cm[0, :])
+        specificity = cm[0, 0] / sum(cm[0, :])
         # print(specificity)
-        icbhi_score = 0.5*(sensitivity+specificity)
+        icbhi_score = 0.5 * (sensitivity + specificity)
         # print(icbhi_score)
         return sensitivity, specificity, icbhi_score
 
     def return_precision_recall_f1(self, y_true_all, rounded_preds_all):
-
-        return precision_recall_fscore_support(y_true_all, rounded_preds_all, average=self.average_mode)
+        return precision_recall_fscore_support(
+            y_true_all, rounded_preds_all, average=self.average_mode
+        )
 
     # def convert(self, el):
     #     if el[0] == 1:
@@ -200,7 +278,8 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
     #     elif el[3] == 1:
     #         return 3
 
-    def convert(self, el):
+    @staticmethod
+    def convert(el):
         if el[0] == 0 and el[1] == 0:
             return 0
         elif el[0] == 1 and el[1] == 0:
@@ -214,20 +293,21 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         cm = np.zeros((parameters.n_classes, parameters.n_classes))
         if parameters.mode == "cw":
             y_true_all = [self.convert(y_true[0]) for y_true in y_true_all]
-            rounded_preds_all = [self.convert(
-                rounded_pred) for rounded_pred in rounded_preds_all]
+            rounded_preds_all = [
+                self.convert(rounded_pred) for rounded_pred in rounded_preds_all
+            ]
         cm = confusion_matrix(y_true_all, rounded_preds_all)
         normalized_cm = confusion_matrix(
-            y_true_all, rounded_preds_all, normalize='true')
+            y_true_all, rounded_preds_all, normalize="true"
+        )
         cm_sum = np.sum(cm)
         acc = np.trace(cm) / cm_sum
         class_accuracies = self.compute_class_accuracies(cm)
         return cm, normalized_cm, cm_sum, acc, class_accuracies
 
     def write_cases(self, patients_dict):
-
         # or (self.model.name == "audio_model"))):
-        if (not ((self.model.name == "time_series_model"))):
+        if not ((self.model.name == "time_series_model")):
             # initializing the folders propery
             if os.path.exists(os.path.join(self.job_dir, "fp")):
                 shutil.rmtree(os.path.join(self.job_dir, "fp"))
@@ -241,7 +321,6 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
 
             for patient_id, patient_recordings in patients_dict.items():
                 for i, r in enumerate(patient_recordings):
-
                     # gradcam visualization
                     # if i % 10 == 0:
                     #     expanded_spec = np.expand_dims(r[0], axis=(0, -1))
@@ -253,20 +332,27 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
                     # saving tps, fps, and fns spectrograms to respective folders
                     dest = os.path.join(self.job_dir, r[4], r[1])
                     self.visualize_spec(
-                        r[0], parameters.sr, dest, title=str(r[2]) + "__" + str(r[3]))
+                        r[0], parameters.sr, dest, title=str(r[2]) + "__" + str(r[3])
+                    )
 
     def return_patient_id(self, filename):
         if filename.startswith("0"):
             return filename[:8]
         else:
-            return filename.split('_')[0]
+            return filename.split("_")[0]
 
     def return_spectrogram(self, audio_c, layer_class_name):
-
-        layer_name = next((layer.name for layer in self.model.layers if layer.__class__.__name__ ==
-                           layer_class_name), None)  # if layer.__class__.__name__ == layer_class_name
+        layer_name = next(
+            (
+                layer.name
+                for layer in self.model.layers
+                if layer.__class__.__name__ == layer_class_name
+            ),
+            None,
+        )  # if layer.__class__.__name__ == layer_class_name
         partial_model = tf.keras.Model(
-            self.model.input, self.model.get_layer(layer_name).output)
+            self.model.input, self.model.get_layer(layer_name).output
+        )
         spec = partial_model([audio_c], training=False)
         spec = np.squeeze(spec.numpy())
         return spec
@@ -339,14 +425,19 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         if (not (self.tracker == 0)) and self.tracker % parameters.lr_patience == 0:
             if self.model.optimizer.lr > parameters.min_lr:
                 self.model.optimizer.lr = self.model.optimizer.lr * parameters.factor
-                print("Lr has been adjusted to {}".format(
-                    self.model.optimizer.lr.numpy()))
+                print(
+                    "Lr has been adjusted to {}".format(self.model.optimizer.lr.numpy())
+                )
 
     def apply_clause(self, cm, cm_sum):
         column_sums = np.sum(cm, axis=0)
         if parameters.clause:
             print("The clause is activated.")
-            if (column_sums[0] >= (self.clause_portion * cm_sum)) or (column_sums[1] >= (self.clause_portion * cm_sum)) or (column_sums[1] >= (0.6 * cm_sum)):
+            if (
+                (column_sums[0] >= (self.clause_portion * cm_sum))
+                or (column_sums[1] >= (self.clause_portion * cm_sum))
+                or (column_sums[1] >= (0.6 * cm_sum))
+            ):
                 print("The training is defaulting to either class.")
                 return 1
             else:
@@ -364,12 +455,27 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
                 print("The number of epochs since last 1% equals the patience")
                 self.model.stop_training = True
             else:
-                print("The validation tracker metric at {} hasn't increased by {} in {} epochs".format(
-                    self.tracker_metric, parameters.min_delta, self.tracker))
+                print(
+                    "The validation tracker metric at {} hasn't increased by {} in {} epochs".format(
+                        self.tracker_metric, parameters.min_delta, self.tracker
+                    )
+                )
         return None
 
-    def generate_patient_report(self, patients_dict, names=["Patient id", "status", "tns", "fns", "fps", "tps", "number of recordings", "average score"]):
-
+    def generate_patient_report(
+        self,
+        patients_dict,
+        names=[
+            "Patient id",
+            "status",
+            "tns",
+            "fns",
+            "fps",
+            "tps",
+            "number of recordings",
+            "average score",
+        ],
+    ):
         tn_path = self.job_dir + "/tns.txt"
         report_path = self.job_dir + "/report.txt"
         tn_writer = open(tn_path, "w")
@@ -419,7 +525,17 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
             # status_count[status][3] += tn
             # tables_to_write[status].append([patient_id, status, str(tn), str(fn), str(fp), str(tp), str(len(patient_recordings)), avg_patient_score])
             tables_to_write[status].append(
-                [patient_id, status, tn, fn, fp, tp, len(patient_recordings), avg_patient_score])
+                [
+                    patient_id,
+                    status,
+                    tn,
+                    fn,
+                    fp,
+                    tp,
+                    len(patient_recordings),
+                    avg_patient_score,
+                ]
+            )
             # if status == "tn":
             #     tn_to_write.append([patient_id, status, str(tn), str(fn), str(fp), str(tp), str(len(patient_recordings)), avg_patient_score])
             # else:
@@ -454,22 +570,20 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         # reports_writer.write(tabulate(reports_to_write, headers=names))
 
         cm = confusion_matrix(y_true, y_pred)
-        normalized_cm = confusion_matrix(y_true, y_pred, normalize='true')
+        normalized_cm = confusion_matrix(y_true, y_pred, normalize="true")
         cm_sum = np.sum(cm)
         acc = np.trace(cm) / cm_sum
         class_accuracies = self.compute_class_accuracies(cm)
         message = "Patient Confusion matrix: \n {} ".format(cm)
         print(message)
         reports_writer.write(message)
-        message = "Patient Normalized Confusion matrix: \n {} ".format(
-            normalized_cm)
+        message = "Patient Normalized Confusion matrix: \n {} ".format(normalized_cm)
         print(message)
         reports_writer.write(message)
-        message = "Patient Validation accuracy: \n {:.2f} ".format(acc*100)
+        message = "Patient Validation accuracy: \n {:.2f} ".format(acc * 100)
         print(message)
         reports_writer.write(message)
-        message = "Patient Validation class accuracies: \n {} ".format(
-            class_accuracies)
+        message = "Patient Validation class accuracies: \n {} ".format(class_accuracies)
         print(message)
         reports_writer.write(message)
         tn_writer.close()
@@ -493,7 +607,6 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
         return accs
 
     def return_key_elements(self, one_indexed_epoch):
-
         y_true_all = []
         preds_all = []
         rounded_preds_all = []
@@ -525,7 +638,6 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
             rounded_pred = np.zeros(pred.shape)
 
             if parameters.one_hot_encoding:
-
                 index = np.where(pred[0] == np.amax(pred[0]))
                 rounded_pred[index] = 1
             else:
@@ -549,7 +661,6 @@ class NewCallback2(tf.keras.callbacks.LambdaCallback):
 
 
 def return_layer(model):
-
     if model.name == "mixednet":
         return model.layers[1].name
     elif model.name == "model9":
@@ -561,7 +672,6 @@ def return_layer(model):
 
 
 def create_gradcam_heatmap(spec, model, dest, pred_index=None):
-
     # First, we create a model that maps the input image to the activations
     # of the last conv layer as well as the output predictions
     layer_name = return_layer(model)
@@ -634,23 +744,22 @@ def save_and_display_gradcam(spec, model, heatmap, dest, alpha=0.4):
         for i in range(tf.shape(spec)[0]):
             ts_jet_heatmap = jet_heatmap[i, :, :]
             ts_spec = spec[i, :, :]
-            ts_jet_heatmap = tf.keras.preprocessing.image.array_to_img(
-                ts_jet_heatmap)
+            ts_jet_heatmap = tf.keras.preprocessing.image.array_to_img(ts_jet_heatmap)
             # print(ts_jet_heatmap.size)
-            ts_jet_heatmap = ts_jet_heatmap.resize(
-                (ts_spec.shape[1], ts_spec.shape[0]))
+            ts_jet_heatmap = ts_jet_heatmap.resize((ts_spec.shape[1], ts_spec.shape[0]))
             # print(ts_jet_heatmap.size)
-            ts_jet_heatmap = tf.keras.preprocessing.image.img_to_array(
-                ts_jet_heatmap)
+            ts_jet_heatmap = tf.keras.preprocessing.image.img_to_array(ts_jet_heatmap)
 
             # Superimpose the heatmap on original image
             superimposed_ts_spec = ts_jet_heatmap * alpha + ts_spec
             superimposed_ts_spec = tf.keras.preprocessing.image.array_to_img(
-                superimposed_ts_spec)
+                superimposed_ts_spec
+            )
 
             # flip it
             superimposed_ts_spec = superimposed_ts_spec.transpose(
-                PIL.Image.FLIP_TOP_BOTTOM)
+                PIL.Image.FLIP_TOP_BOTTOM
+            )
 
             superimposed_ts_spec.save(dest + "_{}.png".format(i))
     # Create an image with RGB colorized heatmap
@@ -663,12 +772,10 @@ def save_and_display_gradcam(spec, model, heatmap, dest, alpha=0.4):
 
         # Superimpose the heatmap on original image
         superimposed_spec = jet_heatmap * alpha + spec
-        superimposed_spec = tf.keras.preprocessing.image.array_to_img(
-            superimposed_spec)
+        superimposed_spec = tf.keras.preprocessing.image.array_to_img(superimposed_spec)
 
         # flip it
-        superimposed_spec = superimposed_spec.transpose(
-            PIL.Image.FLIP_TOP_BOTTOM)
+        superimposed_spec = superimposed_spec.transpose(PIL.Image.FLIP_TOP_BOTTOM)
 
         # Save the superimposed image
 

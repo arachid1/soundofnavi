@@ -6,7 +6,7 @@ import random
 import numpy as np
 import shutil
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 
 def seed_everything():
@@ -48,10 +48,9 @@ def initialize_file_folder(file_dir):
 
 
 def init(arguments, file_name):
-
     print("-- Collecting Variables... --")
     print("Tensorflow Version: {}".format(tf.__version__))
-    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
     global testing
     global mode
 
@@ -127,28 +126,30 @@ def init(arguments, file_name):
 
     global parse_function
 
-    # cache_root = "/Users/alirachidi/Documents/Sonavi Labs/classification_algorithm/cache/"
-    cache_root = "../../../cache/"
-    # data_root = "/Users/alirachidi/Documents/Sonavi Labs/classification_algorithm/data/"
-    data_root = "../../../data/"
-    jordan_root = os.path.join(data_root, 'jwyy9np4gv-3/')
+    cache_root = (
+        "/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/cache/"
+    )
+    # cache_root = "../../../cache/"  # FIXME posix paths
+    data_root = "/Users/alirachidi/Documents/Sonavi_Labs/classification_algorithm/data/"
+    # data_root = "../../../data/"
+    jordan_root = os.path.join(data_root, "jwyy9np4gv-3/")
     # icbhi_cleaned_root = os.path.join(data_root, 'raw_audios/icbhi_preprocessed_v2_cleaned_8000/')
-    icbhi_root = os.path.join(
-        data_root, 'raw_audios/icbhi_preprocessed_v2_8000/')
-    bd_root = os.path.join(data_root, 'PCV_SEGMENTED_Processed_Files/')
-    excel_path = os.path.join(
-        data_root, 'Bangladesh_PCV_onlyStudyPatients.xlsx')
-    perch_root = os.path.join(data_root, 'raw_audios/perch_8000_10seconds')
-    ant_root = os.path.join(data_root, 'raw_audios/Antwerp_Clinical_Complete')
-    official_labels_path = os.path.join(data_root, "raw_audios/icbhi_preprocessed_v2_8000/official_labels.txt")
+    icbhi_root = os.path.join(data_root, "raw_audios/icbhi_preprocessed_v2_8000/")
+    bd_root = os.path.join(data_root, "PCV_SEGMENTED_Processed_Files/")
+    excel_path = os.path.join(data_root, "Bangladesh_PCV_onlyStudyPatients.xlsx")
+    perch_root = os.path.join(data_root, "raw_audios/perch_8000_10seconds")
+    ant_root = os.path.join(data_root, "raw_audios/Antwerp_Clinical_Complete")
+    official_labels_path = os.path.join(
+        data_root, "raw_audios/icbhi_preprocessed_v2_8000/official_labels.txt"
+    )
 
     # bd_root = '../data/PCV_SEGMENTED_Processed_Files/'
     # excel_path = "../data/Bangladesh_PCV_onlyStudyPatients.xlsx"
     # perch_root="../data/raw_audios/perch_8000_10seconds/"
-    
+
     global icbhi_metadata_root
     icbhi_metadata_root = os.path.join(data_root, "raw_audios/demographic_info.txt")
-    
+
     description = None
     job_id = 0
     mode = "pneumonia"
@@ -189,7 +190,9 @@ def init(arguments, file_name):
 
     sr = 8000
     audio_length = 10
-    step_size = 5  # jump to the next point, also the overlap between two subsequent chunks frome the same audio
+    step_size = (
+        5
+    )  # jump to the next point, also the overlap between two subsequent chunks frome the same audio
 
     n_fft = 1024
     hop_length = 256
@@ -211,12 +214,17 @@ def init(arguments, file_name):
     parse_function = None
 
     ######
-    mode = "pneumonia" if arguments["mode"] == "main" else arguments["mode"]
+    if arguments["mode"] == "cw":
+        mode = "cw"
+        class_names = ["none", "crackles", "wheezes", "both"]
+    elif arguments["mode"] == "pneumonia":
+        mode = "pneumonia"
+        class_names = ["negative", "positive"]
     n_classes = 2 if mode == "cw" else 1
-    file_dir = os.path.join(
-        cache_root, mode, file_name)
+    file_dir = os.path.join(cache_root, mode, file_name)
     description = arguments["description"]
-    testing = int(arguments["testing"])
+    if arguments["testing"]:
+        testing = int(arguments["testing"])
 
     if testing:
         file_dir += "_testing"
@@ -234,42 +242,32 @@ def init(arguments, file_name):
 
 
 def return_model_params():
-    return {"N_CLASSES": n_classes,
-            "SR": sr,
-            "BATCH_SIZE": batch_size,
-            "LR": lr,
-            "SHAPE": shape,
-            "INITIAL_CHANNELS": initial_channels,
-            "WEIGHT_DECAY": weight_decay,
-            "LL2_REG": ll2_reg,
-            "EPSILON": epsilon,
-            "LABEL_SMOOTHING": label_smoothing
-            }
-
-
-def return_lr_params():
     return {
-        "factor": factor,
-        "lr_patience": lr_patience,
-        "min_lr": min_lr
+        "N_CLASSES": n_classes,
+        "SR": sr,
+        "BATCH_SIZE": batch_size,
+        "LR": lr,
+        "SHAPE": shape,
+        "INITIAL_CHANNELS": initial_channels,
+        "WEIGHT_DECAY": weight_decay,
+        "LL2_REG": ll2_reg,
+        "EPSILON": epsilon,
+        "LABEL_SMOOTHING": label_smoothing,
     }
 
 
-def parse_arguments():
+def return_lr_params():
+    return {"factor": factor, "lr_patience": lr_patience, "min_lr": min_lr}
 
+
+def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Input Arguments
     parser.add_argument(
-        "--testing",
-        help="activate testing mode or not",
-        required=False
+        "--testing", help="activate testing mode or not", required=False
     )
-    parser.add_argument(
-        "--description",
-        help="description of the job",
-        required=False,
-    )
+    parser.add_argument("--description", help="description of the job", required=False)
     parser.add_argument(
         "--mode",
         help="task at hand, either main for pneumonia or cw for crackles",
@@ -279,24 +277,25 @@ def parse_arguments():
     arguments = args.__dict__
     return arguments
 
+
 # def set_up_wandb():
-    # wandb_name = __file__.split('/')[-1].split('.')[0] + str('_id{}'.format(job_count))
-    # print(wandb_name)
-    # run = wandb.init(project="tensorboard-integration", name=wandb_name, sync_tensorboard=False)
+# wandb_name = __file__.split('/')[-1].split('.')[0] + str('_id{}'.format(job_count))
+# print(wandb_name)
+# run = wandb.init(project="tensorboard-integration", name=wandb_name, sync_tensorboard=False)
 
-    # config = wandb.config
+# config = wandb.config
 
-    # config.n_classes = n_classes
-    # config.n_epochs = n_epochs
-    # config.sr = sr
-    # config.lr = lr
-    # config.batch_size = batch_size
-    # config.ll2_reg = ll2_reg
-    # config.weight_decay = weight_decay
-    # config.label_smoothing = label_smoothing
-    # config.es_patience = es_patience
-    # config.min_delta = min_delta
-    # config.initial_channels = initial_channels
-    # config.factor = factor
-    # config.lr_patience = lr_patience
-    # config.min_lr = min_lr
+# config.n_classes = n_classes
+# config.n_epochs = n_epochs
+# config.sr = sr
+# config.lr = lr
+# config.batch_size = batch_size
+# config.ll2_reg = ll2_reg
+# config.weight_decay = weight_decay
+# config.label_smoothing = label_smoothing
+# config.es_patience = es_patience
+# config.min_delta = min_delta
+# config.initial_channels = initial_channels
+# config.factor = factor
+# config.lr_patience = lr_patience
+# config.min_lr = min_lr

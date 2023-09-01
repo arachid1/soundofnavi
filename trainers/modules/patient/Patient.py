@@ -18,4 +18,6 @@ class Patient:
             d[recording_id].append(recording.slices.values())
         return d
     
-    
+    def get_metadata(self):
+        metadata =  self.dataset.metadata
+        return metadata[metadata['Patient_id'] == int(self.id)]

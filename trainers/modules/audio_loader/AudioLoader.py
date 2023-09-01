@@ -1,8 +1,7 @@
 import types
 from ..main import parameters
-import os 
+import os
 import librosa
-from ..main.global_helpers import visualize_audio
 import numpy as np
 
 
@@ -31,18 +30,20 @@ self.samples = {'Jordan': [[array([-2.083e-06, -9.467e-07,  2.297e-06, ...,  2.0
         7.185e-02], dtype=float32), 'N', 'BP87_N,N,P R M,72,M'], [array([ 8.769e-07,  8.632e-07, -9.404e-07, ...,  8.454e-02,  7.326e-02,
         3.781e-02], dtype=float32), 'pneumonia', 'BP37_pneumonia,Crep,A R L,70,F']]}
 """
+
+
 class AudioLoader:
     def __init__(self, root, get_filenames):
         self.root = root
-        self.get_filenames = types.MethodType(get_filenames, self) 
+        self.get_filenames = types.MethodType(get_filenames, self)
         self.mode = parameters.mode
         self.filenames = []
         self.samples = []
         self.name = None
-    
+
     def load_all_samples(self):
         # filenames without .wav
-        self.filenames = self.get_filenames() 
+        self.filenames = self.get_filenames()
         # if testing mode, calls hard-coded filenames for each dataset
         if parameters.testing:
             self.filenames = self.get_testing_filenames()
@@ -52,18 +53,18 @@ class AudioLoader:
         for filename in self.filenames:
             patient_id = self.get_patient_id(filename)
             audio = self.load_singular_audio(filename)
-            # accessing each of the dictonary for individual labels using patient id 
+            # accessing each of the dictonary for individual labels using patient id
             label = self.read_label(label_dict, patient_id)
             # the filename must be stripped of its path (relative or absolute) and extension (.wav)
             # NOTE: except for BD?
             self.samples.append([audio, label, filename])
-    
+
     def get_patient_id(self, filename):
         pass
 
     def load_singular_audio(self, filename):
-        path = os.path.join(self.root, filename + '.wav')
-        data, ___ = librosa.load(path, parameters.sr)
+        path = os.path.join(self.root, filename + ".wav")
+        data, ___ = librosa.load(path, sr=parameters.sr)
         return data
 
     def read_label(self, _dict, id):
@@ -80,6 +81,6 @@ class AudioLoader:
 
     def return_all_samples(self):
         return self.samples
-    
+
     def return_name(self):
         return self.name
