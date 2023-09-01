@@ -19,8 +19,8 @@ setupkwargs = dict(
                         "scikit-learn", "librosa"],
     extras_require={
         "docs": [
-            "sphinx>=6.1.3",
-            "sphinx_rtd_theme>=1.2.0",
+            "sphinx",
+            "sphinx_rtd_theme,
         ]},
     
 )
