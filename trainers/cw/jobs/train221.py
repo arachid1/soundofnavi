@@ -3,10 +3,11 @@ import sys
 from soundofnavi.main import parameters as p
 from soundofnavi.main.parameters import initialize_job
 from soundofnavi.training.training import train_function
-from soundofnavi.main.helpers import default_get_filenames, print_dataset, convert_cw_labels
-# from soundofnavi.main.global_helpers import *
-# from soundofnavi.audio_loader.helpers import default_get_filenames
-# from soundofnavi.callbacks.NewCallback2 import NewCallback2
+from soundofnavi.main.helpers import (
+    default_get_filenames,
+    print_dataset,
+    convert_cw_labels,
+)
 from soundofnavi.dataset.icbhi_dataset import IcbhiDataset
 from soundofnavi.models.leaf_pretrained import leaf_pretrained
 

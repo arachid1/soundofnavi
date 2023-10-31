@@ -15,14 +15,15 @@ setupkwargs = dict(
     zip_safe=False,
     entry_points={"console_scripts": []},
     python_requires=">=3.8,<3.9",
-    install_requires=["numpy", "pandas", "matplotlib", "tensorflow", 
-                        "scikit-learn", "librosa"],
-    extras_require={
-        "docs": [
-            "sphinx",
-            "sphinx_rtd_theme,
-        ]},
-    
+    install_requires=[
+        "numpy",
+        "pandas",
+        "matplotlib",
+        "tensorflow",
+        "scikit-learn",
+        "librosa",
+    ],
+    extras_require={"docs": ["sphinx", "sphinx_rtd_theme"]},
 )
 
 setupkwargs["extras_require"]["all"] = sum(setupkwargs["extras_require"].values(), [])
